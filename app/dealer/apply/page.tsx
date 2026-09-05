@@ -14,7 +14,7 @@ export default function DealerApplyPage() {
     contactPerson: "",
     email: "",
     phone: "",
-    businessType: "hardware_store", // hardware_store | architect | contractor | wholesaler
+    businessType: "hardware_store",
     address: "",
     city: "",
     annualVolume: "5_10_lakhs",
@@ -29,9 +29,6 @@ export default function DealerApplyPage() {
     <div className="min-h-screen bg-paper-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
         <div className="mb-8 text-center max-w-2xl mx-auto">
-          <span className="font-mono text-xs text-brass-600 uppercase tracking-widest block mb-2 font-semibold">
-            B2B WHOLESALE ONBOARDING
-          </span>
           <h1 className="font-space font-bold text-3xl sm:text-4xl text-graphite-900 mb-3">
             Apply for Wholesale Dealer Account
           </h1>

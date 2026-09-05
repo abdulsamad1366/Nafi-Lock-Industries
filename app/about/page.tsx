@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Award, ShieldCheck, Wrench, Building2, Factory, Cpu } from "lucide-react";
+import { ShieldCheck, Factory, Cpu } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -9,9 +9,6 @@ export default function AboutPage() {
         {/* Header */}
         <div className="bg-graphite-900 text-white p-10 hairline-border relative overflow-hidden">
           <div className="max-w-2xl relative z-10">
-            <span className="font-mono text-xs text-brass-500 uppercase tracking-widest block mb-2 font-semibold">
-              PRECISION ENGINEERING & MANUFACTURING
-            </span>
             <h1 className="font-space font-bold text-3xl sm:text-4xl text-white mb-4">
               35 Years of Architectural Hardware Excellence
             </h1>

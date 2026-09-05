@@ -12,15 +12,10 @@ export default function DealerCalloutBand() {
     <section className="py-16 bg-steel-100/60 border-b border-steel-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="bg-graphite-900 text-white hairline-border p-8 sm:p-12 relative overflow-hidden">
-          {/* Subtle accent line */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-brass-600"></div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-brass-600/20 text-brass-500 text-xs font-mono rounded border border-brass-600/30 mb-4">
-                <Building2 className="w-3.5 h-3.5" /> WHOLESALE & ARCHITECTURAL DEALERS
-              </div>
-
               <h2 className="font-space font-bold text-2xl sm:text-4xl text-white mb-4">
                 Are you a lock dealer, architect, or project contractor?
               </h2>
@@ -40,7 +35,7 @@ export default function DealerCalloutBand() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-brass-500 shrink-0" />
-                  <span>Direct PO WhatsApp Inquiries</span>
+                  <span>Direct PO Inquiries</span>
                 </div>
               </div>
             </div>
@@ -48,7 +43,7 @@ export default function DealerCalloutBand() {
             <div className="lg:col-span-4 flex flex-col items-stretch sm:items-start lg:items-end gap-3">
               <Link
                 href="/dealer/apply"
-                className="w-full sm:w-auto bg-brass-600 hover:bg-brass-500 text-white font-space font-semibold px-6 py-3.5 rounded-sm flex items-center justify-center gap-2 text-sm transition-colors text-center"
+                className="w-full sm:w-auto bg-brass-600 hover:bg-brass-500 text-white font-space font-semibold px-6 py-3.5 rounded-sm flex items-center justify-center gap-2 text-sm transition-colors text-center whitespace-nowrap"
               >
                 Apply for Wholesale Account <ArrowRight className="w-4 h-4" />
               </Link>
@@ -56,9 +51,9 @@ export default function DealerCalloutBand() {
               <button
                 type="button"
                 onClick={() => loginAs("dealer")}
-                className="w-full sm:w-auto text-xs text-steel-400 hover:text-white font-mono flex items-center justify-center gap-1.5 py-2 px-3 border border-graphite-700 hover:border-steel-500 rounded transition-colors"
+                className="w-full sm:w-auto text-xs text-steel-400 hover:text-white font-mono flex items-center justify-center gap-1.5 py-2 px-3 border border-graphite-700 hover:border-steel-500 rounded transition-colors whitespace-nowrap"
               >
-                <Lock className="w-3.5 h-3.5 text-brass-500" /> Demo: Toggle Dealer Mode Now
+                <Lock className="w-3.5 h-3.5 text-brass-500" /> Demo: Toggle Dealer Mode
               </button>
             </div>
           </div>

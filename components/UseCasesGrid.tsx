@@ -53,9 +53,6 @@ export default function UseCasesGrid() {
     <section className="py-16 bg-paper-50 border-b border-steel-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="mb-8">
-          <span className="font-mono text-xs text-steel-500 uppercase tracking-widest block mb-1">
-            APPLICATION SPECIFIC
-          </span>
           <h2 className="font-space font-bold text-2xl sm:text-3xl text-graphite-900">
             Shop by Use
           </h2>

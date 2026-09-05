@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import { getProductsByCategory, FALLBACK_PRODUCTS } from "@/lib/products";
+import { getProductsByCategory } from "@/lib/products";
 import { SlidersHorizontal, ArrowLeft } from "lucide-react";
 
 interface CategoryPageProps {
@@ -42,7 +42,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   return (
     <div className="min-h-screen bg-paper-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        {/* Breadcrumb & Navigation Back */}
+        {/* Navigation Back */}
         <div className="mb-6 flex items-center justify-between">
           <Link
             href="/"
@@ -58,9 +58,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         {/* Category Header */}
         <div className="bg-graphite-900 text-white p-8 sm:p-10 hairline-border mb-10 relative">
           <div className="max-w-3xl">
-            <span className="font-mono text-xs text-brass-500 uppercase tracking-widest block mb-2">
-              CATEGORY CATALOG
-            </span>
             <h1 className="font-space font-bold text-3xl sm:text-4xl text-white mb-3">
               {catInfo.title}
             </h1>

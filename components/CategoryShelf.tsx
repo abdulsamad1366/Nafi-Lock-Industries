@@ -48,16 +48,13 @@ export default function CategoryShelf() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
-            <span className="font-mono text-xs text-steel-500 uppercase tracking-widest block mb-1">
-              PROVEN RANGE
-            </span>
             <h2 className="font-space font-bold text-2xl sm:text-3xl text-graphite-900">
               Shop by Category
             </h2>
           </div>
           <Link
             href="/category/door-locks"
-            className="text-xs font-mono font-semibold text-brass-600 hover:text-brass-700 flex items-center gap-1 uppercase tracking-wider"
+            className="text-xs font-mono font-semibold text-brass-600 hover:text-brass-700 flex items-center gap-1 uppercase tracking-wider whitespace-nowrap"
           >
             View all categories <ArrowRight className="w-3.5 h-3.5" />
           </Link>

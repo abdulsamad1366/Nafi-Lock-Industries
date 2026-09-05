@@ -72,9 +72,6 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
         {/* Use Case Header */}
         <div className="bg-graphite-900 text-white p-8 sm:p-10 hairline-border mb-10">
           <div className="max-w-3xl">
-            <span className="font-mono text-xs text-brass-500 uppercase tracking-widest block mb-2">
-              APPLICATION MATCH
-            </span>
             <h1 className="font-space font-bold text-3xl sm:text-4xl text-white mb-3">
               {info.title}
             </h1>

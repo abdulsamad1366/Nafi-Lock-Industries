@@ -44,9 +44,6 @@ export default function CartPage() {
     <div className="min-h-screen bg-paper-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="mb-8">
-          <span className="font-mono text-xs text-steel-500 uppercase tracking-widest block mb-1">
-            PURCHASE REQUISITION
-          </span>
           <h1 className="font-space font-bold text-3xl text-graphite-900 flex items-center gap-3">
             <span>Shopping Cart</span>
             {isDealer && (
@@ -166,7 +163,7 @@ export default function CartPage() {
                   rows={2}
                   value={customNote}
                   onChange={(e) => setCustomNote(e.target.value)}
-                  placeholder="Specify keying preferences (e.g. Master Keyed alike, custom backset, site contact details)..."
+                  placeholder="Specify keying requirements (e.g. Master Keyed alike, custom backset, site contact details)..."
                   className="w-full text-xs p-3 border border-steel-300 rounded focus:border-brass-600 outline-none font-inter"
                 ></textarea>
               </div>
@@ -262,7 +259,6 @@ export default function CartPage() {
   );
 }
 
-// Router hook safe fallback helper
 function RouterHook() {
   try {
     return useRouter();

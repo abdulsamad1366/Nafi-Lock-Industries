@@ -32,7 +32,7 @@ export default function CheckoutPage() {
     city: "Mumbai",
     state: "Maharashtra",
     pincode: "400001",
-    paymentMethod: "razorpay", // "razorpay" | "po_inquiry"
+    paymentMethod: "razorpay",
   });
 
   const [orderComplete, setOrderComplete] = useState(false);
@@ -46,7 +46,6 @@ export default function CheckoutPage() {
     e.preventDefault();
     setProcessing(true);
 
-    // Simulate Razorpay payment modal execution
     setTimeout(() => {
       setProcessing(false);
       setOrderComplete(true);
@@ -105,9 +104,6 @@ export default function CheckoutPage() {
         </div>
 
         <div className="mb-8">
-          <span className="font-mono text-xs text-steel-500 uppercase tracking-widest block mb-1">
-            SECURE ORDER DISPATCH
-          </span>
           <h1 className="font-space font-bold text-3xl text-graphite-900">Checkout & Payment</h1>
         </div>
 
@@ -177,7 +173,7 @@ export default function CheckoutPage() {
                       placeholder="e.g. 27AAACH1234F1Z9"
                       value={formData.gstin}
                       onChange={handleInputChange}
-                      className="w-full p-2.5 border border-steel-300 rounded focus:border-brass-600 outline-none font-inter uppercase font-mono"
+                      className="w-full p-2.5 border border-steel-300 rounded focus:border-brass-600 outline-none font-mono uppercase"
                     />
                   </div>
 

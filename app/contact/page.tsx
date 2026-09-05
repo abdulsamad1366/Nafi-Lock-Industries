@@ -15,9 +15,6 @@ export default function ContactPage() {
     <div className="min-h-screen bg-paper-50 py-12 text-graphite-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-8 space-y-10">
         <div className="text-center max-w-2xl mx-auto">
-          <span className="font-mono text-xs text-brass-600 uppercase tracking-widest block mb-2 font-semibold">
-            DIRECT FACTORY COMMUNICATION
-          </span>
           <h1 className="font-space font-bold text-3xl sm:text-4xl text-graphite-900 mb-3">
             Contact NAFI Lock Industries
           </h1>

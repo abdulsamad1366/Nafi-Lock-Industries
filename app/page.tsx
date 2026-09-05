@@ -6,7 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import TrustStrip from "@/components/TrustStrip";
 import DealerCalloutBand from "@/components/DealerCalloutBand";
 import { getProducts } from "@/lib/products";
-import { Shield, Sparkles } from "lucide-react";
+import { Shield } from "lucide-react";
 
 export default async function HomePage() {
   const products = await getProducts();
@@ -22,14 +22,11 @@ export default async function HomePage() {
       {/* Shop by Use Cases Grid (6 tiles) */}
       <UseCasesGrid />
 
-      {/* Featured Products Grid (3-up desktop, 2-up tablet, 1-up mobile) */}
+      {/* Featured Products Grid */}
       <section className="py-16 bg-paper-50 border-b border-steel-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="font-mono text-xs text-steel-500 uppercase tracking-widest block mb-1">
-                ENGINEERED SPECIFICATIONS
-              </span>
               <h2 className="font-space font-bold text-2xl sm:text-3xl text-graphite-900">
                 Featured Hardware Range
               </h2>

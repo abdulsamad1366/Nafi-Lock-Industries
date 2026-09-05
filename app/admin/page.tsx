@@ -9,9 +9,6 @@ import {
   Plus,
   Package,
   Users,
-  ShoppingBag,
-  Building2,
-  Lock,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -25,7 +22,7 @@ interface DealerAppItem {
 
 export default function AdminPage() {
   const { role, isAdmin, loginAs } = useAuth();
-  const [activeTab, setActiveTab] = useState<"dealers" | "products" | "orders">("dealers");
+  const [activeTab, setActiveTab] = useState<"dealers" | "products">("dealers");
 
   const [dealers, setDealers] = useState<DealerAppItem[]>([
     {
@@ -83,9 +80,6 @@ export default function AdminPage() {
         {/* Header */}
         <div className="bg-graphite-900 text-white p-8 hairline-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="font-mono text-xs text-brass-500 uppercase tracking-widest block mb-1">
-              STORE MANAGEMENT PORTAL
-            </span>
             <h1 className="font-space font-bold text-3xl text-white">NAFI Admin Dashboard</h1>
           </div>
 
@@ -104,7 +98,7 @@ export default function AdminPage() {
                 : "text-steel-500 hover:text-graphite-900"
             }`}
           >
-            <Users className="w-4 h-4" /> Dealer Applications (3)
+            <Users className="w-4 h-4" /> Dealer Applications ({dealers.length})
           </button>
           <button
             onClick={() => setActiveTab("products")}
