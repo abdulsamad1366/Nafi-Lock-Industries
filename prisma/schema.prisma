@@ -1,0 +1,100 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  name               String
+  phone              String?
+  role               String              @default("retail") // "retail" | "dealer" | "admin"
+  companyName        String?
+  gstin              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  orders             Order[]
+  dealerApplications DealerApplication[]
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+}
+
+model UseCase {
+  id       String           @id @default(uuid())
+  name     String
+  slug     String           @unique
+  products ProductUseCase[]
+}
+
+model Product {
+  id          String           @id @default(uuid())
+  name        String
+  sku         String           @unique
+  description String
+  basePrice   Float
+  dealerPrice Float
+  stock       Int              @default(50)
+  finish      String
+  images      String           // JSON string of image URLs
+  specs       String           // JSON string of key-value spec attributes
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id])
+  useCases    ProductUseCase[]
+  orderItems  OrderItem[]
+  createdAt   DateTime         @default(now())
+}
+
+model ProductUseCase {
+  productId String
+  useCaseId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  useCase   UseCase @relation(fields: [useCaseId], references: [id], onDelete: Cascade)
+
+  @@id([productId, useCaseId])
+}
+
+model DealerApplication {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName String
+  gstin       String
+  phone       String
+  address     String
+  status      String   @default("pending") // "pending" | "approved" | "rejected"
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  type            String      @default("paid") // "paid" | "inquiry"
+  status          String      @default("confirmed") // "pending" | "confirmed" | "shipped"
+  channel         String      @default("online") // "online" | "whatsapp"
+  total           Float
+  shippingAddress String?
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id           String  @id @default(uuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  qty          Int
+  priceAtOrder Float
+}
