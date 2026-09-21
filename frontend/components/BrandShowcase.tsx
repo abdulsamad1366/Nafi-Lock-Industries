@@ -274,24 +274,18 @@ export default function BrandShowcase() {
       className="relative w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden select-none"
       aria-label="Our Flagship Brands"
     >
-      {/* ── Background Subtle Watermark Laurel / Ambient Crest ── */}
+      {/* ── Background Subtle Watermark Crest (Official Nafi Emblem) ── */}
       <div
-        className="absolute -top-12 -right-12 w-96 h-96 opacity-[0.03] pointer-events-none select-none"
+        className="absolute -top-6 -right-6 sm:-top-4 sm:-right-4 w-72 sm:w-[420px] lg:w-[520px] aspect-[1024/759] opacity-[0.24] sm:opacity-[0.28] pointer-events-none select-none z-0 transition-opacity"
         aria-hidden="true"
       >
-        <svg viewBox="0 0 200 200" fill="currentColor">
-          <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="4" fill="none" />
-          <text
-            x="50%"
-            y="55%"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="100"
-            fontFamily="serif"
-          >
-            N
-          </text>
-        </svg>
+        <Image
+          src="/images/nafi-crest-watermark.png"
+          alt="Nafi Lock Industries Watermark Crest"
+          fill
+          className="object-contain object-top-right"
+          priority={false}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
