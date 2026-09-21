@@ -12,13 +12,11 @@ import { usePathname } from "next/navigation";
  * Configuration for individual header navigation items.
  * - href: Target route destination URL
  * - label: Display name shown to users
- * - dotColor: Distinct signature brand theme dot (S-Nafi, Greek, Raksham)
  * - badge: Optional technical category indicator
  */
 interface NavLinkItem {
   href: string;
   label: string;
-  dotColor?: string;
   badge?: string;
 }
 
@@ -28,17 +26,18 @@ interface NavLinkItem {
  * ============================================================================
  * Ethereal, morphing site navigation header.
  *
- * Key Architecture & Requested Design Changes:
- * 1. Official SVG Logo: Uses the user's uploaded vector logo (/logos/nafi-logo.svg).
- * 2. Removed Subtitle: "[Est. 1995 • Precision Engineering]" has been removed.
- * 3. Borderless Navigation: All border lines removed from nav items and container.
- * 4. Morphing Header Effect (Ethereal Glassmorphism):
- *    - Uses a scroll listener to detect when the user scrolls down the page.
+ * Recent Refinements:
+ * 1. Official SVG Logo: Displays the royal gold lock & wreath emblem (/logos/nafi-logo.svg).
+ * 2. Increased Nav Text Size: Upgraded from 12px (text-xs) to prominent 15px (text-sm sm:text-[15px])
+ *    for maximum readability and comfortable visual weight.
+ * 3. Clean Text Branding: Removed color dots from brand names for a refined, minimalist aesthetic.
+ * 4. Borderless Navigation: Nav items feature soft pill morphing without harsh border lines.
+ * 5. Morphing Scroll Effect:
  *    - At top (scrollY === 0): Generous padding and crisp ethereal blur.
  *    - When scrolled (scrollY > 20): Smoothly morphs into a compact, floating
- *      glassmorphism dock with deeper backdrop blur (backdrop-blur-2xl),
- *      reduced vertical height, and elevated ambient shadow.
- * 5. Responsive Mobile Drawer: Smooth slide-down menu with seamless touch targets.
+ *      glassmorphism dock with deeper backdrop blur (backdrop-blur-2xl)
+ *      and soft ambient shadow.
+ * 6. Responsive Mobile Drawer: Accessible slide-down menu with large touch targets.
  */
 export default function Header() {
   // Read active pathname to dynamically compute active nav link state
@@ -70,25 +69,23 @@ export default function Header() {
   /**
    * Navigation links array adhering to architecture decision #3:
    * Each of the three flagship brands is represented directly in the main header.
+   * Color dots removed per user request for a cleaner typographic presentation.
    */
   const navLinks: NavLinkItem[] = [
     { href: "/", label: "Home" },
     {
       href: "/brands/s-nafi",
       label: "S-Nafi",
-      dotColor: "bg-[#9A7228]", // Signature Brass Gold
       badge: "Brass",
     },
     {
       href: "/brands/greek",
       label: "Greek",
-      dotColor: "bg-[#235F8E]", // Signature Aegean Blue
       badge: "Classic",
     },
     {
       href: "/brands/raksham",
       label: "Raksham",
-      dotColor: "bg-[#9A2F24]", // Signature Guardian Crimson
       badge: "Security",
     },
     { href: "/contact", label: "Contact" },
@@ -140,14 +137,14 @@ export default function Header() {
         </Link>
 
         {/* ====================================================================
-            2. Borderless Desktop Navigation (Pill Morphing Effect)
+            2. Borderless Desktop Navigation (Increased Size & Clean Text)
             ==================================================================== */}
         {/*
           Outer nav container:
-          - Border line has been completely removed per user request.
-          - Soft translucent background with subtle pill curvature.
+          - Border line removed per user request.
+          - Soft translucent background with pill curvature and gentle backdrop blur.
         */}
-        <ul className="hidden md:flex items-center gap-1 bg-surface/70 p-1 rounded-full backdrop-blur-sm">
+        <ul className="hidden md:flex items-center gap-1.5 bg-surface/70 p-1.5 rounded-full backdrop-blur-sm">
           {navLinks.map((link) => {
             // Check whether this route is currently active
             const isActive =
@@ -159,29 +156,20 @@ export default function Header() {
               <li key={link.href}>
                 {/*
                   Nav item link:
-                  - All border lines removed.
-                  - Smooth background pill transition (bg-white shadow-xs on active).
-                  - Gentle opacity and color shift on hover.
+                  - Increased text size: text-sm sm:text-[15px] for clear, prominent visibility.
+                  - Generous padding: px-4 sm:px-5 py-2.
+                  - Color dots removed for a clean, sophisticated typographic look.
+                  - Active state: soft white background with gentle elevation shadow.
+                  - Hover state: subtle white overlay with smooth color transition.
                 */}
                 <Link
                   href={link.href}
-                  className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${
+                  className={`relative flex items-center px-4 sm:px-5 py-2 rounded-full text-sm sm:text-[15px] tracking-wide transition-all duration-200 ${
                     isActive
                       ? "bg-white text-primary shadow-xs font-semibold"
-                      : "text-muted hover:text-primary hover:bg-white/60"
+                      : "text-muted hover:text-primary hover:bg-white/60 font-medium"
                   }`}
                 >
-                  {/* Distinct Brand Signature Dot */}
-                  {link.dotColor && (
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${link.dotColor} shrink-0 transition-transform duration-200 ${
-                        isActive ? "scale-125 ring-2 ring-accent/25" : "opacity-75"
-                      }`}
-                      aria-hidden="true"
-                    />
-                  )}
-
-                  {/* Nav Item Title */}
                   <span>{link.label}</span>
                 </Link>
               </li>
@@ -274,24 +262,16 @@ export default function Header() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm transition-colors ${
+                    className={`flex items-center justify-between px-4 py-3 rounded-lg text-base transition-colors ${
                       isActive
                         ? "bg-surface text-accent font-semibold"
-                        : "text-muted hover:text-primary hover:bg-surface/60"
+                        : "text-muted hover:text-primary hover:bg-surface/60 font-medium"
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      {link.dotColor && (
-                        <span
-                          className={`w-2 h-2 rounded-full ${link.dotColor}`}
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span>{link.label}</span>
-                    </div>
+                    <span>{link.label}</span>
 
                     {link.badge && (
-                      <span className="font-mono text-[10px] uppercase text-muted px-2 py-0.5 rounded bg-surface border border-divider/60">
+                      <span className="font-mono text-xs uppercase text-muted px-2.5 py-0.5 rounded bg-surface border border-divider/60">
                         {link.badge}
                       </span>
                     )}
@@ -306,7 +286,7 @@ export default function Header() {
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-colors"
+              className="flex w-full items-center justify-center gap-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-colors"
             >
               <span>Contact Wholesale Desk</span>
               <svg
