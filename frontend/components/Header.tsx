@@ -24,20 +24,25 @@ interface NavLinkItem {
  * ============================================================================
  * Component: Header
  * ============================================================================
- * Ethereal, morphing site navigation header.
+ * Dual-State Precision Navigation Header:
  *
- * Recent Refinements:
- * 1. Official SVG Logo: Displays the royal gold lock & wreath emblem (/logos/nafi-logo.svg).
- * 2. Increased Nav Text Size: Upgraded from 12px (text-xs) to prominent 15px (text-sm sm:text-[15px])
- *    for maximum readability and comfortable visual weight.
- * 3. Clean Text Branding: Removed color dots from brand names for a refined, minimalist aesthetic.
- * 4. Borderless Navigation: Nav items feature soft pill morphing without harsh border lines.
- * 5. Morphing Scroll Effect:
- *    - At top (scrollY === 0): Generous padding and crisp ethereal blur.
- *    - When scrolled (scrollY > 20): Smoothly morphs into a compact, floating
- *      glassmorphism dock with deeper backdrop blur (backdrop-blur-2xl)
- *      and soft ambient shadow.
- * 6. Responsive Mobile Drawer: Accessible slide-down menu with large touch targets.
+ * 1. Unscrolled State (scrollY <= 20):
+ *    - Full-width edge-to-edge layout directly beneath the manufacturing marquee.
+ *    - Crisp border-b divider with high-contrast luxury brand typography.
+ *
+ * 2. Scrolled State (scrollY > 20) — Floating Capsule Dock (per reference design):
+ *    - Morphs smoothly from full width into an elevated, centered floating capsule dock (`rounded-full`).
+ *    - Inset from viewport boundaries (`top-3 sm:top-4 px-4 sm:px-6`) with deep ambient drop-shadow
+ *      (`shadow-[0_12px_35px_rgba(0,0,0,0.08)]`) and 2xl glassmorphic blur.
+ *    - Page content scrolls freely behind the floating dock.
+ *
+ * 3. 3-Zone Symmetrical Alignment:
+ *    - Left: Official royal gold lock SVG emblem + brand wordmark.
+ *    - Center: Mathematically dead-center desktop navigation (`md:absolute md:left-1/2 md:-translate-x-1/2`).
+ *    - Right: Royal gold "Dealer Inquiry" capsule CTA button + mobile menu toggle.
+ *
+ * 4. Responsive Mobile Drawer:
+ *    - Dynamically adapts between full-width drawer and floating card drawer.
  */
 export default function Header() {
   // Read active pathname to dynamically compute active nav link state
@@ -93,21 +98,27 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-30 w-full transition-all duration-300 ease-out ${
+      className={`sticky z-40 transition-all duration-300 ease-out ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.05)] border-b border-black/[0.04] py-2 sm:py-2.5"
-          : "bg-white/95 backdrop-blur-md border-b border-divider/60 py-3.5 sm:py-4"
+          ? "top-3 sm:top-4 w-full px-4 sm:px-6 pointer-events-none"
+          : "top-0 w-full bg-white/95 backdrop-blur-md border-b border-divider/60 py-3.5 sm:py-4"
       }`}
       aria-label="Site Header"
     >
       {/*
-        Header 3-Zone Alignment:
-        - Outer container is `relative` to allow absolute mathematical centering.
-        - Left Zone: Logo icon and brand title.
-        - Center Zone: Absolutely centered desktop navigation (`md:absolute md:left-1/2 md:-translate-x-1/2`).
-        - Right Zone: Direct Dealer CTA button & mobile hamburger toggle.
+        Dual-State Navigation Container:
+        - When unscrolled (at top of page): standard max-w-6xl container flush inside the full-width header.
+        - When scrolled: transforms into a self-contained floating capsule dock (`rounded-full`)
+          with pure white glassmorphism, subtle border, and luxury elevation drop shadow.
+        - Pointer events enabled on <nav> so surrounding margin/padding remains click-through.
       */}
-      <nav className="max-w-6xl mx-auto px-6 relative flex items-center justify-between">
+      <nav
+        className={`max-w-6xl mx-auto relative flex items-center justify-between pointer-events-auto transition-all duration-300 ease-out ${
+          isScrolled
+            ? "px-6 sm:px-8 py-2.5 rounded-full bg-white/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.08)] border border-black/[0.06]"
+            : "px-6"
+        }`}
+      >
         {/* ====================================================================
             1. Left Zone: Brand Identity & Official SVG Logo
             ==================================================================== */}
@@ -123,12 +134,12 @@ export default function Header() {
               - Subtle golden ambient glow via drop-shadow.
               - Interactive micro-rotation and scale on group hover.
             */}
-            <div className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
               <Image
                 src="/logos/nafi-logo.svg"
                 alt="Nafi Lock Industries Official Logo"
-                width={44}
-                height={44}
+                width={40}
+                height={40}
                 priority
                 className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(184,146,63,0.3)]"
               />
@@ -139,7 +150,7 @@ export default function Header() {
               - Features Fraunces serif headline font for authoritative industrial prestige.
               - Positioned flush left alongside the logo emblem.
             */}
-            <span className="font-headline text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-1.5">
+            <span className="font-headline text-lg sm:text-xl font-bold tracking-tight text-primary flex items-center gap-1.5">
               Nafi <span className="text-accent font-serif font-normal">Lock Industries</span>
             </span>
           </Link>
@@ -154,7 +165,7 @@ export default function Header() {
           independent of unequal widths between the left logo and right CTA.
         */}
         <div className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2 items-center pointer-events-auto">
-          <ul className="flex items-center gap-1.5 bg-surface/70 p-1.5 rounded-full backdrop-blur-sm">
+          <ul className="flex items-center gap-1 sm:gap-1.5">
             {navLinks.map((link) => {
               // Check whether this route is currently active
               const isActive =
@@ -166,16 +177,16 @@ export default function Header() {
                 <li key={link.href}>
                   {/*
                     Nav item link:
-                    - Larger font size: text-sm sm:text-[15px].
-                    - Borderless pill styling with smooth hover transitions.
-                    - Active route highlighted with soft white background and elevation shadow.
+                    - Clean typography matching the reference aesthetic.
+                    - Active state: accented color with an elegant underline indicator.
+                    - Hover state: subtle text color change and soft background hint.
                   */}
                   <Link
                     href={link.href}
-                    className={`relative flex items-center px-4 sm:px-5 py-2 rounded-full text-sm sm:text-[15px] tracking-wide transition-all duration-200 ${
+                    className={`relative flex items-center px-3.5 sm:px-4 py-2 rounded-full text-sm sm:text-[15px] tracking-wide transition-all duration-200 ${
                       isActive
-                        ? "bg-white text-primary shadow-xs font-semibold"
-                        : "text-muted hover:text-primary hover:bg-white/60 font-medium"
+                        ? "text-accent font-semibold after:absolute after:bottom-0.5 after:left-3.5 after:right-3.5 after:h-[2px] after:bg-accent after:rounded-full"
+                        : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
                     }`}
                   >
                     <span>{link.label}</span>
@@ -190,10 +201,10 @@ export default function Header() {
             3. Right Zone: Dealer Inquiry CTA & Mobile Toggle
             ==================================================================== */}
         <div className="flex items-center gap-3 shrink-0">
-          {/* ── Direct Dealer Inquiry CTA Button ── */}
+          {/* ── Direct Dealer Inquiry CTA Capsule Button ── */}
           <Link
             href="/contact"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            className="hidden sm:inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
           >
             <span>Dealer Inquiry</span>
             {/* Arrow SVG Icon */}
@@ -258,7 +269,13 @@ export default function Header() {
           4. Responsive Mobile Navigation Drawer
           ==================================================================== */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-divider/60 bg-white/95 backdrop-blur-xl px-6 py-4 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <div
+          className={`md:hidden pointer-events-auto transition-all duration-200 animate-in slide-in-from-top-2 ${
+            isScrolled
+              ? "mt-2 max-w-6xl mx-auto rounded-3xl bg-white/98 backdrop-blur-2xl shadow-2xl border border-black/[0.06] px-6 py-4"
+              : "w-full border-t border-divider/60 bg-white/95 backdrop-blur-xl px-6 py-4 shadow-xl"
+          }`}
+        >
           <ul className="space-y-1">
             {navLinks.map((link) => {
               const isActive =
