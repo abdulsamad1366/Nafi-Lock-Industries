@@ -1,10 +1,19 @@
 import Link from "next/link";
 
 /**
- * Site header — navigation: Home | S-Nafi | Greek | Raksham | Contact
- * Per 06-DECISIONS-LOG.md decision #3: each brand is a top-level nav item.
+ * ============================================================================
+ * Component: Header
+ * ============================================================================
+ * Main navigation header displayed across the application below the top marquee.
+ *
+ * Architecture & Decision Log Compliance:
+ * - Decision #3: Each of the three flagship brands (S-Nafi, Greek, Raksham)
+ *   is elevated as a first-class top-level navigation item.
+ * - Semantic Structure: Uses <header> and <nav> with max-w-6xl container.
+ * - Dynamic Styling: Links transition from text-muted to text-primary on hover.
  */
 export default function Header() {
+  // Navigation route configuration
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/brands/s-nafi", label: "S-Nafi" },
@@ -14,11 +23,14 @@ export default function Header() {
   ];
 
   return (
-    <header className="border-b border-divider">
+    <header className="border-b border-divider bg-background">
       <nav className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="font-headline text-xl text-accent">
+        {/* ── Brand Wordmark / Home Link ── */}
+        <Link href="/" className="font-headline text-xl text-accent tracking-wide">
           Nafi Lock Industries
         </Link>
+
+        {/* ── Primary Navigation Links List ── */}
         <ul className="flex gap-6">
           {navLinks.map((link) => (
             <li key={link.href}>

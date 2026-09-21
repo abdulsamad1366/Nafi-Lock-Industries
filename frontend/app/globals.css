@@ -1,44 +1,81 @@
+/* ==========================================================================
+   Tailwind CSS Base Directives
+   ========================================================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Nafi / S-Nafi palette (default — applied on Home and S-Nafi pages) ── */
+/* ==========================================================================
+   Design System Tokens (CSS Custom Properties)
+   ==========================================================================
+   The application uses CSS variables to manage dynamic multi-brand theming.
+   Brand palettes are switched at the container level by toggling `data-theme`.
+   ========================================================================== */
+
+/* ── Default / S-Nafi Palette (Warm Brass & Clean Slate) ────────────────────
+   Applied globally by default (:root) across Home, S-Nafi, and Contact pages.
+   Background is crisp white (#FFFFFF) with warm charcoal text (#111827)
+   and refined brass/gold accent tones (#9A7228).
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
+  /* Page backdrop color: pure white for clean, modern readability */
   --color-background: #FFFFFF;
+
+  /* Card and elevated surface background: subtle warm off-white */
   --color-surface: #F9FAFB;
+
+  /* Borders, dividers, and structural outlines */
   --color-divider: #E5E7EB;
+
+  /* Primary brand accent: brass/gold symbolizing lock craftsmanship */
   --color-accent: #9A7228;
+
+  /* Hover state for accent buttons and interactive links */
   --color-accent-hover: #7E5B18;
+
+  /* Secondary neutral tone for minor accents and borders */
   --color-secondary: #4B5563;
+
+  /* Primary body typography: deep charcoal for maximum contrast & legibility */
   --color-primary: #111827;
+
+  /* Subtitles, secondary metadata, and placeholder text */
   --color-muted: #6B7280;
 }
 
-/* ── Greek palette ── */
+/* ── Greek Brand Palette (Aegean Blue & Classical Marble) ───────────────────
+   Applied when `data-theme="greek"` is present on a parent container.
+   Evokes classical strength and architectural precision.
+   ───────────────────────────────────────────────────────────────────────── */
 [data-theme="greek"] {
   --color-background: #FFFFFF;
   --color-surface: #F8FAFC;
   --color-divider: #E2E8F0;
-  --color-accent: #235F8E;
+  --color-accent: #235F8E;         /* Mediterranean/Aegean blue */
   --color-accent-hover: #17476D;
   --color-secondary: #475569;
   --color-primary: #0F172A;
   --color-muted: #64748B;
 }
 
-/* ── Raksham palette ── */
+/* ── Raksham Brand Palette (Guardian Crimson & Fortified Steel) ─────────────
+   Applied when `data-theme="raksham"` is present on a parent container.
+   Evokes heavy-duty security, resilience, and industrial defense.
+   ───────────────────────────────────────────────────────────────────────── */
 [data-theme="raksham"] {
   --color-background: #FFFFFF;
   --color-surface: #FAFAF9;
   --color-divider: #E7E5E4;
-  --color-accent: #9A2F24;
+  --color-accent: #9A2F24;         /* Guardian rust / deep crimson */
   --color-accent-hover: #7D241B;
   --color-secondary: #57534E;
   --color-primary: #1C1917;
   --color-muted: #78716C;
 }
 
-/* ── Base styles ── */
+/* ==========================================================================
+   Base Document Styling
+   ========================================================================== */
 body {
   background-color: var(--color-background);
   color: var(--color-primary);
@@ -47,20 +84,31 @@ body {
   overflow-x: hidden;
 }
 
-/* Utility classes mapped to CSS custom properties */
+/* ==========================================================================
+   Typography Utility Classes
+   ==========================================================================
+   Mapped to Next.js font variables injected in layout.tsx.
+   ========================================================================== */
+
+/* Fraunces: Serif font used for elegant, authoritative headings */
 .font-headline {
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
 }
 
+/* IBM Plex Sans: Clean, highly legible sans-serif for body copy */
 .font-body {
   font-family: var(--font-plex-sans), system-ui, sans-serif;
 }
 
+/* IBM Plex Mono: Monospace font for specs, model numbers, and badges */
 .font-mono {
   font-family: var(--font-plex-mono), monospace;
 }
 
+/* ==========================================================================
+   Color Token Utilities (Linked to CSS Variables)
+   ========================================================================== */
 .bg-background { background-color: var(--color-background); }
 .bg-surface { background-color: var(--color-surface); }
 .bg-accent { background-color: var(--color-accent); }
@@ -72,10 +120,20 @@ body {
 
 .hover\:bg-accent-hover:hover { background-color: var(--color-accent-hover); }
 
-/* Max width for readable prose */
+/* Maximum line-length utility for comfortable reading */
 .max-w-prose { max-width: 65ch; }
 
-/* ── Continuous Marquee Animation ── */
+/* ==========================================================================
+   Continuous Marquee Animation
+   ==========================================================================
+   Used by the top banner (Marquee.tsx) to achieve a smooth, stutter-free
+   infinite scroll.
+   ========================================================================== */
+
+/*
+  Keyframe: Slides the track from its starting point (0%) to 100% of its
+  own width to the left (-100%). Uses translate3d for GPU hardware acceleration.
+*/
 @keyframes marquee-slide {
   0% {
     transform: translate3d(0, 0, 0);
@@ -85,15 +143,31 @@ body {
   }
 }
 
+/*
+  Class applied to each track div inside the marquee.
+  - Duration: 32s for a slow, premium, easily readable pace.
+  - Timing: linear so velocity never surges or slows.
+  - will-change: hints browser compositor to promote layer to GPU.
+*/
 .animate-marquee {
   animation: marquee-slide 32s linear infinite;
   will-change: transform;
 }
 
+/*
+  Pause on Hover:
+  Freezes the scrolling animation whenever a user hovers anywhere over the bar,
+  allowing them to comfortably read credentials or click interactive links.
+*/
 .marquee-bar:hover .animate-marquee {
   animation-play-state: paused;
 }
 
+/*
+  Accessibility (Reduced Motion):
+  Users with vestibular motion sensitivity have animations disabled,
+  with horizontal scrolling available as a non-disruptive fallback.
+*/
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;
@@ -103,4 +177,3 @@ body {
     overflow-x: auto;
   }
 }
-
