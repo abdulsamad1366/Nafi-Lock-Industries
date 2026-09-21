@@ -46,12 +46,12 @@ const ITEMS: MarqueeItem[] = [
 export default function Marquee() {
   return (
     <div
-      className="marquee-bar relative w-full overflow-hidden bg-surface/90 border-b border-divider/70 text-xs py-2 select-none z-20"
+      className="marquee-bar relative w-full overflow-hidden bg-[#15130F] border-b border-[#2D2820] text-xs py-2 select-none z-20"
       aria-label="Announcements & Certifications"
     >
       {/* Edge gradient fade masks for sleek entry and exit */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-20 bg-gradient-to-r from-background to-transparent z-10" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-20 bg-gradient-to-l from-background to-transparent z-10" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-20 bg-gradient-to-r from-[#15130F] to-transparent z-10" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-20 bg-gradient-to-l from-[#15130F] to-transparent z-10" />
 
       <div className="flex w-max marquee-track">
         {/* Track 1 */}
@@ -79,24 +79,24 @@ function MarqueeItemContent({ item }: { item: MarqueeItem }) {
   const content = (
     <span className="inline-flex items-center gap-2 tracking-wide whitespace-nowrap">
       {item.badge ? (
-        <span className="font-mono text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border border-accent/40 bg-accent/15 text-accent shadow-sm">
+        <span className="font-mono text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border border-[#C59B47]/60 bg-[#C59B47]/15 text-[#E6BF70] shadow-sm">
           {item.badge}
         </span>
       ) : item.icon ? (
-        <span className="text-accent text-sm" aria-hidden="true">
+        <span className="text-[#D4AF6A] text-sm" aria-hidden="true">
           {item.icon}
         </span>
       ) : null}
 
-      <span className="text-primary/90 font-medium">{item.label}</span>
+      <span className="text-[#F2EDE2]/90 font-medium">{item.label}</span>
 
       {item.highlight && (
-        <span className="text-accent font-semibold ml-1">
+        <span className="text-[#E6BF70] font-semibold ml-1">
           {item.highlight}
         </span>
       )}
 
-      <span className="text-divider ml-6 select-none" aria-hidden="true">
+      <span className="text-[#453F32] ml-6 select-none" aria-hidden="true">
         ✦
       </span>
     </span>
@@ -106,7 +106,7 @@ function MarqueeItemContent({ item }: { item: MarqueeItem }) {
     return (
       <Link
         href={item.href}
-        className="hover:text-accent-hover transition-colors inline-block cursor-pointer"
+        className="hover:text-[#F7D899] transition-colors inline-block cursor-pointer"
       >
         {content}
       </Link>

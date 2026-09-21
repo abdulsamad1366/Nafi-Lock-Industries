@@ -57,7 +57,7 @@ export default function ContactForm() {
 
       <button
         type="submit"
-        className="px-8 py-3 bg-accent text-background font-medium rounded hover:bg-accent-hover transition-colors"
+        className="px-8 py-3 bg-accent text-white font-medium rounded hover:bg-accent-hover transition-colors shadow-sm"
       >
         Submit Inquiry
       </button>

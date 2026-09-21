@@ -35,7 +35,7 @@ export default function RakshamBrandPage() {
         <h2 className="font-headline text-xl mb-4">Interested in stocking Raksham?</h2>
         <a
           href="/contact?brand=raksham"
-          className="inline-block px-8 py-3 bg-accent text-background font-medium rounded hover:bg-accent-hover transition-colors"
+          className="inline-block px-8 py-3 bg-accent text-white font-medium rounded hover:bg-accent-hover transition-colors shadow-sm"
         >
           Contact Us
         </a>

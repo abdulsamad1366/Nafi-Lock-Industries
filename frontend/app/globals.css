@@ -4,38 +4,38 @@
 
 /* ── Nafi / S-Nafi palette (default — applied on Home and S-Nafi pages) ── */
 :root {
-  --color-background: #15130F;
-  --color-surface: #1E1B16;
-  --color-divider: #33302A;
-  --color-accent: #B8923F;
-  --color-accent-hover: #D4AF6A;
-  --color-secondary: #9C9C94;
-  --color-primary: #F2EDE2;
-  --color-muted: #B5AFA2;
+  --color-background: #FFFFFF;
+  --color-surface: #F9FAFB;
+  --color-divider: #E5E7EB;
+  --color-accent: #9A7228;
+  --color-accent-hover: #7E5B18;
+  --color-secondary: #4B5563;
+  --color-primary: #111827;
+  --color-muted: #6B7280;
 }
 
 /* ── Greek palette ── */
 [data-theme="greek"] {
-  --color-background: #0E141B;
-  --color-surface: #161E27;
-  --color-divider: #263241;
-  --color-accent: #4A7FA6;
-  --color-accent-hover: #6A9FC6;
-  --color-secondary: #EDEAE1;
-  --color-primary: #F0EDE4;
-  --color-muted: #94A0AC;
+  --color-background: #FFFFFF;
+  --color-surface: #F8FAFC;
+  --color-divider: #E2E8F0;
+  --color-accent: #235F8E;
+  --color-accent-hover: #17476D;
+  --color-secondary: #475569;
+  --color-primary: #0F172A;
+  --color-muted: #64748B;
 }
 
 /* ── Raksham palette ── */
 [data-theme="raksham"] {
-  --color-background: #12100F;
-  --color-surface: #1A1D19;
-  --color-divider: #2C2A25;
-  --color-accent: #A13A2E;
-  --color-accent-hover: #C15A4E;
-  --color-secondary: #7C8A82;
-  --color-primary: #EFEDE6;
-  --color-muted: #A3A79C;
+  --color-background: #FFFFFF;
+  --color-surface: #FAFAF9;
+  --color-divider: #E7E5E4;
+  --color-accent: #9A2F24;
+  --color-accent-hover: #7D241B;
+  --color-secondary: #57534E;
+  --color-primary: #1C1917;
+  --color-muted: #78716C;
 }
 
 /* ── Base styles ── */

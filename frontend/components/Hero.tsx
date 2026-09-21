@@ -15,7 +15,7 @@ export default function Hero() {
         </p>
         <a
           href="#brands"
-          className="inline-block px-6 py-3 bg-accent text-background font-medium rounded hover:bg-accent-hover transition-colors"
+          className="inline-block px-6 py-3 bg-accent text-white font-medium rounded hover:bg-accent-hover transition-colors shadow-sm"
         >
           Explore Our Brands
         </a>
