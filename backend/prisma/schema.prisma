@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Brand {
+  id           String    @id @default(uuid())
+  slug         String    @unique
+  name         String
+  tagline      String
+  description  String
+  logoUrl      String?
+  heroImageUrl String?
+  themeKey     String    // "nafi", "greek", "raksham"
+  order        Int       @default(0)
+  isActive     Boolean   @default(true)
+  products     Product[]
+  inquiries    Inquiry[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
+model Product {
+  id               String    @id @default(uuid())
+  slug             String    @unique
+  name             String
+  brandId          String
+  brand            Brand     @relation(fields: [brandId], references: [id])
+  categoryId       String
+  category         Category  @relation(fields: [categoryId], references: [id])
+  description      String
+  material         String
+  size             String
+  finish           String
+  numberOfKeys     Int       @default(0)
+  lockingMechanism String
+  warranty         String    @default("1 year")
+  images           String[]  // Array of image URLs
+  isActive         Boolean   @default(true)
+  inquiries        Inquiry[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  name      String
+  company   String?
+  email     String
+  phone     String
+  message   String
+  brandId   String?
+  brand     Brand?   @relation(fields: [brandId], references: [id])
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  status    String   @default("new") // "new" | "contacted" | "closed"
+  createdAt DateTime @default(now())
+}
+
+model AdminUser {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String
+  role         String @default("admin")
+}

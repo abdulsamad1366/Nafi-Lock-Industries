@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Nafi / S-Nafi palette (default — applied on Home and S-Nafi pages) ── */
+:root {
+  --color-background: #15130F;
+  --color-surface: #1E1B16;
+  --color-divider: #33302A;
+  --color-accent: #B8923F;
+  --color-accent-hover: #D4AF6A;
+  --color-secondary: #9C9C94;
+  --color-primary: #F2EDE2;
+  --color-muted: #B5AFA2;
+}
+
+/* ── Greek palette ── */
+[data-theme="greek"] {
+  --color-background: #0E141B;
+  --color-surface: #161E27;
+  --color-divider: #263241;
+  --color-accent: #4A7FA6;
+  --color-accent-hover: #6A9FC6;
+  --color-secondary: #EDEAE1;
+  --color-primary: #F0EDE4;
+  --color-muted: #94A0AC;
+}
+
+/* ── Raksham palette ── */
+[data-theme="raksham"] {
+  --color-background: #12100F;
+  --color-surface: #1A1D19;
+  --color-divider: #2C2A25;
+  --color-accent: #A13A2E;
+  --color-accent-hover: #C15A4E;
+  --color-secondary: #7C8A82;
+  --color-primary: #EFEDE6;
+  --color-muted: #A3A79C;
+}
+
+/* ── Base styles ── */
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Utility classes mapped to CSS custom properties */
+.font-headline {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+}
+
+.font-body {
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-plex-mono), monospace;
+}
+
+.bg-background { background-color: var(--color-background); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-accent { background-color: var(--color-accent); }
+.text-primary { color: var(--color-primary); }
+.text-muted { color: var(--color-muted); }
+.text-accent { color: var(--color-accent); }
+.text-secondary { color: var(--color-secondary); }
+.border-divider { border-color: var(--color-divider); }
+
+.hover\:bg-accent-hover:hover { background-color: var(--color-accent-hover); }
+
+/* Max width for readable prose */
+.max-w-prose { max-width: 65ch; }
