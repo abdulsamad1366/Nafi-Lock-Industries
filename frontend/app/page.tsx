@@ -33,8 +33,8 @@ export default function HomePage() {
       {/* ── Section 3: Flagship Brands Showcase (Exact Reference Design) ── */}
       <BrandShowcase />
 
-      {/* ── Section 3: Full Product Catalog with Filter Tabs ── */}
-      <section className="py-20 px-6 border-t border-divider">
+      {/* ── Section 4: Full Product Catalog with Filter Tabs ── */}
+      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-divider bg-[#FAF9F5]/30">
         <ProductGrid />
       </section>
 
