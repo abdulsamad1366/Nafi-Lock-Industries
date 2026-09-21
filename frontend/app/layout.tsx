@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Header from "@/components/Header";
+import Marquee from "@/components/Marquee";
 import Footer from "@/components/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
 import "./globals.css";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="bg-background text-primary font-body antialiased">
         <ThemeProvider>
+          <Marquee />
           <Header />
           <main>{children}</main>
           <Footer />
