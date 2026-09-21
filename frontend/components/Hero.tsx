@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 
 /**
@@ -17,7 +16,6 @@ interface HeroImageSlide {
   brand: string;
   imageSrc: string;
   altText: string;
-  linkHref: string;
   priority?: boolean;
 }
 
@@ -36,7 +34,6 @@ const CAROUSEL_SLIDES: HeroImageSlide[] = [
     brand: "S-Nafi Solid Brass Series",
     imageSrc: "/images/hero-s-nafi.jpg",
     altText: "S-Nafi Solid Forged Brass Royal Emblem Padlock on Polished Marble",
-    linkHref: "/brands/s-nafi",
     priority: true,
   },
   {
@@ -44,14 +41,12 @@ const CAROUSEL_SLIDES: HeroImageSlide[] = [
     brand: "Greek Architectural Series",
     imageSrc: "/images/hero-greek.jpg",
     altText: "Greek Precision Architectural Mortise Cylinder Lock with Exposed Tumbler Pins",
-    linkHref: "/brands/greek",
   },
   {
     id: "raksham-fortress",
     brand: "Raksham Fortress Armor",
     imageSrc: "/images/hero-raksham.jpg",
     altText: "Raksham Grade-6 Fortress Heavy Duty Armored Padlock on Granite",
-    linkHref: "/brands/raksham",
   },
 ];
 
@@ -165,24 +160,17 @@ export default function Hero() {
           return (
             <div
               key={slide.id}
-              className="w-full shrink-0 relative h-[380px] sm:h-[480px] md:h-[560px] lg:h-[640px] xl:h-[700px] bg-black/5"
+              className="w-full shrink-0 relative h-[380px] sm:h-[480px] md:h-[560px] lg:h-[640px] xl:h-[700px] bg-black/5 cursor-default select-none"
             >
-              {/* Optional click-through link to the brand collection */}
-              <Link
-                href={slide.linkHref}
-                className="block w-full h-full relative cursor-pointer focus:outline-none"
-                aria-label={`Explore ${slide.brand}`}
-              >
-                {/* Full-Bleed Edge-to-Edge Image */}
-                <Image
-                  src={slide.imageSrc}
-                  alt={slide.altText}
-                  fill
-                  priority={slide.priority}
-                  sizes="100vw"
-                  className="object-cover object-center w-full h-full transition-transform duration-1000 ease-out group-hover:scale-[1.015]"
-                />
-              </Link>
+              {/* Full-Bleed Edge-to-Edge Image (pure display: no page linking, no cursor pointer, no hover zoom) */}
+              <Image
+                src={slide.imageSrc}
+                alt={slide.altText}
+                fill
+                priority={slide.priority}
+                sizes="100vw"
+                className="object-cover object-center w-full h-full pointer-events-none select-none"
+              />
             </div>
           );
         })}
