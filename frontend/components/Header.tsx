@@ -261,7 +261,7 @@ export default function Header() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-40 w-full pointer-events-none flex flex-col items-center"
+      className="sticky top-0 z-40 gap-2 w-full pointer-events-none flex flex-col items-center"
       aria-label="Site Header"
     >
       {/*

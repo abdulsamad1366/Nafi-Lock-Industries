@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import CategoryCarousel from "@/components/CategoryCarousel";
 import ProductGrid from "@/components/ProductGrid";
 import BrandCard from "@/components/BrandCard";
 
@@ -8,12 +9,13 @@ import BrandCard from "@/components/BrandCard";
  * ============================================================================
  * Primary landing page for Nafi Lock Industries.
  *
- * Page Architecture (5 Core Sections):
- * 1. Hero Section: Company tagline, brand introduction, and primary explore CTA.
- * 2. Brand Strip: Equal-weight 3-column showcase of S-Nafi, Greek, and Raksham.
- * 3. Product Catalog Grid: Interactive product display with brand filtering tabs.
- * 4. Why Nafi (Trust Section): Heritage, precision engineering, and quality proofs.
- * 5. Bottom CTA Banner: Prompts prospective dealers and clients to get in touch.
+ * Page Architecture:
+ * 1. Hero Section: Full-width pure image panoramic carousel.
+ * 2. Signature Categories: Circular product category cards (Velisqa style).
+ * 3. Brand Strip: Equal-weight 3-column showcase of S-Nafi, Greek, and Raksham.
+ * 4. Product Catalog Grid: Interactive product display with brand filtering tabs.
+ * 5. Why Nafi (Trust Section): Heritage, precision engineering, and quality proofs.
+ * 6. Bottom CTA Banner: Prompts prospective dealers and clients to get in touch.
  *
  * Theming:
  * Operates on the default Nafi/brass theme tokens defined in globals.css (:root)
@@ -22,8 +24,11 @@ import BrandCard from "@/components/BrandCard";
 export default function HomePage() {
   return (
     <>
-      {/* ── Section 1: Hero Banner ── */}
+      {/* ── Section 1: Pure Panoramic Image Hero Banner ── */}
       <Hero />
+
+      {/* ── Section 2: Signature Categories Circular Showcase (Velisqa Style) ── */}
+      <CategoryCarousel />
 
       {/* ── Section 2: Brand Showcase Strip ── */}
       <section id="brands" className="py-20 px-6">
