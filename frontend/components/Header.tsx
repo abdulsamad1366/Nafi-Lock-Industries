@@ -100,87 +100,96 @@ export default function Header() {
       }`}
       aria-label="Site Header"
     >
-      <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+      {/*
+        Header 3-Zone Alignment:
+        - Outer container is `relative` to allow absolute mathematical centering.
+        - Left Zone: Logo icon and brand title.
+        - Center Zone: Absolutely centered desktop navigation (`md:absolute md:left-1/2 md:-translate-x-1/2`).
+        - Right Zone: Direct Dealer CTA button & mobile hamburger toggle.
+      */}
+      <nav className="max-w-6xl mx-auto px-6 relative flex items-center justify-between">
         {/* ====================================================================
-            1. Brand Identity & Official SVG Logo
+            1. Left Zone: Brand Identity & Official SVG Logo
             ==================================================================== */}
-        <Link
-          href="/"
-          className="flex items-center gap-3.5 group transition-transform duration-300 hover:scale-[1.01]"
-          aria-label="Nafi Lock Industries Homepage"
-        >
-          {/*
-            Official SVG Vector Emblem:
-            - Rendered with Next.js Image optimization for crisp vector fidelity.
-            - Subtle golden ambient glow via drop-shadow.
-            - Interactive micro-rotation and scale on group hover.
-          */}
-          <div className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
-            <Image
-              src="/logos/nafi-logo.svg"
-              alt="Nafi Lock Industries Official Logo"
-              width={44}
-              height={44}
-              priority
-              className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(184,146,63,0.3)]"
-            />
-          </div>
+        <div className="flex items-center shrink-0">
+          <Link
+            href="/"
+            className="flex items-center gap-3.5 group transition-transform duration-300 hover:scale-[1.01]"
+            aria-label="Nafi Lock Industries Homepage"
+          >
+            {/*
+              Official SVG Vector Emblem:
+              - Rendered with Next.js Image optimization for crisp vector fidelity.
+              - Subtle golden ambient glow via drop-shadow.
+              - Interactive micro-rotation and scale on group hover.
+            */}
+            <div className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
+              <Image
+                src="/logos/nafi-logo.svg"
+                alt="Nafi Lock Industries Official Logo"
+                width={44}
+                height={44}
+                priority
+                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(184,146,63,0.3)]"
+              />
+            </div>
 
-          {/*
-            Brand Typographic Wordmark:
-            - Features Fraunces serif headline font for authoritative industrial prestige.
-            - Sub-caption [Est. 1995 • Precision Engineering] removed per user request.
-          */}
-          <span className="font-headline text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-1.5">
-            Nafi <span className="text-accent font-serif font-normal">Lock Industries</span>
-          </span>
-        </Link>
+            {/*
+              Brand Typographic Wordmark:
+              - Features Fraunces serif headline font for authoritative industrial prestige.
+              - Positioned flush left alongside the logo emblem.
+            */}
+            <span className="font-headline text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-1.5">
+              Nafi <span className="text-accent font-serif font-normal">Lock Industries</span>
+            </span>
+          </Link>
+        </div>
 
         {/* ====================================================================
-            2. Borderless Desktop Navigation (Increased Size & Clean Text)
+            2. Center Zone: Desktop Navigation (Mathematically Dead-Center)
             ==================================================================== */}
         {/*
-          Outer nav container:
-          - Border line removed per user request.
-          - Soft translucent background with pill curvature and gentle backdrop blur.
+          Centered via `md:absolute md:left-1/2 md:-translate-x-1/2` to ensure
+          the menu stays perfectly aligned with the center axis of the header,
+          independent of unequal widths between the left logo and right CTA.
         */}
-        <ul className="hidden md:flex items-center gap-1.5 bg-surface/70 p-1.5 rounded-full backdrop-blur-sm">
-          {navLinks.map((link) => {
-            // Check whether this route is currently active
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
+        <div className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2 items-center pointer-events-auto">
+          <ul className="flex items-center gap-1.5 bg-surface/70 p-1.5 rounded-full backdrop-blur-sm">
+            {navLinks.map((link) => {
+              // Check whether this route is currently active
+              const isActive =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(link.href);
 
-            return (
-              <li key={link.href}>
-                {/*
-                  Nav item link:
-                  - Increased text size: text-sm sm:text-[15px] for clear, prominent visibility.
-                  - Generous padding: px-4 sm:px-5 py-2.
-                  - Color dots removed for a clean, sophisticated typographic look.
-                  - Active state: soft white background with gentle elevation shadow.
-                  - Hover state: subtle white overlay with smooth color transition.
-                */}
-                <Link
-                  href={link.href}
-                  className={`relative flex items-center px-4 sm:px-5 py-2 rounded-full text-sm sm:text-[15px] tracking-wide transition-all duration-200 ${
-                    isActive
-                      ? "bg-white text-primary shadow-xs font-semibold"
-                      : "text-muted hover:text-primary hover:bg-white/60 font-medium"
-                  }`}
-                >
-                  <span>{link.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+              return (
+                <li key={link.href}>
+                  {/*
+                    Nav item link:
+                    - Larger font size: text-sm sm:text-[15px].
+                    - Borderless pill styling with smooth hover transitions.
+                    - Active route highlighted with soft white background and elevation shadow.
+                  */}
+                  <Link
+                    href={link.href}
+                    className={`relative flex items-center px-4 sm:px-5 py-2 rounded-full text-sm sm:text-[15px] tracking-wide transition-all duration-200 ${
+                      isActive
+                        ? "bg-white text-primary shadow-xs font-semibold"
+                        : "text-muted hover:text-primary hover:bg-white/60 font-medium"
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
         {/* ====================================================================
-            3. Header Actions & Mobile Drawer Toggle
+            3. Right Zone: Dealer Inquiry CTA & Mobile Toggle
             ==================================================================== */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           {/* ── Direct Dealer Inquiry CTA Button ── */}
           <Link
             href="/contact"
