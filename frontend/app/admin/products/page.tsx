@@ -29,9 +29,9 @@ export default function AdminProductsPage() {
   const fetchData = async () => {
     try {
       const [prodRes, brandRes, catRes] = await Promise.all([
-        fetch("http://localhost:5000/api/products").catch(() => null),
-        fetch("http://localhost:5000/api/brands").catch(() => null),
-        fetch("http://localhost:5000/api/categories").catch(() => null),
+        fetch("http://localhost:5001/api/products").catch(() => null),
+        fetch("http://localhost:5001/api/brands").catch(() => null),
+        fetch("http://localhost:5001/api/categories").catch(() => null),
       ]);
 
       if (prodRes && prodRes.ok) {
@@ -92,7 +92,7 @@ export default function AdminProductsPage() {
         minOrderQty: minOrderQty !== "" ? Number(minOrderQty) : null,
       };
 
-      const res = await fetch("http://localhost:5000/api/products", {
+      const res = await fetch("http://localhost:5001/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

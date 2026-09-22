@@ -30,8 +30,8 @@ export default function AdminCatalogsPage() {
   const fetchData = async () => {
     try {
       const [catRes, brandRes] = await Promise.all([
-        fetch("http://localhost:5000/api/catalogs").catch(() => null),
-        fetch("http://localhost:5000/api/brands").catch(() => null),
+        fetch("http://localhost:5001/api/catalogs").catch(() => null),
+        fetch("http://localhost:5001/api/brands").catch(() => null),
       ]);
 
       if (catRes && catRes.ok) {
@@ -68,7 +68,7 @@ export default function AdminCatalogsPage() {
       formData.append("file", file);
       if (brandId) formData.append("brandId", brandId);
 
-      const res = await fetch("http://localhost:5000/api/admin/catalogs", {
+      const res = await fetch("http://localhost:5001/api/admin/catalogs", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ export default function AdminCatalogsPage() {
     if (!confirm("Delete this catalog PDF?")) return;
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      await fetch(`http://localhost:5000/api/admin/catalogs/${id}`, {
+      await fetch(`http://localhost:5001/api/admin/catalogs/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

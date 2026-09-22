@@ -49,8 +49,8 @@ export default function AdminOrdersPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
       const url = statusFilter === "ALL"
-        ? "http://localhost:5000/api/admin/orders"
-        : `http://localhost:5000/api/admin/orders?status=${statusFilter}`;
+        ? "http://localhost:5001/api/admin/orders"
+        : `http://localhost:5001/api/admin/orders?status=${statusFilter}`;
 
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -74,7 +74,7 @@ export default function AdminOrdersPage() {
     setUpdatingId(id);
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      await fetch(`http://localhost:5000/api/admin/orders/${id}`, {
+      await fetch(`http://localhost:5001/api/admin/orders/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
