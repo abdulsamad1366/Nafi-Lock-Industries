@@ -56,12 +56,25 @@ export default function Footer() {
 
         {/* ── Column 3: Contact & Distribution Information ── */}
         <div>
-          <h4 className="text-sm font-medium mb-3 text-primary">Contact</h4>
+          <h4 className="text-sm font-medium mb-3 text-primary">Contact & Factory</h4>
           <p className="text-muted text-sm">
-            Industrial Area, Aligarh, Uttar Pradesh, India
+            G.T. Road, Industrial Area, Aligarh, Uttar Pradesh, India
           </p>
           <p className="text-muted text-sm mt-1">
-            Email & Wholesale desk to be provided
+            <span className="font-medium text-primary">Wholesale:</span>{" "}
+            <a href="tel:+919045582310" className="hover:text-accent transition-colors">
+              +91 90455 82310
+            </a>{" "}
+            /{" "}
+            <a href="tel:+919412561765" className="hover:text-accent transition-colors">
+              +91 94125 61765
+            </a>
+          </p>
+          <p className="text-muted text-sm mt-1">
+            <span className="font-medium text-primary">Email:</span>{" "}
+            <a href="mailto:nafilocks@gmail.com" className="hover:text-accent transition-colors">
+              nafilocks@gmail.com
+            </a>
           </p>
           <p className="text-muted text-sm mt-1">
             www.nafilockindustries.com
