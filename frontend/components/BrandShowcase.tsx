@@ -1,14 +1,14 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
 /**
  * ============================================================================
  * Type Definition: BrandShowcaseData
  * ============================================================================
- * Defines the structural and aesthetic properties for each of the 3 flagship cards
- * directly matching the provided architectural reference design.
  */
 interface BrandShowcaseData {
   id: string;
@@ -20,6 +20,7 @@ interface BrandShowcaseData {
   description: string;
   imageSrc: string;
   altText: string;
+  imageBadge: string;
   bgClass: string;
   borderClass: string;
   eyebrowColor: string;
@@ -29,9 +30,9 @@ interface BrandShowcaseData {
   numberColor: string;
   specBgClass: string;
   btnBgClass: string;
-  btnHoverClass: string;
   sloganColor: string;
   slogan: string;
+  accentHex: string;
   spec1: {
     label: string;
     icon: "layers" | "cylinder" | "shield-cut";
@@ -44,7 +45,7 @@ interface BrandShowcaseData {
 
 /**
  * ============================================================================
- * 3 Flagship Brands Dataset (Directly matching reference mockup)
+ * 3 Flagship Brands Dataset (Ordered strictly per User Request: S-Nafi -> Raksham -> Greek)
  * ============================================================================
  */
 const BRANDS_DATA: BrandShowcaseData[] = [
@@ -59,6 +60,7 @@ const BRANDS_DATA: BrandShowcaseData[] = [
       "Hand-forged mortise cylinders and engraved royal brass padlocks built with solid metallurgical cores for prestigious architectural estates.",
     imageSrc: "/images/card-s-nafi.jpg",
     altText: "S-Nafi Royal Solid Brass Engraved Padlock on Marble",
+    imageBadge: "100% Solid Extruded Brass",
     bgClass: "bg-[#FAF6EE]",
     borderClass: "border-[#E8DFCF]",
     eyebrowColor: "text-[#A67C2E]",
@@ -67,10 +69,10 @@ const BRANDS_DATA: BrandShowcaseData[] = [
     descColor: "text-[#635E55]",
     numberColor: "text-[#A67C2E]/60",
     specBgClass: "text-[#1C1A17]",
-    btnBgClass: "bg-[#A67C2E]",
-    btnHoverClass: "hover:bg-[#8E6720]",
+    btnBgClass: "bg-[#A67C2E] hover:bg-[#8E6720]",
     sloganColor: "text-[#9E917D]",
     slogan: "TRADITION\nMEETS TIMELESS\nSECURITY",
+    accentHex: "#A67C2E",
     spec1: {
       label: "100%\nSolid Brass",
       icon: "layers",
@@ -81,41 +83,9 @@ const BRANDS_DATA: BrandShowcaseData[] = [
     },
   },
   {
-    id: "greek",
-    slug: "greek",
-    number: "02",
-    name: "Greek",
-    eyebrow: "PRECISION HERITAGE",
-    tagline: "Classical Strength & Mortise Systems",
-    description:
-      "High-security 6-pin brass tumbler mechanisms encased within heavy brushed architectural chrome, built for silent and flawless door operation.",
-    imageSrc: "/images/card-greek.jpg",
-    altText: "Greek Architectural Mortise Lock Cylinder Mechanism",
-    bgClass: "bg-[#EEF4F8]",
-    borderClass: "border-[#D6E3EC]",
-    eyebrowColor: "text-[#2A6F97]",
-    taglineColor: "text-[#2A6F97]",
-    textColor: "text-[#0F1E2E]",
-    descColor: "text-[#536577]",
-    numberColor: "text-[#2A6F97]/60",
-    specBgClass: "text-[#0F1E2E]",
-    btnBgClass: "bg-[#0E2038]",
-    btnHoverClass: "hover:bg-[#071324]",
-    sloganColor: "text-[#7B92A8]",
-    slogan: "ENGINEERED\nFOR EVERY\nENTRANCE",
-    spec1: {
-      label: "6-Pin\nAnti-Pick Core",
-      icon: "cylinder",
-    },
-    spec2: {
-      label: "Brushed\nChrome Satin",
-      icon: "chrome",
-    },
-  },
-  {
     id: "raksham",
     slug: "raksham",
-    number: "03",
+    number: "02",
     name: "Raksham",
     eyebrow: "BUILT TO DEFEND",
     tagline: "Guardian-Grade Industrial Defense",
@@ -123,18 +93,19 @@ const BRANDS_DATA: BrandShowcaseData[] = [
       "Ultra-hardened boron steel alloy shackles and armored bodies engineered to resist hydraulic shears, angle grinders, and forced entry.",
     imageSrc: "/images/card-raksham.jpg",
     altText: "Raksham Grade-6 Heavy-Duty Armored Padlock",
-    bgClass: "bg-[#111111]",
-    borderClass: "border-white/10",
-    eyebrowColor: "text-white/70",
-    taglineColor: "text-[#E63946]",
+    imageBadge: "60+ HRC Hardened Boron Alloy",
+    bgClass: "bg-[#0B1120]",
+    borderClass: "border-white/15",
+    eyebrowColor: "text-[#F87171]",
+    taglineColor: "text-[#EF4444]",
     textColor: "text-white",
-    descColor: "text-[#9E9E9E]",
+    descColor: "text-gray-300",
     numberColor: "text-white/40",
     specBgClass: "text-white",
-    btnBgClass: "bg-[#8B1A1A]",
-    btnHoverClass: "hover:bg-[#721515]",
-    sloganColor: "text-white/40",
+    btnBgClass: "bg-[#DC2626] hover:bg-[#B91C1C]",
+    sloganColor: "text-gray-400",
     slogan: "STRENGTH\nWITHOUT\nCOMPROMISE",
+    accentHex: "#EF4444",
     spec1: {
       label: "Grade-6\nAnti-Cut Steel",
       icon: "shield-cut",
@@ -144,24 +115,51 @@ const BRANDS_DATA: BrandShowcaseData[] = [
       icon: "boron",
     },
   },
+  {
+    id: "greek",
+    slug: "greek",
+    number: "03",
+    name: "Greek",
+    eyebrow: "PRECISION HERITAGE",
+    tagline: "Classical Strength & Mortise Systems",
+    description:
+      "High-security 6-pin brass tumbler mechanisms encased within heavy brushed architectural chrome, built for silent and flawless door operation.",
+    imageSrc: "/images/card-greek.jpg",
+    altText: "Greek Architectural Mortise Lock Cylinder Mechanism",
+    imageBadge: "±0.02mm Micron Broaching",
+    bgClass: "bg-[#EEF4F8]",
+    borderClass: "border-[#D6E3EC]",
+    eyebrowColor: "text-[#2A6F97]",
+    taglineColor: "text-[#2A6F97]",
+    textColor: "text-[#0F1E2E]",
+    descColor: "text-[#536577]",
+    numberColor: "text-[#2A6F97]/60",
+    specBgClass: "text-[#0F1E2E]",
+    btnBgClass: "bg-[#0E2038] hover:bg-[#1E3A5F]",
+    sloganColor: "text-[#7B92A8]",
+    slogan: "ENGINEERED\nFOR EVERY\nENTRANCE",
+    accentHex: "#2A6F97",
+    spec1: {
+      label: "6-Pin\nAnti-Pick Core",
+      icon: "cylinder",
+    },
+    spec2: {
+      label: "Brushed\nChrome Satin",
+      icon: "chrome",
+    },
+  },
 ];
 
 /**
- * Helper component: renders crisp vector iconography tailored to each spec
+ * SpecIcon: Helper to render vector icons matching card theme
  */
-function SpecIcon({
-  icon,
-  accentColor,
-}: {
-  icon: string;
-  accentColor?: string;
-}) {
+function SpecIcon({ icon, accentColor }: { icon: string; accentColor: string }) {
   switch (icon) {
     case "layers":
-      // Stacked metallurgical plates/ingot icon
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-[#A67C2E]"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -175,10 +173,10 @@ function SpecIcon({
         </svg>
       );
     case "shield-rust":
-      // Shield checkmark corrosion-proof icon
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-[#A67C2E]"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -191,10 +189,10 @@ function SpecIcon({
         </svg>
       );
     case "cylinder":
-      // 6-pin tumbler cylinder icon
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-[#2A6F97]"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -209,10 +207,10 @@ function SpecIcon({
         </svg>
       );
     case "chrome":
-      // Brushed chrome / diamond geometric finish icon
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-[#2A6F97]"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -226,10 +224,10 @@ function SpecIcon({
         </svg>
       );
     case "shield-cut":
-      // Armored fortress grade-6 shield
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-white"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -242,10 +240,10 @@ function SpecIcon({
         </svg>
       );
     case "boron":
-      // Hardened chain / boron alloy shackle link
       return (
         <svg
-          className="w-4 h-4 shrink-0 text-white"
+          className="w-4 h-4 shrink-0"
+          style={{ color: accentColor }}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -264,19 +262,218 @@ function SpecIcon({
 
 /**
  * ============================================================================
- * Component: BrandShowcase ("Our Flagship Brands" — Exact Mockup Replication)
+ * StackingCard Component (Apple/Google-grade Framer Motion Scroll Stacking)
+ * ============================================================================
+ */
+interface StackingCardProps {
+  brand: BrandShowcaseData;
+  index: number;
+  total: number;
+  containerProgress: MotionValue<number>;
+}
+
+function StackingCard({ brand, index, total, containerProgress }: StackingCardProps) {
+  // Target scale for card when subsequent cards stack on top of it:
+  // Card 0 (S-Nafi): scales down to 0.90
+  // Card 1 (Raksham): scales down to 0.95
+  // Card 2 (Greek): stays at 1.0 (top card)
+  const targetScale = 1 - (total - 1 - index) * 0.05;
+
+  // Compute scroll timeline ranges for this card
+  // As the user scrolls through the container (0 to 1), each card reacts when subsequent cards enter
+  const startProgress = index === 0 ? 0.15 : index === 1 ? 0.45 : 0.8;
+  const endProgress = index === 0 ? 0.85 : index === 1 ? 0.95 : 1.0;
+
+  const scale = useTransform(
+    containerProgress,
+    [startProgress, endProgress],
+    [1, targetScale]
+  );
+
+  // Subtle lighting depth: cards pushed to background receive a gentle dimming
+  const brightness = useTransform(
+    containerProgress,
+    [startProgress, endProgress],
+    [1, index === total - 1 ? 1 : 0.9]
+  );
+
+  return (
+    <div
+      className="sticky w-full flex items-center justify-center pointer-events-auto"
+      style={{
+        // Sticky offset positions cards nicely below the floating capsule header (approx 72px)
+        top: `calc(84px + ${index * 28}px)`,
+        // Stacking index: subsequent cards stack on top of earlier ones
+        zIndex: index + 10,
+      }}
+    >
+      <motion.article
+        style={{
+          scale,
+          filter: useTransform(brightness, (b) => `brightness(${b})`),
+          transformOrigin: "top center",
+        }}
+        className={`w-full max-w-5xl relative ${brand.bgClass} border ${brand.borderClass} rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.18)] transition-all duration-300 overflow-hidden`}
+      >
+        {/* Ambient Card Background Glow for Depth */}
+        <div
+          className="absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-20"
+          style={{ backgroundColor: brand.accentHex }}
+        />
+
+        {/* ── Top Header Row inside Card: Brand Eyebrow Tag + Monospace Sequence Counter ── */}
+        <div className="flex items-center justify-between pb-5 border-b border-black/[0.06] dark:border-white/10 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-xs">
+            <span
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ backgroundColor: brand.accentHex }}
+            />
+            <span
+              className={`font-sans font-bold text-[10px] sm:text-[11px] tracking-[0.2em] uppercase ${brand.eyebrowColor}`}
+            >
+              {brand.eyebrow}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className={`font-mono text-xs sm:text-sm font-bold tracking-widest ${brand.numberColor}`}>
+              HOUSE {brand.number} / 03
+            </span>
+          </div>
+        </div>
+
+        {/* ── Main Split Body: Left Narrative Column (60%) & Right Studio Photograph (40%) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+          {/* Left Column */}
+          <div className="lg:col-span-7 flex flex-col justify-between">
+            <div>
+              {/* Brand Name */}
+              <h3
+                className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2 ${brand.textColor}`}
+              >
+                {brand.name}
+              </h3>
+
+              {/* Tagline */}
+              <p
+                className={`font-serif text-sm sm:text-base lg:text-lg font-medium leading-snug mb-4 ${brand.taglineColor}`}
+              >
+                {brand.tagline}
+              </p>
+
+              {/* Narrative Description */}
+              <p
+                className={`text-xs sm:text-sm leading-relaxed mb-6 font-normal ${brand.descColor}`}
+              >
+                {brand.description}
+              </p>
+
+              {/* Divider Accent Line */}
+              <div
+                className="w-12 h-0.5 mb-6 rounded-full"
+                style={{ backgroundColor: brand.accentHex }}
+              />
+
+              {/* 2 Specification Chips */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-black/[0.03] dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <SpecIcon icon={brand.spec1.icon} accentColor={brand.accentHex} />
+                  <span
+                    className={`text-xs font-bold leading-tight whitespace-pre-line ${brand.specBgClass}`}
+                  >
+                    {brand.spec1.label}
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-black/[0.03] dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <SpecIcon icon={brand.spec2.icon} accentColor={brand.accentHex} />
+                  <span
+                    className={`text-xs font-bold leading-tight whitespace-pre-line ${brand.specBgClass}`}
+                  >
+                    {brand.spec2.label}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Actions Row */}
+            <div className="flex items-center justify-between gap-4 pt-4 border-t border-black/[0.06] dark:border-white/10">
+              <Link
+                href={`/brands/${brand.slug}`}
+                className={`inline-flex items-center gap-2 text-white ${brand.btnBgClass} text-xs sm:text-sm font-bold px-6 py-3 rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 group/btn`}
+              >
+                <span>Explore {brand.name} Collection</span>
+                <svg
+                  className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+
+              <span
+                className={`text-[9px] sm:text-[10px] tracking-widest uppercase font-semibold text-right leading-tight whitespace-pre-line ${brand.sloganColor}`}
+              >
+                {brand.slogan}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Column: Studio Photo Showcase */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] sm:aspect-[4/3] lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10 group/img">
+              <Image
+                src={brand.imageSrc}
+                alt={brand.altText}
+                fill
+                sizes="(max-width: 768px) 90vw, 420px"
+                className="object-cover object-center w-full h-full group-hover/img:scale-105 transition-transform duration-700 ease-out"
+              />
+
+              {/* Floating Technical Badge on Image */}
+              <div className="absolute bottom-4 left-4 right-4 z-10">
+                <span className="inline-block text-[10.5px] font-mono font-bold tracking-wider px-3.5 py-1.5 rounded-full bg-black/75 text-white backdrop-blur-md border border-white/20 shadow-md">
+                  {brand.imageBadge}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.article>
+    </div>
+  );
+}
+
+/**
+ * ============================================================================
+ * Component: BrandShowcase (Stacking Scroll Showcase)
  * ============================================================================
  */
 export default function BrandShowcase() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll position across the full height of the brand section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
   return (
     <section
       id="brands"
-      className="relative w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden select-none"
+      ref={containerRef}
+      className="relative w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-white overflow-visible select-none"
       aria-label="Our Flagship Brands"
     >
       {/* ── Background Subtle Watermark Crest (Official Nafi Emblem) ── */}
       <div
-        className="absolute -top-6 -right-6 sm:-top-4 sm:-right-4 w-72 sm:w-[420px] lg:w-[520px] aspect-[1024/759] opacity-[0.24] sm:opacity-[0.28] pointer-events-none select-none z-0 transition-opacity"
+        className="absolute top-10 right-4 sm:right-10 w-72 sm:w-[420px] lg:w-[540px] aspect-[1024/759] opacity-[0.22] pointer-events-none select-none z-0"
         aria-hidden="true"
       >
         <Image
@@ -290,10 +487,9 @@ export default function BrandShowcase() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ====================================================================
-            1. SECTION HEADER (Gold Lines & Editorial Dual-Tone Headline)
+            1. SECTION EDITORIAL HEADER
             ==================================================================== */}
-        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
-          {/* Eyebrow with gold horizontal dividing lines */}
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
           <div className="flex items-center justify-center gap-3 sm:gap-4 mb-3">
             <div className="h-px w-10 sm:w-16 bg-[#B8923F]/60" />
             <span className="font-sans uppercase tracking-[0.25em] text-[10px] sm:text-[11px] font-semibold text-[#8C7A5B]">
@@ -302,157 +498,36 @@ export default function BrandShowcase() {
             <div className="h-px w-10 sm:w-16 bg-[#B8923F]/60" />
           </div>
 
-          {/* Editorial Title: Our Flagship Brands */}
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold text-primary tracking-tight leading-tight mb-4">
             Our Flagship <span className="text-[#C49A45]">Brands</span>
           </h2>
 
-          {/* Positioning Narrative */}
           <p className="text-muted text-xs sm:text-sm lg:text-base leading-relaxed max-w-2xl mx-auto font-normal">
-            Three specialized manufacturing traditions united under Nafi Lock Industries’
+            Three specialized manufacturing houses united under Nafi Lock Industries’
             heritage of metallurgical integrity, Swiss pin-tumbler precision, and unyielding fortress defense.
           </p>
         </div>
 
         {/* ====================================================================
-            2. THE 3 SPLIT-CARDS GRID (Side-by-Side Architectural Cards)
+            2. THE 3 STACKING CARDS (Apple/Google-grade Scroll Stacking)
+            Flow Order: 01 S-Nafi -> 02 Raksham -> 03 Greek
             ==================================================================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
-          {BRANDS_DATA.map((brand) => {
-            return (
-              <article
-                key={brand.id}
-                className={`relative ${brand.bgClass} border ${brand.borderClass} rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 flex flex-col justify-between overflow-hidden shadow-[0_6px_25px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group`}
-              >
-                {/* Number in Top Right Corner (e.g. 01, 02, 03) */}
-                <span
-                  className={`absolute top-5 sm:top-6 right-6 font-mono text-xs sm:text-sm font-semibold ${brand.numberColor}`}
-                >
-                  {brand.number}
-                </span>
-
-                {/* Top Section: Split into Left Content & Right Lock Image */}
-                <div className="grid grid-cols-12 gap-3 sm:gap-4 items-center">
-                  {/* ── Left Content Column (approx 62% width) ── */}
-                  <div className="col-span-7 flex flex-col justify-between">
-                    {/* Eyebrow */}
-                    <span
-                      className={`font-sans font-bold text-[9px] sm:text-[10px] tracking-[0.2em] uppercase block mb-1.5 ${brand.eyebrowColor}`}
-                    >
-                      {brand.eyebrow}
-                    </span>
-
-                    {/* Brand Name */}
-                    <h3
-                      className={`font-serif text-2xl sm:text-3xl font-bold tracking-tight mb-1 ${brand.textColor}`}
-                    >
-                      {brand.name}
-                    </h3>
-
-                    {/* Tagline */}
-                    <p
-                      className={`font-serif text-xs sm:text-sm font-medium leading-snug mb-3 ${brand.taglineColor}`}
-                    >
-                      {brand.tagline}
-                    </p>
-
-                    {/* Narrative Description */}
-                    <p
-                      className={`text-[11px] sm:text-xs leading-relaxed mb-4 line-clamp-4 font-normal ${brand.descColor}`}
-                    >
-                      {brand.description}
-                    </p>
-
-                    {/* Divider Accent Line */}
-                    <div
-                      className="w-6 h-0.5 mb-4 opacity-40 rounded-full"
-                      style={{
-                        backgroundColor:
-                          brand.id === "s-nafi"
-                            ? "#A67C2E"
-                            : brand.id === "greek"
-                            ? "#2A6F97"
-                            : "#E63946",
-                      }}
-                    />
-
-                    {/* 2 Specification Chips with Icons */}
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      {/* Spec 1 */}
-                      <div className="flex items-start gap-1.5">
-                        <SpecIcon icon={brand.spec1.icon} />
-                        <span
-                          className={`text-[10px] font-bold leading-tight whitespace-pre-line ${brand.specBgClass}`}
-                        >
-                          {brand.spec1.label}
-                        </span>
-                      </div>
-
-                      {/* Spec 2 */}
-                      <div className="flex items-start gap-1.5">
-                        <SpecIcon icon={brand.spec2.icon} />
-                        <span
-                          className={`text-[10px] font-bold leading-tight whitespace-pre-line ${brand.specBgClass}`}
-                        >
-                          {brand.spec2.label}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── Right Lock Photo Frame (approx 38% width) ── */}
-                  <div className="col-span-5 flex items-center justify-center">
-                    <div className="relative w-full aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm border border-black/5">
-                      <Image
-                        src={brand.imageSrc}
-                        alt={brand.altText}
-                        fill
-                        sizes="(max-width: 768px) 40vw, 200px"
-                        className="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Bottom Row: Button (Left) & Micro Slogan (Right) ── */}
-                <div className="flex items-center justify-between gap-3 pt-4 border-t border-black/[0.06] mt-2">
-                  {/* Explore Pill Button */}
-                  <Link
-                    href={`/brands/${brand.slug}`}
-                    className={`inline-flex items-center gap-1.5 text-white ${brand.btnBgClass} ${brand.btnHoverClass} text-[11px] sm:text-xs font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-xs hover:shadow-md active:scale-95 transition-all duration-200`}
-                  >
-                    <span>Explore {brand.name}</span>
-                    <svg
-                      className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </Link>
-
-                  {/* Micro-Slogan Stacked on Right */}
-                  <span
-                    className={`text-[8px] sm:text-[9px] tracking-widest uppercase font-semibold text-right leading-tight whitespace-pre-line ${brand.sloganColor}`}
-                  >
-                    {brand.slogan}
-                  </span>
-                </div>
-              </article>
-            );
-          })}
+        <div className="relative flex flex-col gap-28 sm:gap-36 pb-32">
+          {BRANDS_DATA.map((brand, index) => (
+            <StackingCard
+              key={brand.id}
+              brand={brand}
+              index={index}
+              total={BRANDS_DATA.length}
+              containerProgress={scrollYProgress}
+            />
+          ))}
         </div>
 
         {/* ====================================================================
             3. BOTTOM TRUST STRIP ("DIFFERENT IDENTITIES. A SHARED PROMISE.")
             ==================================================================== */}
-        <div className="mt-14 sm:mt-18 pt-4">
-          {/* Centered Divider Text */}
+        <div className="pt-8">
           <div className="flex items-center justify-center gap-3 sm:gap-5 mb-8 sm:mb-10">
             <div className="h-px w-16 sm:w-28 bg-divider" />
             <span className="font-sans uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] sm:text-[11px] font-semibold text-muted">
@@ -484,7 +559,6 @@ export default function BrandShowcase() {
               </span>
             </div>
 
-            {/* Vertical Divider */}
             <div className="h-5 w-px bg-divider hidden sm:block" />
 
             {/* Pillar 2: Precision Manufacturing */}
@@ -506,7 +580,6 @@ export default function BrandShowcase() {
               </span>
             </div>
 
-            {/* Vertical Divider */}
             <div className="h-5 w-px bg-divider hidden sm:block" />
 
             {/* Pillar 3: Trusted Worldwide */}
