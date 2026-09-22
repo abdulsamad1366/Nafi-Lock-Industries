@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
+import { getUser, AuthUser } from "@/lib/userAuth";
 
 /**
  * ============================================================================
@@ -23,26 +24,18 @@ interface NavLinkItem {
  * High-performance, GSAP-driven navigation header featuring continuous physics-based
  * morphing in BOTH directions:
  *
- * 1. Full-Width -> Round Floating Capsule (when scrolling down):
- *    - Smoothly shrinks from 100% to calc(100% - 32px) (max 1152px).
- *    - Rounds corners from 0px to 40px capsule pill.
- *    - Floats down y: 12px with luxury ambient drop shadow.
- *
- * 2. Round Floating Capsule -> Full-Width (when scrolling back to top):
- *    - Smoothly expands from calc(100% - 32px) back to calc(100% - 0px) / 100%.
- *    - Unrounds corners from 40px to 0px.
- *    - Floats up to y: 0 with clean 1px bottom divider line.
- *
+ * 1. Full-Width -> Round Floating Capsule (when scrolling down)
+ * 2. Round Floating Capsule -> Full-Width (when scrolling back to top)
  * 3. Navigation Links (Requested Order):
  *    - Home, S-Nafi, Raksham, Greek, Blog, Contact
- *
  * 4. Action Button:
- *    - "Login" capsule button linking to /admin/login.
+ *    - "Login" capsule button linking to /login (or /account / /distributor if logged in).
  */
 export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
   const dockRef = useRef<HTMLElement>(null);
@@ -63,6 +56,13 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  /**
+   * Hydrate logged in user on mount & route change
+   */
+  useEffect(() => {
+    setCurrentUser(getUser());
+  }, [pathname]);
 
   /**
    * 2. Component Lifetime GSAP Context (Reverts only on component unmount)
@@ -306,13 +306,25 @@ export default function Header() {
             3. Right Zone: Login CTA Button & Mobile Toggle
             ==================================================================== */}
         <div className="flex items-center gap-3 shrink-0">
-          {/* ── Direct Login CTA Capsule Button (Replaces Dealer Inquiry) ── */}
+          {/* ── Direct Login CTA Capsule Button ── */}
           <Link
             ref={ctaRef}
-            href="/admin/login"
+            href={
+              currentUser?.role === "DISTRIBUTOR"
+                ? "/distributor"
+                : currentUser
+                ? "/account"
+                : "/login"
+            }
             className="hidden sm:inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
           >
-            <span>Login</span>
+            <span>
+              {currentUser?.role === "DISTRIBUTOR"
+                ? "Distributor Portal"
+                : currentUser
+                ? "My Account"
+                : "Login"}
+            </span>
             <svg
               className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
               viewBox="0 0 24 24"
@@ -414,11 +426,23 @@ export default function Header() {
             {/* Direct Mobile Login CTA */}
             <div className="mt-4 pt-4 border-t border-divider/60">
               <Link
-                href="/admin/login"
+                href={
+                  currentUser?.role === "DISTRIBUTOR"
+                    ? "/distributor"
+                    : currentUser
+                    ? "/account"
+                    : "/login"
+                }
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex w-full items-center justify-center gap-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-colors"
               >
-                <span>Login</span>
+                <span>
+                  {currentUser?.role === "DISTRIBUTOR"
+                    ? "Distributor Portal"
+                    : currentUser
+                    ? "My Account"
+                    : "Login"}
+                </span>
                 <svg
                   className="w-3.5 h-3.5"
                   viewBox="0 0 24 24"

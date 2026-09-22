@@ -55,3 +55,32 @@ the bottom as future discussions happen — don't rewrite history here.
     email/phone, and "Why This Brand"/"Why Nafi" copy. A sample placeholder
     product catalog will be used to unblock the build in the meantime — see
     `09-SAMPLE-PRODUCT-CATALOG.md`.
+18. **Nav restructured:** Home / S-Nafi / Raksham / Greek / Blog / Contact / Login
+    (client updated the site structure and shared the actual repo, built via
+    Antigravity — matched the planned architecture closely, confirming the
+    build is on track).
+19. **Three-tier login system added:** Customer, Distributor, Admin — each a
+    genuinely separate identity, not one role field. `AdminUser` stays fully
+    separate (own table/JWT) from the new `User` table (role: CUSTOMER |
+    DISTRIBUTOR). Distributor signup requires admin approval before dealer
+    features unlock.
+20. **Distributor-only features confirmed:** dealer pricing (`dealerPrice`,
+    hidden from everyone else — enforced server-side, not just UI-hidden),
+    minimum order quantity (`minOrderQty`, same visibility rule), catalog PDF
+    downloads, order placement + order tracking (PLACED → CONFIRMED →
+    PROCESSING → SHIPPED → DELIVERED), ledger request-and-fulfill workflow
+    (distributor requests, admin uploads the file), a dedicated assigned sales
+    rep contact, and liked/saved products (this last one available to
+    customers too, not distributor-only).
+21. **Orders are request-and-fulfill, not real-time payment.** No payment
+    gateway — client handles payment/invoicing offline; the system only
+    tracks order status. Flagged as a bigger addition if this changes later.
+22. **Ordering is integrated into the catalog browsing experience** — an
+    "Add to Order" action on product cards builds a persistent order cart
+    (client-side, shown via a slide-out drawer) that a distributor reviews
+    and submits as one Order, rather than a disconnected order form.
+23. **Full design written up in `10-AUTH-AND-DISTRIBUTOR-PORTAL.md`** —
+    data model, access-control matrix, auth flows, order cart mechanics, and
+    both dashboards (customer `/account`, distributor `/distributor/dashboard`)
+    plus new admin panel sections (`/admin/distributors`, `/admin/orders`,
+    `/admin/ledger-requests`, `/admin/sales-reps`, `/admin/catalogs`).

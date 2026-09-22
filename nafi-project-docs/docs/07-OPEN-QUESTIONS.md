@@ -37,3 +37,13 @@ before building the affected part, rather than guessing.
 ## Assets
 - [ ] Real product photography and brand logos — currently using placeholder
   SVG icons (see `08-PLACEHOLDER-ASSETS.md`).
+
+## Distributor portal (see `10-AUTH-AND-DISTRIBUTOR-PORTAL.md` for full design)
+- [ ] Actual dealer prices and minimum order quantities per product — not yet
+  provided, needed to seed `dealerPrice`/`minOrderQty`.
+- [ ] Catalog scope — one overall downloadable PDF, or one per brand?
+- [ ] Distributor application fields beyond company name/GST/address — any
+  additional business proof/documents required for approval?
+- [ ] Ledger request format — free-text note (current design) or a structured
+  date-range picker?
+- [ ] Sales rep roster — who are the actual sales reps to seed into the system?

@@ -7,6 +7,31 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  CUSTOMER
+  DISTRIBUTOR
+}
+
+enum DistributorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  PLACED
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum LedgerRequestStatus {
+  REQUESTED
+  FULFILLED
+}
+
 model Brand {
   id           String    @id @default(uuid())
   slug         String    @unique
@@ -20,6 +45,7 @@ model Brand {
   isActive     Boolean   @default(true)
   products     Product[]
   inquiries    Inquiry[]
+  catalogs     Catalog[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -32,25 +58,29 @@ model Category {
 }
 
 model Product {
-  id               String    @id @default(uuid())
-  slug             String    @unique
+  id               String         @id @default(uuid())
+  slug             String         @unique
   name             String
   brandId          String
-  brand            Brand     @relation(fields: [brandId], references: [id])
+  brand            Brand          @relation(fields: [brandId], references: [id])
   categoryId       String
-  category         Category  @relation(fields: [categoryId], references: [id])
+  category         Category       @relation(fields: [categoryId], references: [id])
   description      String
   material         String
   size             String
   finish           String
-  numberOfKeys     Int       @default(0)
+  numberOfKeys     Int            @default(0)
   lockingMechanism String
-  warranty         String    @default("1 year")
-  images           String[]  // Array of image URLs
-  isActive         Boolean   @default(true)
+  warranty         String         @default("1 year")
+  images           String[]       // Array of image URLs
+  dealerPrice      Decimal?
+  minOrderQty      Int?
+  isActive         Boolean        @default(true)
   inquiries        Inquiry[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  orderItems       OrderItem[]
+  likedBy          LikedProduct[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Inquiry {
@@ -64,6 +94,8 @@ model Inquiry {
   brand     Brand?   @relation(fields: [brandId], references: [id])
   productId String?
   product   Product? @relation(fields: [productId], references: [id])
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
   status    String   @default("new") // "new" | "contacted" | "closed"
   createdAt DateTime @default(now())
 }
@@ -73,4 +105,109 @@ model AdminUser {
   email        String @unique
   passwordHash String
   role         String @default("admin")
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  name               String
+  email              String              @unique
+  passwordHash       String
+  phone              String?
+  role               UserRole
+  createdAt          DateTime            @default(now())
+  distributorProfile DistributorProfile?
+  likedProducts      LikedProduct[]
+  inquiries          Inquiry[]
+  orders             Order[]
+  ledgerRequests     LedgerRequest[]
+  ledgers            Ledger[]
+}
+
+model DistributorProfile {
+  id              String            @id @default(uuid())
+  userId          String            @unique
+  user            User              @relation(fields: [userId], references: [id])
+  companyName     String
+  gstNumber       String?
+  businessAddress String
+  city            String
+  state           String
+  status          DistributorStatus @default(PENDING)
+  appliedAt       DateTime          @default(now())
+  reviewedAt      DateTime?
+  reviewedById    String?
+  assignedRepId   String?
+  assignedRep     SalesRep?         @relation(fields: [assignedRepId], references: [id])
+}
+
+model SalesRep {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String
+  phone               String
+  photoUrl            String?
+  distributorProfiles DistributorProfile[]
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  orderNumber   String      @unique
+  distributorId String
+  distributor   User        @relation(fields: [distributorId], references: [id])
+  status        OrderStatus @default(PLACED)
+  notes         String?
+  placedAt      DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Decimal
+}
+
+model LedgerRequest {
+  id            String              @id @default(uuid())
+  distributorId String
+  distributor   User                @relation(fields: [distributorId], references: [id])
+  note          String?
+  status        LedgerRequestStatus @default(REQUESTED)
+  requestedAt   DateTime            @default(now())
+  fulfilledAt   DateTime?
+}
+
+model Ledger {
+  id            String   @id @default(uuid())
+  distributorId String
+  distributor   User     @relation(fields: [distributorId], references: [id])
+  requestId     String?
+  title         String
+  fileUrl       String
+  uploadedById  String
+  uploadedAt    DateTime @default(now())
+}
+
+model Catalog {
+  id         String   @id @default(uuid())
+  title      String
+  fileUrl    String
+  brandId    String?
+  brand      Brand?   @relation(fields: [brandId], references: [id])
+  uploadedAt DateTime @default(now())
+}
+
+model LikedProduct {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  likedAt   DateTime @default(now())
+
+  @@unique([userId, productId])
 }

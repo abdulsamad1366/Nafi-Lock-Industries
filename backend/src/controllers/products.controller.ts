@@ -1,7 +1,17 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import prisma from "../config/db";
+import { AuthenticatedUserRequest } from "../middleware/user-auth.middleware";
+import {
+  isUserApprovedDistributor,
+  serializeProduct,
+  serializeProducts,
+} from "../utils/product-serializer";
 
-export async function getAllProducts(req: Request, res: Response, next: NextFunction) {
+export async function getAllProducts(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const { brand, category } = req.query;
 
@@ -14,26 +24,38 @@ export async function getAllProducts(req: Request, res: Response, next: NextFunc
       include: { brand: true, category: true },
       orderBy: { name: "asc" },
     });
-    res.json(products);
+
+    const isApproved = await isUserApprovedDistributor(req.user);
+    res.json(serializeProducts(products, isApproved));
   } catch (err) {
     next(err);
   }
 }
 
-export async function getProductBySlug(req: Request, res: Response, next: NextFunction) {
+export async function getProductBySlug(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const product = await prisma.product.findUnique({
       where: { slug: req.params.slug },
       include: { brand: true, category: true },
     });
     if (!product) return res.status(404).json({ error: "Product not found" });
-    res.json(product);
+
+    const isApproved = await isUserApprovedDistributor(req.user);
+    res.json(serializeProduct(product, isApproved));
   } catch (err) {
     next(err);
   }
 }
 
-export async function createProduct(req: Request, res: Response, next: NextFunction) {
+export async function createProduct(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // Handle uploaded images from multer
     const images = req.files
@@ -44,6 +66,8 @@ export async function createProduct(req: Request, res: Response, next: NextFunct
       data: {
         ...req.body,
         numberOfKeys: parseInt(req.body.numberOfKeys, 10) || 0,
+        dealerPrice: req.body.dealerPrice ? parseFloat(req.body.dealerPrice) : null,
+        minOrderQty: req.body.minOrderQty ? parseInt(req.body.minOrderQty, 10) : null,
         images,
       },
     });
@@ -53,7 +77,11 @@ export async function createProduct(req: Request, res: Response, next: NextFunct
   }
 }
 
-export async function updateProduct(req: Request, res: Response, next: NextFunction) {
+export async function updateProduct(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const newImages = req.files
       ? (req.files as Express.Multer.File[]).map((f) => `/uploads/${f.filename}`)
@@ -61,6 +89,12 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
 
     const data: Record<string, unknown> = { ...req.body };
     if (req.body.numberOfKeys) data.numberOfKeys = parseInt(req.body.numberOfKeys, 10);
+    if (req.body.dealerPrice !== undefined) {
+      data.dealerPrice = req.body.dealerPrice ? parseFloat(req.body.dealerPrice) : null;
+    }
+    if (req.body.minOrderQty !== undefined) {
+      data.minOrderQty = req.body.minOrderQty ? parseInt(req.body.minOrderQty, 10) : null;
+    }
     if (newImages && newImages.length > 0) data.images = newImages;
 
     const product = await prisma.product.update({
@@ -73,7 +107,11 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
   }
 }
 
-export async function deleteProduct(req: Request, res: Response, next: NextFunction) {
+export async function deleteProduct(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     await prisma.product.delete({ where: { id: req.params.id } });
     res.status(204).send();

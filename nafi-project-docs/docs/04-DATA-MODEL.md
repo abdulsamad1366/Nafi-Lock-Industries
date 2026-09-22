@@ -44,6 +44,8 @@ beyond "classic lock only").
 | warranty | string | e.g. "1 year" |
 | images | string[] | Array of image URLs (uploaded via admin) |
 | isActive | boolean | |
+| dealerPrice | decimal, nullable | **Distributor-only visibility** — stripped from API response unless requester is an APPROVED distributor. See `10-AUTH-AND-DISTRIBUTOR-PORTAL.md`. |
+| minOrderQty | integer, nullable | Minimum order quantity for distributor orders — same visibility rule as dealerPrice |
 
 ## Inquiry (contact form submissions)
 | Field | Type | Notes |
@@ -56,6 +58,7 @@ beyond "classic lock only").
 | message | text | |
 | brandId | FK → Brand | optional — set if inquiry made from a brand page |
 | productId | FK → Product | optional |
+| userId | FK → User, nullable | set if submitted while logged in, so it shows in that user's inquiry history; null for guest submissions |
 | status | enum | `new`, `contacted`, `closed` |
 | createdAt | datetime | |
 
@@ -72,7 +75,17 @@ beyond "classic lock only").
 - `Category` 1 — many `Product`
 - `Brand` 1 — many `Inquiry` (optional link)
 - `Product` 1 — many `Inquiry` (optional link)
+- `User` 1 — many `Inquiry` (optional link, see `10-AUTH-AND-DISTRIBUTOR-PORTAL.md`)
+
+## Auth, distributor portal, orders, ledger, and liked products
+The `User`, `DistributorProfile`, `Order`, `OrderItem`, `LedgerRequest`,
+`Ledger`, `Catalog`, `SalesRep`, and `LikedProduct` models are documented in
+full in **`10-AUTH-AND-DISTRIBUTOR-PORTAL.md`** rather than repeated here, to
+keep this file focused on the core catalog models. `AdminUser` stays as
+defined above — it is a deliberately separate system, not merged with `User`.
 
 ## Status
 Field-level structure is set. **Actual product catalog content (real product
 names, specs per brand) is not yet finalized** — see `07-OPEN-QUESTIONS.md`.
+**Dealer pricing values and minimum order quantities are also not yet
+finalized** — same open-questions file.

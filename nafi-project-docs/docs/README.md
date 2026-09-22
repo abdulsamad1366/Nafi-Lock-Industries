@@ -12,12 +12,13 @@ code — it's the brief.
 | `01-OVERVIEW.md` | What the site is, who it's for, business context |
 | `02-ARCHITECTURE.md` | Tech stack, folder structure, frontend/backend split, hosting |
 | `03-DESIGN-SYSTEM.md` | Colors, typography, layout principles, per-brand themes |
-| `04-DATA-MODEL.md` | Database schema (Brand, Category, Product, Inquiry, AdminUser) |
+| `04-DATA-MODEL.md` | Core catalog schema (Brand, Category, Product, Inquiry, AdminUser) |
 | `05-SITE-MAP-AND-PAGES.md` | Every page, its sections, and what each contains |
 | `06-DECISIONS-LOG.md` | Every decision made during planning, in order, with reasoning |
 | `07-OPEN-QUESTIONS.md` | Things not yet answered — must be resolved before/during build |
 | `08-PLACEHOLDER-ASSETS.md` | Where placeholder icons live and how to replace them later |
 | `09-SAMPLE-PRODUCT-CATALOG.md` | Placeholder product data to seed the database until the real catalog is ready |
+| `10-AUTH-AND-DISTRIBUTOR-PORTAL.md` | Customer/Distributor/Admin auth system, dealer pricing, ordering (incl. order cart), order tracking, ledger requests, catalog downloads, liked products, sales rep assignment |
 
 ## How to use this
 
