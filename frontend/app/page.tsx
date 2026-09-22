@@ -34,7 +34,7 @@ export default function HomePage() {
       <BrandShowcase />
 
       {/* ── Section 4: Full Product Catalog with Filter Tabs ── */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-divider bg-[#FAF9F5]/30">
+      <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#FBFBFA]">
         <ProductGrid />
       </section>
 
