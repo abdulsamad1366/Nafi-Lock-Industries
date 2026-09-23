@@ -3,7 +3,13 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValueEvent,
+} from "framer-motion";
 
 /**
  * ============================================================================
@@ -33,6 +39,7 @@ interface BrandShowcaseData {
   sloganColor: string;
   slogan: string;
   accentHex: string;
+  glowColor: string;
   spec1: {
     label: string;
     icon: "layers" | "cylinder" | "shield-cut";
@@ -73,6 +80,7 @@ const BRANDS_DATA: BrandShowcaseData[] = [
     sloganColor: "text-[#9E917D]",
     slogan: "TRADITION\nMEETS TIMELESS\nSECURITY",
     accentHex: "#A67C2E",
+    glowColor: "rgba(184, 146, 63, 0.18)",
     spec1: {
       label: "100%\nSolid Brass",
       icon: "layers",
@@ -106,6 +114,7 @@ const BRANDS_DATA: BrandShowcaseData[] = [
     sloganColor: "text-gray-400",
     slogan: "STRENGTH\nWITHOUT\nCOMPROMISE",
     accentHex: "#EF4444",
+    glowColor: "rgba(239, 68, 68, 0.18)",
     spec1: {
       label: "Grade-6\nAnti-Cut Steel",
       icon: "shield-cut",
@@ -139,6 +148,7 @@ const BRANDS_DATA: BrandShowcaseData[] = [
     sloganColor: "text-[#7B92A8]",
     slogan: "ENGINEERED\nFOR EVERY\nENTRANCE",
     accentHex: "#2A6F97",
+    glowColor: "rgba(42, 111, 151, 0.18)",
     spec1: {
       label: "6-Pin\nAnti-Pick Core",
       icon: "cylinder",
@@ -262,7 +272,7 @@ function SpecIcon({ icon, accentColor }: { icon: string; accentColor: string }) 
 
 /**
  * ============================================================================
- * AnimatedCardFace: Render single 100% solid opaque card matching luxury editorial specs
+ * AnimatedCardFace: 100% Solid Opaque Luxury Architecture Card Face
  * ============================================================================
  */
 interface AnimatedCardFaceProps {
@@ -273,16 +283,16 @@ function AnimatedCardFace({ brand }: AnimatedCardFaceProps) {
   return (
     <article
       style={{ backgroundColor: brand.bgColor }}
-      className={`w-full h-full relative border ${brand.borderClass} rounded-3xl p-5 sm:p-7 lg:p-9 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] transition-colors duration-300 overflow-hidden flex flex-col justify-between`}
+      className={`w-full h-full relative border ${brand.borderClass} rounded-3xl p-5 sm:p-7 lg:p-9 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.28)] overflow-hidden flex flex-col justify-between`}
     >
-      {/* Ambient Card Background Glow for Depth */}
+      {/* Ambient Internal Glow for Rich Depth */}
       <div
-        className="absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-20"
+        className="absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-25"
         style={{ backgroundColor: brand.accentHex }}
       />
 
-      {/* Top Header Row inside Card: Brand Eyebrow Tag + Sequence Counter */}
-      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-black/[0.08] dark:border-white/10 mb-4 sm:mb-5">
+      {/* Top Header Row: Eyebrow + Sequence Counter */}
+      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-black/[0.08] dark:border-white/10 mb-4 sm:mb-5 relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-xs">
           <span
             className="w-2 h-2 rounded-full animate-pulse"
@@ -296,39 +306,38 @@ function AnimatedCardFace({ brand }: AnimatedCardFaceProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className={`font-mono text-xs sm:text-sm font-bold tracking-widest ${brand.numberColor}`}>
+          <span
+            className={`font-mono text-xs sm:text-sm font-bold tracking-widest ${brand.numberColor}`}
+          >
             HOUSE {brand.number} / 03
           </span>
         </div>
       </div>
 
-      {/* Main Split Body: Left Narrative Column (60%) & Right Studio Photograph (40%) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center flex-1">
+      {/* Main Split Body: Left Narrative Column & Right Studio Photograph */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center flex-1 relative z-10">
         {/* Left Column */}
         <div className="lg:col-span-7 flex flex-col justify-between h-full">
           <div>
-            {/* Brand Name */}
             <h3
               className={`font-serif text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-tight mb-1.5 leading-tight ${brand.textColor}`}
             >
               {brand.name}
             </h3>
 
-            {/* Tagline */}
             <p
               className={`font-serif text-xs sm:text-sm lg:text-base font-medium leading-snug mb-2.5 ${brand.taglineColor}`}
             >
               {brand.tagline}
             </p>
 
-            {/* Narrative Description */}
             <p
               className={`text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 font-normal line-clamp-2 sm:line-clamp-3 ${brand.descColor}`}
             >
               {brand.description}
             </p>
 
-            {/* Divider Accent Line */}
+            {/* Accent Divider Line */}
             <div
               className="w-12 h-0.5 mb-3 sm:mb-4 rounded-full"
               style={{ backgroundColor: brand.accentHex }}
@@ -360,7 +369,7 @@ function AnimatedCardFace({ brand }: AnimatedCardFaceProps) {
           <div className="flex items-center justify-between gap-4 pt-3 border-t border-black/[0.08] dark:border-white/10">
             <Link
               href={`/brands/${brand.slug}`}
-              className={`inline-flex items-center gap-2 text-white ${brand.btnBgClass} text-xs sm:text-sm font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 group/btn`}
+              className={`inline-flex items-center gap-2 text-white ${brand.btnBgClass} text-xs sm:text-sm font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-md hover:shadow-xl active:scale-95 transition-all duration-200 group/btn`}
             >
               <span>Explore {brand.name} Collection</span>
               <svg
@@ -411,26 +420,35 @@ function AnimatedCardFace({ brand }: AnimatedCardFaceProps) {
 
 /**
  * ============================================================================
- * Component: BrandShowcase (Pinned Scroll Stacking Showcase)
+ * Component: BrandShowcase (Apple/Google-Grade Pinned Scroll Stacking Showcase)
  * ============================================================================
- * Pinned Scroll Experience:
- * 1. As the user reaches this section, the section stops/pins on screen.
- * 2. As the user scrolls, Card 1 (S-Nafi) stays, Card 2 (Raksham) animates up & stacks,
- *    then Card 3 (Greek) animates up & stacks.
- * 3. After all cards have moved and stacked, the section unpins and page scroll resumes.
+ * Smooth Spring Physics Architecture:
+ * - Uses Framer Motion's `useSpring` to eliminate all scroll jerkiness.
+ * - Hardware-accelerated GPU matrix transforms.
+ * - Apple-style animated segmented pill tab indicator.
+ * - Ambient background aura that morphs color per brand.
  */
 export default function BrandShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeHouseIndex, setActiveHouseIndex] = useState<number>(0);
 
-  // Track scroll position across the full height of the 320vh container
+  // 1. Raw Scroll Progress across the 350vh pinned runway
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Keep track of active house for the navigation pills
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  // 2. Apple-Grade Spring Smoothing (Eliminates discrete mousewheel jumps)
+  // Low mass + tuned damping gives immediate responsiveness without overshoot
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 24,
+    mass: 0.25,
+    restDelta: 0.0001,
+  });
+
+  // 3. Track Active House on the smoothed timeline
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
     if (latest < 0.35) {
       setActiveHouseIndex(0);
     } else if (latest < 0.72) {
@@ -440,7 +458,7 @@ export default function BrandShowcase() {
     }
   });
 
-  // Smooth click navigation to jump to a specific house card
+  // 4. Smooth Navigation to Jump Directly to Any House
   const scrollToHouse = (index: number) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -450,7 +468,7 @@ export default function BrandShowcase() {
 
     let targetProgress = 0.05;
     if (index === 1) targetProgress = 0.52;
-    if (index === 2) targetProgress = 0.92;
+    if (index === 2) targetProgress = 0.94;
 
     const targetY = containerTop + scrollableDistance * targetProgress;
     window.scrollTo({
@@ -461,65 +479,65 @@ export default function BrandShowcase() {
 
   /**
    * ==========================================================================
-   * Framer Motion Scroll Transforms for 3 Cards
-   * Cards are 100% solid and opaque. They slide up from below the viewport.
+   * Framer Motion GPU Transforms Driven by Spring Physics
    * ==========================================================================
    */
 
-  // ── Card 0 (S-Nafi): Starts in place, recedes as Card 1 & 2 stack on top ──
+  // ── Card 0 (S-Nafi): Starts in place, recedes smoothly as Cards 1 & 2 enter ──
   const card0Y = useTransform(
-    scrollYProgress,
-    [0, 0.22, 0.52, 0.70, 0.92, 1.0],
-    ["0px", "0px", "-20px", "-20px", "-38px", "-38px"]
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
+    [0, 0, -14, -14, -28, -28]
   );
   const card0Scale = useTransform(
-    scrollYProgress,
-    [0, 0.22, 0.52, 0.70, 0.92, 1.0],
-    [1, 1, 0.94, 0.94, 0.89, 0.89]
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
+    [1, 1, 0.95, 0.95, 0.90, 0.90]
   );
   const card0Brightness = useTransform(
-    scrollYProgress,
-    [0, 0.22, 0.52, 0.70, 0.92, 1.0],
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
     [1, 1, 0.90, 0.90, 0.82, 0.82]
   );
   const card0Filter = useTransform(card0Brightness, (b) => `brightness(${b})`);
 
-  // ── Card 1 (Raksham): 100% solid, glides up between 0.22 and 0.52 ──
+  // ── Card 1 (Raksham): Glides up between 0.18 and 0.48 ──
+  // Using pure numeric pixel travel with spring damping for zero jitter
   const card1Y = useTransform(
-    scrollYProgress,
-    [0, 0.20, 0.52, 0.70, 0.92, 1.0],
-    ["110vh", "100vh", "0px", "0px", "-19px", "-19px"]
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
+    [650, 650, 0, 0, -14, -14]
   );
   const card1Scale = useTransform(
-    scrollYProgress,
-    [0, 0.20, 0.52, 0.70, 0.92, 1.0],
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
     [0.96, 0.96, 1.0, 1.0, 0.95, 0.95]
   );
   const card1Brightness = useTransform(
-    scrollYProgress,
-    [0, 0.20, 0.52, 0.70, 0.92, 1.0],
+    smoothProgress,
+    [0, 0.18, 0.48, 0.68, 0.94, 1.0],
     [1, 1, 1, 1, 0.92, 0.92]
   );
   const card1Filter = useTransform(card1Brightness, (b) => `brightness(${b})`);
   const card1PointerEvents = useTransform(
-    scrollYProgress,
-    (p) => (p >= 0.22 ? "auto" : "none")
+    smoothProgress,
+    (p) => (p >= 0.20 ? "auto" : "none")
   );
 
-  // ── Card 2 (Greek): 100% solid, glides up between 0.62 and 0.92 ──
+  // ── Card 2 (Greek): Glides up between 0.64 and 0.94 ──
   const card2Y = useTransform(
-    scrollYProgress,
-    [0, 0.62, 0.92, 1.0],
-    ["110vh", "100vh", "0px", "0px"]
+    smoothProgress,
+    [0, 0.64, 0.94, 1.0],
+    [650, 650, 0, 0]
   );
   const card2Scale = useTransform(
-    scrollYProgress,
-    [0, 0.62, 0.92, 1.0],
+    smoothProgress,
+    [0, 0.64, 0.94, 1.0],
     [0.96, 0.96, 1.0, 1.0]
   );
   const card2PointerEvents = useTransform(
-    scrollYProgress,
-    (p) => (p >= 0.62 ? "auto" : "none")
+    smoothProgress,
+    (p) => (p >= 0.66 ? "auto" : "none")
   );
 
   return (
@@ -531,12 +549,12 @@ export default function BrandShowcase() {
     >
       {/*
         ========================================================================
-        PINNED SCROLL CONTAINER (Height: 320vh)
-        The viewport stops / locks in place here while user scrolls through the 3 cards.
-        Once the 3 cards have moved and stacked, the section naturally unpins!
+        PINNED SCROLL CONTAINER (Height: 350vh)
+        The viewport stops / locks in place here while user scrolls smoothly.
+        Spring-damped interpolation ensures zero jerkiness.
         ========================================================================
       */}
-      <div className="relative h-[320vh]">
+      <div className="relative h-[350vh]">
         <div className="sticky top-0 h-screen w-full flex flex-col justify-start sm:justify-center items-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-20 pb-4">
           {/* Subtle Watermark Crest (Official Nafi Emblem in Background) */}
           <div
@@ -551,6 +569,15 @@ export default function BrandShowcase() {
               priority={false}
             />
           </div>
+
+          {/* Morphing Brand Light Aura (Apple/Google-Grade Dynamic Atmosphere) */}
+          <motion.div
+            animate={{
+              backgroundColor: BRANDS_DATA[activeHouseIndex].glowColor,
+            }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[480px] rounded-full blur-[120px] pointer-events-none -z-10"
+          />
 
           <div className="max-w-7xl w-full mx-auto relative z-10 flex flex-col items-center">
             {/* ==================================================================
@@ -576,9 +603,9 @@ export default function BrandShowcase() {
             </div>
 
             {/* ==================================================================
-                2. INTERACTIVE 3-HOUSE STEP SELECTOR
+                2. INTERACTIVE 3-HOUSE SEGMENTED CONTROLLER (Apple-Style Sliding Capsule)
                 ================================================================== */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="flex items-center justify-center gap-1.5 p-1 rounded-full bg-black/[0.04] border border-black/[0.06] mb-6 sm:mb-8 relative">
               {BRANDS_DATA.map((brand, i) => {
                 const isActive = activeHouseIndex === i;
                 return (
@@ -586,19 +613,32 @@ export default function BrandShowcase() {
                     key={brand.id}
                     type="button"
                     onClick={() => scrollToHouse(i)}
-                    className={`relative px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 border cursor-pointer ${
-                      isActive
-                        ? "bg-white text-primary shadow-sm border-black/15 scale-105"
-                        : "bg-black/[0.03] text-muted border-transparent hover:text-primary hover:bg-black/5"
-                    }`}
+                    className="relative px-3.5 sm:px-5 py-1.5 rounded-full text-xs font-bold transition-colors duration-200 flex items-center gap-2 cursor-pointer z-10"
                   >
+                    {/* Apple-style sliding pill highlight */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeHousePill"
+                        transition={{
+                          type: "spring",
+                          stiffness: 350,
+                          damping: 30,
+                        }}
+                        className="absolute inset-0 rounded-full bg-white shadow-sm border border-black/10 -z-10"
+                      />
+                    )}
+
                     <span
                       className={`w-2 h-2 rounded-full transition-transform duration-300 ${
                         isActive ? "scale-125" : "opacity-40"
                       }`}
                       style={{ backgroundColor: brand.accentHex }}
                     />
-                    <span className="tracking-wider uppercase text-[10px] sm:text-[11px]">
+                    <span
+                      className={`tracking-wider uppercase text-[10px] sm:text-[11px] transition-colors duration-200 ${
+                        isActive ? "text-primary" : "text-muted hover:text-primary"
+                      }`}
+                    >
                       {brand.number} {brand.name}
                     </span>
                   </button>
@@ -609,9 +649,9 @@ export default function BrandShowcase() {
             {/* ==================================================================
                 3. THE 3 STACKING CARDS VIEWPORT
                 All 3 cards occupy this coordinate space.
-                Card 1 slides up over Card 0, then Card 2 slides up over Card 1.
+                Spring physics ensures 60/120fps buttery smooth card motion.
                 ================================================================== */}
-            <div className="relative w-full max-w-5xl h-[460px] sm:h-[480px] lg:h-[490px] flex items-center justify-center">
+            <div className="relative w-full max-w-5xl h-[460px] sm:h-[480px] lg:h-[490px] flex items-center justify-center mt-2 sm:mt-3">
               {/* Card 0: 01 S-Nafi */}
               <motion.div
                 style={{
@@ -621,7 +661,7 @@ export default function BrandShowcase() {
                   zIndex: 10,
                   transformOrigin: "top center",
                 }}
-                className="absolute inset-0 w-full pointer-events-auto"
+                className="absolute inset-0 w-full pointer-events-auto will-change-transform"
               >
                 <AnimatedCardFace brand={BRANDS_DATA[0]} />
               </motion.div>
@@ -636,7 +676,7 @@ export default function BrandShowcase() {
                   zIndex: 20,
                   transformOrigin: "top center",
                 }}
-                className="absolute inset-0 w-full"
+                className="absolute inset-0 w-full will-change-transform"
               >
                 <AnimatedCardFace brand={BRANDS_DATA[1]} />
               </motion.div>
@@ -650,7 +690,7 @@ export default function BrandShowcase() {
                   zIndex: 30,
                   transformOrigin: "top center",
                 }}
-                className="absolute inset-0 w-full"
+                className="absolute inset-0 w-full will-change-transform"
               >
                 <AnimatedCardFace brand={BRANDS_DATA[2]} />
               </motion.div>
