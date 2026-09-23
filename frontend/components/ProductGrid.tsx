@@ -703,7 +703,7 @@ export default function ProductGrid() {
               >
                 <div>
                   {/* ── Top Visual Stage: Product Image with Floating Badges ── */}
-                  <div className="relative aspect-[4/3] sm:aspect-[5/4] w-full bg-[#F5F5F3] overflow-hidden">
+                  <div className="relative aspect-[4/5] w-full bg-[#F5F5F3] overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -740,8 +740,8 @@ export default function ProductGrid() {
                     </button>
                   </div>
 
-                  {/* ── Card Content ── */}
-                  <div className="p-3 sm:p-5 sm:p-6 pb-2 sm:pb-2">
+                  {/* ── Card Content: Title & Category Only (Description Removed) ── */}
+                  <div className="p-3 sm:p-5 pb-3">
                     {/* Category Label + Model Code Row */}
                     <div className="flex items-center justify-between text-[9.5px] sm:text-[11px] mb-1 sm:mb-1.5">
                       <span className="font-sans font-semibold tracking-wider uppercase text-[#64748B] truncate mr-1">
@@ -752,15 +752,10 @@ export default function ProductGrid() {
                       </span>
                     </div>
 
-                    {/* Product Title (Bold Serif) */}
-                    <h3 className="font-serif text-[13.5px] sm:text-[18px] sm:text-[19px] font-bold text-[#111827] leading-snug mb-1 sm:mb-2 line-clamp-1 sm:line-clamp-none">
+                    {/* Product Title (Bold Serif, Up to 2 Lines) */}
+                    <h3 className="font-serif text-[13.5px] sm:text-[18px] font-bold text-[#111827] leading-snug line-clamp-2 min-h-[38px] sm:min-h-[48px]">
                       {product.name}
                     </h3>
-
-                    {/* Description Excerpt */}
-                    <p className="text-[10.5px] sm:text-xs text-[#6B7280] leading-relaxed line-clamp-2 min-h-[30px] sm:min-h-[36px]">
-                      {product.description}
-                    </p>
                   </div>
                 </div>
 
