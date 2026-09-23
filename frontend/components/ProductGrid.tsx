@@ -703,7 +703,7 @@ export default function ProductGrid() {
               >
                 <div>
                   {/* ── Top Visual Stage: Product Image with Floating Badges ── */}
-                  <div className="relative aspect-[16/11] w-full bg-[#F5F5F3] overflow-hidden">
+                  <div className="relative aspect-[4/3] sm:aspect-[5/4] w-full bg-[#F5F5F3] overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -741,7 +741,7 @@ export default function ProductGrid() {
                   </div>
 
                   {/* ── Card Content ── */}
-                  <div className="p-5 sm:p-6 pb-4">
+                  <div className="p-5 sm:p-6 pb-2">
                     {/* Category Label + Model Code Row */}
                     <div className="flex items-center justify-between text-[11px] mb-1.5">
                       <span className="font-sans font-semibold tracking-wider uppercase text-[#64748B]">
@@ -758,26 +758,9 @@ export default function ProductGrid() {
                     </h3>
 
                     {/* Description Excerpt */}
-                    <p className="text-xs text-[#6B7280] leading-relaxed line-clamp-2 min-h-[36px] mb-4">
+                    <p className="text-xs text-[#6B7280] leading-relaxed line-clamp-2 min-h-[36px]">
                       {product.description}
                     </p>
-
-                    {/* 3-Column Mini Spec Matrix */}
-                    <div className="grid grid-cols-3 gap-2 py-3 border-t border-[#F1F5F9] mb-2">
-                      {product.specs.map((spec, i) => (
-                        <div key={i} className="flex items-center gap-1.5 overflow-hidden">
-                          <SpecIcon type={spec.icon} />
-                          <div className="min-w-0">
-                            <span className="text-[11px] sm:text-xs font-bold text-[#1E293B] truncate block leading-tight">
-                              {spec.value}
-                            </span>
-                            <span className="text-[10px] text-[#94A3B8] block leading-tight mt-0.5">
-                              {spec.label}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
 

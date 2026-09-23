@@ -1,10 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 /**
  * Admin layout — auth-gated wrapper for all /admin/* routes.
- * Not visible in public navigation.
+ * Hides administrative navigation bar on the /admin/login page.
  */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === "/admin/login";
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b border-divider bg-surface px-6 py-4 sticky top-0 z-40">

@@ -1,21 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signupUser } from "@/lib/api";
 import { setUserToken, setUser, setDistributorStatus } from "@/lib/userAuth";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
-  const [role, setRole] = useState<"CUSTOMER" | "DISTRIBUTOR">("CUSTOMER");
+  const searchParams = useSearchParams();
+  const initialRole = searchParams.get("role") === "distributor" ? "DISTRIBUTOR" : "CUSTOMER";
+
+  const [role, setRole] = useState<"CUSTOMER" | "DISTRIBUTOR">(initialRole);
+
+  useEffect(() => {
+    const r = searchParams.get("role");
+    if (r === "distributor") {
+      setRole("DISTRIBUTOR");
+    } else if (r === "customer") {
+      setRole("CUSTOMER");
+    }
+  }, [searchParams]);
 
   // Common Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Distributor-Only Fields
   const [companyName, setCompanyName] = useState("");
@@ -35,18 +48,18 @@ export default function SignupPage() {
     try {
       const payload: any = {
         name,
-        email,
-        phone,
+        email: email.trim(),
+        phone: phone.trim() || undefined,
         password,
         role,
       };
 
       if (role === "DISTRIBUTOR") {
-        payload.companyName = companyName;
-        payload.gstNumber = gstNumber;
-        payload.businessAddress = businessAddress;
-        payload.city = city;
-        payload.state = state;
+        payload.companyName = companyName.trim();
+        payload.gstNumber = gstNumber.trim() || undefined;
+        payload.businessAddress = businessAddress.trim();
+        payload.city = city.trim();
+        payload.state = state.trim();
       }
 
       const res = await signupUser(payload);
@@ -67,39 +80,56 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FDFCFB] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden select-none">
       {/* Ambient glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#B8923F]/8 rounded-full blur-[130px] pointer-events-none -z-10" />
+
+      {/* Subtle Background Watermark Emblem */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] aspect-[1024/759] opacity-[0.035] pointer-events-none select-none -z-10"
+        aria-hidden="true"
+      >
+        <Image
+          src="/images/nafi-crest-watermark.png"
+          alt="Watermark Emblem"
+          fill
+          className="object-contain"
+          priority={false}
+        />
+      </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-xl relative z-10">
         {/* Brand Crest */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex flex-col items-center group">
-            <div className="w-14 h-14 rounded-full bg-surface border border-accent/30 flex items-center justify-center p-2 mb-3 shadow-md group-hover:border-accent transition-colors">
+            <div className="w-14 h-14 rounded-2xl bg-white border border-[#EBE7DF] p-2.5 mb-3 shadow-md group-hover:border-[#B8923F] transition-colors flex items-center justify-center">
               <Image
-                src="/images/nafi-crest.png"
-                alt="Nafi Crest"
-                width={40}
-                height={40}
+                src="/logos/nafi-logo.svg"
+                alt="Nafi Logo"
+                width={36}
+                height={36}
                 className="object-contain"
               />
             </div>
             <span className="font-serif text-2xl font-bold tracking-tight text-primary">
-              Nafi <span className="text-accent font-normal italic">Lock Industries</span>
+              Nafi <span className="text-[#B8923F] font-normal italic">Lock Industries</span>
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted mt-1">
+              Account Registration & Dealership
             </span>
           </Link>
         </div>
 
         {/* Card */}
-        <div className="bg-surface border border-divider rounded-2xl p-6 sm:p-8 shadow-xl backdrop-blur-xs">
+        <div className="bg-white border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)]">
           {/* Tab Switcher */}
-          <div className="flex rounded-xl bg-background p-1 border border-divider mb-6">
+          <div className="flex rounded-xl bg-[#F5F3EF] p-1 border border-[#EBE7DF] mb-6">
             <button
               type="button"
               onClick={() => setRole("CUSTOMER")}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all ${
+              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 role === "CUSTOMER"
-                  ? "bg-surface text-primary shadow-xs"
+                  ? "bg-white text-primary shadow-xs border border-black/5"
                   : "text-muted hover:text-primary"
               }`}
             >
@@ -108,31 +138,37 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setRole("DISTRIBUTOR")}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all ${
+              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 role === "DISTRIBUTOR"
-                  ? "bg-accent text-background shadow-xs"
-                  : "text-muted hover:text-primary"
+                  ? "bg-white text-[#A67C2E] shadow-xs border border-black/5"
+                  : "text-muted hover:text-[#A67C2E]"
               }`}
             >
-              Apply as Distributor
+              Apply as Distributor (B2B)
             </button>
           </div>
 
-          <div className="mb-6">
-            <h2 className="font-serif text-xl font-bold text-primary mb-1">
-              {role === "CUSTOMER"
-                ? "Join Nafi Lock Industries"
-                : "Distributor Network Application"}
-            </h2>
-            <p className="text-xs text-muted">
-              {role === "CUSTOMER"
-                ? "Save custom specifications, request quotes, and track inquiries."
-                : "Unlock factory-direct wholesale pricing, minimum order quantities, and dedicated account ledger access."}
-            </p>
+          {/* Description banner */}
+          <div
+            className={`p-3.5 rounded-xl text-xs mb-6 border ${
+              role === "CUSTOMER"
+                ? "bg-[#EEF4F8] text-[#1E4D6B] border-[#D6E3EC]"
+                : "bg-[#FAF6EE] text-[#7A5B20] border-[#E8DFCF]"
+            }`}
+          >
+            {role === "CUSTOMER" ? (
+              <span>
+                <strong>Customer Account:</strong> Instant activation. Save lock specifications, track personal product inquiries, and access architectural cut-sheets.
+              </span>
+            ) : (
+              <span>
+                <strong>Distributor Application:</strong> For authorized dealers & wholesale stockists. Requires admin review for B2B pricing, purchase orders, and ledgers.
+              </span>
+            )}
           </div>
 
           {error && (
-            <div className="mb-5 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs flex items-center gap-2">
+            <div className="mb-5 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 text-xs flex items-center gap-2">
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
@@ -143,9 +179,10 @@ export default function SignupPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name & Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                   Full Name *
                 </label>
                 <input
@@ -153,13 +190,13 @@ export default function SignupPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Rajesh Sharma"
-                  className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                  placeholder="Rajesh Kumar"
+                  className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                   Phone Number
                 </label>
                 <input
@@ -167,14 +204,15 @@ export default function SignupPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                  className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors font-mono"
                 />
               </div>
             </div>
 
+            {/* Email & Password */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                   Email Address *
                 </label>
                 <input
@@ -183,31 +221,52 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="rajesh@hardware.com"
-                  className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                  className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                   Password *
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl pl-3.5 pr-10 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-primary transition-colors cursor-pointer"
+                    title={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Additional fields for DISTRIBUTOR */}
             {role === "DISTRIBUTOR" && (
-              <div className="space-y-4 pt-4 border-t border-divider">
+              <div className="space-y-4 pt-4 border-t border-[#EBE7DF]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                       Company / Hardware Firm *
                     </label>
                     <input
@@ -216,12 +275,12 @@ export default function SignupPage() {
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder="Sharma Hardware & Trading Co."
-                      className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                      className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                       GST Number (Optional)
                     </label>
                     <input
@@ -229,13 +288,13 @@ export default function SignupPage() {
                       value={gstNumber}
                       onChange={(e) => setGstNumber(e.target.value)}
                       placeholder="09AAAAA0000A1Z5"
-                      className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent font-mono uppercase"
+                      className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors font-mono uppercase"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                     Registered Business Address *
                   </label>
                   <input
@@ -244,13 +303,13 @@ export default function SignupPage() {
                     value={businessAddress}
                     onChange={(e) => setBusinessAddress(e.target.value)}
                     placeholder="Shop No. 12, Hardware Market"
-                    className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                    className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                       City *
                     </label>
                     <input
@@ -259,12 +318,12 @@ export default function SignupPage() {
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="Lucknow"
-                      className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                      className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
                       State *
                     </label>
                     <input
@@ -273,7 +332,7 @@ export default function SignupPage() {
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       placeholder="Uttar Pradesh"
-                      className="w-full bg-background border border-divider rounded-xl px-3.5 py-2 text-sm text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
+                      className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                     />
                   </div>
                 </div>
@@ -283,7 +342,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-4 py-3 bg-accent text-background font-serif font-bold text-sm rounded-xl hover:bg-accent-hover transition-all duration-200 shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-4 py-3 bg-[#A67C2E] text-white font-sans font-bold text-sm rounded-xl hover:bg-[#8E6720] transition-all duration-200 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {isLoading ? (
                 <span>Submitting Registration...</span>
@@ -308,10 +367,10 @@ export default function SignupPage() {
           </form>
 
           {/* Switch to Login */}
-          <div className="mt-6 pt-6 border-t border-divider text-center">
+          <div className="mt-6 pt-6 border-t border-[#EBE7DF] text-center">
             <p className="text-xs text-muted">
               Already have an account?{" "}
-              <Link href="/login" className="text-accent font-semibold hover:underline">
+              <Link href="/login" className="text-[#A67C2E] font-semibold hover:underline">
                 Sign in to your portal →
               </Link>
             </p>
@@ -319,5 +378,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFCFB]" />}>
+      <SignupForm />
+    </Suspense>
   );
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -254,7 +255,71 @@ async function main() {
     ],
   });
 
-  console.log("✅ Seed complete: 3 brands, 5 categories, 11 sample products");
+  // --- Sales Rep ---
+  const rep = await prisma.salesRep.upsert({
+    where: { id: "rep-aligarh-01" },
+    update: {},
+    create: {
+      id: "rep-aligarh-01",
+      name: "Vikram Sharma",
+      email: "vikram.sharma@nafilockindustries.com",
+      phone: "+91 98765 43210",
+      photoUrl: "/images/reps/vikram.jpg",
+    },
+  });
+
+  // --- Admin User ---
+  const adminPasswordHash = await bcrypt.hash("NafiMasterAdmin2026!", 10);
+  await prisma.adminUser.upsert({
+    where: { email: "admin@nafilockindustries.com" },
+    update: { passwordHash: adminPasswordHash },
+    create: {
+      email: "admin@nafilockindustries.com",
+      passwordHash: adminPasswordHash,
+      role: "admin",
+    },
+  });
+
+  // --- Distributor User (Approved) ---
+  const distributorPasswordHash = await bcrypt.hash("NafiDistributor2026!", 10);
+  const distributorUser = await prisma.user.upsert({
+    where: { email: "distributor@nafilock.com" },
+    update: { passwordHash: distributorPasswordHash },
+    create: {
+      name: "Rajesh Kumar (Royal Hardware)",
+      email: "distributor@nafilock.com",
+      passwordHash: distributorPasswordHash,
+      phone: "+91 98100 12345",
+      role: "DISTRIBUTOR",
+      distributorProfile: {
+        create: {
+          companyName: "Royal Hardware & Lock Traders",
+          gstNumber: "07AAAAA0000A1Z5",
+          businessAddress: "42 Foundry Lane, Industrial Area",
+          city: "Aligarh",
+          state: "Uttar Pradesh",
+          status: "APPROVED",
+          assignedRepId: rep.id,
+        },
+      },
+    },
+  });
+
+  // --- Customer User ---
+  const customerPasswordHash = await bcrypt.hash("NafiCustomer2026!", 10);
+  await prisma.user.upsert({
+    where: { email: "customer@nafilock.com" },
+    update: { passwordHash: customerPasswordHash },
+    create: {
+      name: "Amit Patel",
+      email: "customer@nafilock.com",
+      passwordHash: customerPasswordHash,
+      phone: "+91 98200 54321",
+      role: "CUSTOMER",
+    },
+  });
+
+  console.log("✅ Seed complete: 3 brands, 5 categories, 11 sample products, and demo accounts (Admin, Distributor, Customer)");
 }
 
 main()

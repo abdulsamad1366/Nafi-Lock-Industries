@@ -132,6 +132,20 @@ export async function loginUser(data: { email: string; password: string }) {
   }, "none");
 }
 
+export async function loginAdmin(data: { email: string; password: string }) {
+  return fetchAPI<{
+    token: string;
+    admin: {
+      id: string;
+      email: string;
+      role: string;
+    };
+  }>("/admin/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }, "none");
+}
+
 // ── Distributor Endpoints ──
 export async function getDistributorProfile() {
   return fetchAPI<DistributorMeResponse>("/distributor/me", undefined, "user");
