@@ -692,14 +692,14 @@ export default function ProductGrid() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-7">
           {filteredProducts.map((product) => {
             const isFav = favorites.has(product.id);
 
             return (
               <article
                 key={product.id}
-                className="bg-white border border-[#EBEBEB] rounded-2xl overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 group"
+                className="bg-white border border-[#EBEBEB] rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 group"
               >
                 <div>
                   {/* ── Top Visual Stage: Product Image with Floating Badges ── */}
@@ -708,13 +708,13 @@ export default function ProductGrid() {
                       src={product.image}
                       alt={product.name}
                       fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover object-center w-full h-full group-hover:scale-103 transition-transform duration-500 ease-out"
                     />
 
                     {/* Top-Left Floating Brand Pill */}
-                    <div className="absolute top-3.5 left-3.5 z-10">
-                      <span className="text-[10px] sm:text-[10.5px] font-sans font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#2D2A26] border border-black/5 shadow-2xs">
+                    <div className="absolute top-2 left-2 sm:top-3.5 sm:left-3.5 z-10">
+                      <span className="text-[8.5px] sm:text-[10.5px] font-sans font-bold tracking-widest uppercase px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#2D2A26] border border-black/5 shadow-2xs">
                         {product.brand.toUpperCase()}
                       </span>
                     </div>
@@ -723,10 +723,10 @@ export default function ProductGrid() {
                     <button
                       onClick={(e) => toggleFavorite(product.id, e)}
                       aria-label="Add to wishlist"
-                      className="absolute top-3.5 right-3.5 z-10 w-8 h-8 rounded-full bg-white/95 backdrop-blur-xs border border-black/5 flex items-center justify-center text-gray-500 hover:text-red-500 hover:scale-105 transition-all shadow-2xs cursor-pointer"
+                      className="absolute top-2 right-2 sm:top-3.5 sm:right-3.5 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/95 backdrop-blur-xs border border-black/5 flex items-center justify-center text-gray-500 hover:text-red-500 hover:scale-105 transition-all shadow-2xs cursor-pointer"
                     >
                       <svg
-                        className={`w-4 h-4 transition-colors ${
+                        className={`w-3 h-3 sm:w-4 sm:h-4 transition-colors ${
                           isFav ? "text-red-500 fill-red-500" : "text-gray-500 fill-none"
                         }`}
                         viewBox="0 0 24 24"
@@ -741,47 +741,48 @@ export default function ProductGrid() {
                   </div>
 
                   {/* ── Card Content ── */}
-                  <div className="p-5 sm:p-6 pb-2">
+                  <div className="p-3 sm:p-5 sm:p-6 pb-2 sm:pb-2">
                     {/* Category Label + Model Code Row */}
-                    <div className="flex items-center justify-between text-[11px] mb-1.5">
-                      <span className="font-sans font-semibold tracking-wider uppercase text-[#64748B]">
+                    <div className="flex items-center justify-between text-[9.5px] sm:text-[11px] mb-1 sm:mb-1.5">
+                      <span className="font-sans font-semibold tracking-wider uppercase text-[#64748B] truncate mr-1">
                         {product.category}
                       </span>
-                      <span className="font-mono font-medium tracking-wider text-[#94A3B8]">
+                      <span className="font-mono font-medium tracking-wider text-[#94A3B8] shrink-0">
                         {product.modelCode}
                       </span>
                     </div>
 
                     {/* Product Title (Bold Serif) */}
-                    <h3 className="font-serif text-[18px] sm:text-[19px] font-bold text-[#111827] leading-snug mb-2">
+                    <h3 className="font-serif text-[13.5px] sm:text-[18px] sm:text-[19px] font-bold text-[#111827] leading-snug mb-1 sm:mb-2 line-clamp-1 sm:line-clamp-none">
                       {product.name}
                     </h3>
 
                     {/* Description Excerpt */}
-                    <p className="text-xs text-[#6B7280] leading-relaxed line-clamp-2 min-h-[36px]">
+                    <p className="text-[10.5px] sm:text-xs text-[#6B7280] leading-relaxed line-clamp-2 min-h-[30px] sm:min-h-[36px]">
                       {product.description}
                     </p>
                   </div>
                 </div>
 
                 {/* ── Bottom Action Row: View Details & Add to Cart ── */}
-                <div className="p-5 sm:p-6 pt-0 grid grid-cols-2 gap-3">
+                <div className="p-3 sm:p-6 pt-0 grid grid-cols-2 gap-1.5 sm:gap-3">
                   {/* View Details Button */}
                   <button
                     onClick={() => setActiveModalProduct(product)}
-                    className="w-full py-2.5 px-3 rounded-lg border border-[#E2E8F0] bg-white text-[#1E293B] text-xs sm:text-[13px] font-semibold hover:bg-gray-50 transition-colors text-center cursor-pointer shadow-2xs"
+                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border border-[#E2E8F0] bg-white text-[#1E293B] text-[10.5px] sm:text-[13px] font-semibold hover:bg-gray-50 transition-colors text-center cursor-pointer shadow-2xs"
                   >
-                    View Details
+                    <span className="hidden sm:inline">View Details</span>
+                    <span className="sm:hidden">Details</span>
                   </button>
 
                   {/* Add to Cart Button */}
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="w-full py-2.5 px-3 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs sm:text-[13px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white text-[10.5px] sm:text-[13px] font-semibold transition-colors flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer shadow-2xs"
                   >
                     {/* Shopping Cart Icon */}
                     <svg
-                      className="w-4 h-4 shrink-0"
+                      className="w-3 h-3 sm:w-4 sm:h-4 shrink-0"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -793,7 +794,8 @@ export default function ProductGrid() {
                       <circle cx="20" cy="21" r="1" />
                       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                     </svg>
-                    <span>Add to Cart</span>
+                    <span className="hidden sm:inline">Add to Cart</span>
+                    <span className="sm:hidden">Add</span>
                   </button>
                 </div>
               </article>
