@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 interface SalesRep {
   id: string;
@@ -40,12 +41,12 @@ export default function AdminDistributorsPage() {
       const authHeader = { Authorization: `Bearer ${token}` };
 
       const url = statusFilter === "ALL"
-        ? "http://localhost:5001/api/admin/distributors"
-        : `http://localhost:5001/api/admin/distributors?status=${statusFilter}`;
+        ? `${API_BASE}/admin/distributors`
+        : `${API_BASE}/admin/distributors?status=${statusFilter}`;
 
       const [distRes, repsRes] = await Promise.all([
         fetch(url, { headers: authHeader }).catch(() => null),
-        fetch("http://localhost:5001/api/admin/sales-reps", { headers: authHeader }).catch(() => null),
+        fetch(`${API_BASE}/admin/sales-reps`, { headers: authHeader }).catch(() => null),
       ]);
 
       if (distRes && distRes.ok) {
@@ -71,7 +72,7 @@ export default function AdminDistributorsPage() {
     setUpdatingId(id);
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      const res = await fetch(`http://localhost:5001/api/admin/distributors/${id}`, {
+      const res = await fetch(`${API_BASE}/admin/distributors/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +100,7 @@ export default function AdminDistributorsPage() {
     setUpdatingId(id);
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      await fetch(`http://localhost:5001/api/admin/distributors/${id}`, {
+      await fetch(`${API_BASE}/admin/distributors/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

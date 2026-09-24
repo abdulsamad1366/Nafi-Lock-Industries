@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 interface SalesRepAdminRow {
   id: string;
@@ -28,7 +29,7 @@ export default function AdminSalesRepsPage() {
   const fetchReps = async () => {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      const res = await fetch("http://localhost:5001/api/admin/sales-reps", {
+      const res = await fetch(`${API_BASE}/admin/sales-reps`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -68,8 +69,8 @@ export default function AdminSalesRepsPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
       const url = editingRep
-        ? `http://localhost:5001/api/admin/sales-reps/${editingRep.id}`
-        : "http://localhost:5001/api/admin/sales-reps";
+        ? `${API_BASE}/admin/sales-reps/${editingRep.id}`
+        : `${API_BASE}/admin/sales-reps`;
 
       const method = editingRep ? "PUT" : "POST";
 
@@ -99,7 +100,7 @@ export default function AdminSalesRepsPage() {
     if (!confirm("Are you sure you want to delete this sales representative?")) return;
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      await fetch(`http://localhost:5001/api/admin/sales-reps/${id}`, {
+      await fetch(`${API_BASE}/admin/sales-reps/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

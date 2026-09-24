@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 interface LedgerRequestAdminRow {
   id: string;
@@ -36,8 +37,8 @@ export default function AdminLedgerRequestsPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
       const url = statusFilter === "ALL"
-        ? "http://localhost:5001/api/admin/ledger-requests"
-        : `http://localhost:5001/api/admin/ledger-requests?status=${statusFilter}`;
+        ? `${API_BASE}/admin/ledger-requests`
+        : `${API_BASE}/admin/ledger-requests?status=${statusFilter}`;
 
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -80,7 +81,7 @@ export default function AdminLedgerRequestsPage() {
       formData.append("title", title);
 
       const res = await fetch(
-        `http://localhost:5001/api/admin/ledger-requests/${activeReq.id}/fulfill`,
+        `${API_BASE}/admin/ledger-requests/${activeReq.id}/fulfill`,
         {
           method: "POST",
           headers: {

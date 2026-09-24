@@ -2,7 +2,7 @@ import { getUserAuthHeaders } from "./userAuth";
 
 const rawApiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
 const cleanBase = rawApiBase.replace(/\/+$/, "");
-const API_BASE = cleanBase.endsWith("/api") ? cleanBase : `${cleanBase}/api`;
+export const API_BASE = cleanBase.endsWith("/api") ? cleanBase : `${cleanBase}/api`;
 
 /**
  * Frontend API client with automatic token injection

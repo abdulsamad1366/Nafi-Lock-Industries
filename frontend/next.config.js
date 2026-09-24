@@ -14,6 +14,11 @@ const nextConfig = {
         port: "5001",
         pathname: "/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "nafi-lock-api.onrender.com",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };

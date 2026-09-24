@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Brand } from "@/lib/api";
+import { Brand, API_BASE } from "@/lib/api";
 
 interface CatalogAdminRow {
   id: string;
@@ -30,8 +30,8 @@ export default function AdminCatalogsPage() {
   const fetchData = async () => {
     try {
       const [catRes, brandRes] = await Promise.all([
-        fetch("http://localhost:5001/api/catalogs").catch(() => null),
-        fetch("http://localhost:5001/api/brands").catch(() => null),
+        fetch(`${API_BASE}/catalogs`).catch(() => null),
+        fetch(`${API_BASE}/brands`).catch(() => null),
       ]);
 
       if (catRes && catRes.ok) {
@@ -68,7 +68,7 @@ export default function AdminCatalogsPage() {
       formData.append("file", file);
       if (brandId) formData.append("brandId", brandId);
 
-      const res = await fetch("http://localhost:5001/api/admin/catalogs", {
+      const res = await fetch(`${API_BASE}/admin/catalogs`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ export default function AdminCatalogsPage() {
     if (!confirm("Delete this catalog PDF?")) return;
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("nafi_admin_token") || "" : "";
-      await fetch(`http://localhost:5001/api/admin/catalogs/${id}`, {
+      await fetch(`${API_BASE}/admin/catalogs/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

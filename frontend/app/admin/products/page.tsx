@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Brand, Category, Product } from "@/lib/api";
+import { Brand, Category, Product, API_BASE } from "@/lib/api";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -29,9 +29,9 @@ export default function AdminProductsPage() {
   const fetchData = async () => {
     try {
       const [prodRes, brandRes, catRes] = await Promise.all([
-        fetch("http://localhost:5001/api/products").catch(() => null),
-        fetch("http://localhost:5001/api/brands").catch(() => null),
-        fetch("http://localhost:5001/api/categories").catch(() => null),
+        fetch(`${API_BASE}/products`).catch(() => null),
+        fetch(`${API_BASE}/brands`).catch(() => null),
+        fetch(`${API_BASE}/categories`).catch(() => null),
       ]);
 
       if (prodRes && prodRes.ok) {
@@ -92,7 +92,7 @@ export default function AdminProductsPage() {
         minOrderQty: minOrderQty !== "" ? Number(minOrderQty) : null,
       };
 
-      const res = await fetch("http://localhost:5001/api/products", {
+      const res = await fetch(`${API_BASE}/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
