@@ -111,7 +111,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background pt-28 sm:pt-32 pb-28 lg:pb-20">
+    <div className="min-h-screen bg-background pt-10 sm:pt-5 pb-28 lg:pb-20">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
         {/* Compact & Responsive Top Distributor Header Console with Integrated Sticky Sub-nav */}
         <div className="sticky top-20 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-5 mb-5 sm:mb-8 shadow-sm transition-all">
