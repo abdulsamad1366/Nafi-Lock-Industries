@@ -334,6 +334,9 @@ export interface OrderItem {
     images: string[];
     material?: string;
     size?: string;
+    brand?: { id: string; name: string; slug: string };
+    category?: { id: string; name: string; slug: string };
+    minOrderQty?: number;
   };
   quantity: number;
   unitPrice: number;
