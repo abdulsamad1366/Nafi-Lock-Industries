@@ -177,3 +177,15 @@ body {
     overflow-x: auto;
   }
 }
+
+/* ==========================================================================
+   Utility: Hide Scrollbars for Clean Touch/Mobile UIs
+   ========================================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

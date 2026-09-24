@@ -111,10 +111,10 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background pt-20 sm:pt-28 pb-28 lg:pb-20">
+    <div className="min-h-screen bg-background pt-28 sm:pt-32 pb-28 lg:pb-20">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-        {/* Compact & Responsive Top Distributor Header Console */}
-        <div className="sticky top-16 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-5 mb-4 sm:mb-8 shadow-sm transition-all">
+        {/* Compact & Responsive Top Distributor Header Console with Integrated Sticky Sub-nav */}
+        <div className="sticky top-20 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-5 mb-5 sm:mb-8 shadow-sm transition-all">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
               {/* Company Initials Monogram Badge */}
@@ -140,7 +140,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
               <button
                 onClick={handleLogout}
                 title="Sign Out"
-                className="px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-primary hover:border-accent transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5 shrink-0"
+                className="px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-primary hover:border-accent transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5 shrink-0 touch-manipulation"
               >
                 <span className="hidden sm:inline">Sign Out</span>
                 <svg className="w-3.5 h-3.5 sm:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -151,70 +151,70 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Horizontal Scrollable Sub-nav Pill Bar */}
-        <div className="lg:hidden mb-5 -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 scroll-smooth">
-            {navLinks.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-serif whitespace-nowrap transition-all shrink-0 ${
-                    isActive
-                      ? "bg-accent text-background font-bold shadow-xs scale-[1.02]"
-                      : "bg-surface border border-divider text-muted hover:text-primary active:bg-background"
-                  }`}
-                >
-                  {item.icon === "dashboard" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="7" height="7" rx="1" />
-                      <rect x="14" y="3" width="7" height="7" rx="1" />
-                      <rect x="14" y="14" width="7" height="7" rx="1" />
-                      <rect x="3" y="14" width="7" height="7" rx="1" />
-                    </svg>
-                  )}
-                  {item.icon === "catalog" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                    </svg>
-                  )}
-                  {item.icon === "box" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    </svg>
-                  )}
-                  {item.icon === "file" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                    </svg>
-                  )}
-                  {item.icon === "download" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                  )}
-                  {item.icon === "heart" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                  )}
-                  {item.icon === "user" && (
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  )}
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+          {/* Mobile Horizontal Scrollable Sub-nav Pill Bar (Fixed together with the header) */}
+          <div className="lg:hidden mt-3 pt-2.5 border-t border-divider/60">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth">
+              {navLinks.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-serif whitespace-nowrap transition-all shrink-0 touch-manipulation ${
+                      isActive
+                        ? "bg-accent text-background font-bold shadow-2xs scale-[1.02]"
+                        : "bg-background border border-divider/80 text-muted hover:text-primary active:bg-surface"
+                    }`}
+                  >
+                    {item.icon === "dashboard" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                      </svg>
+                    )}
+                    {item.icon === "catalog" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                    )}
+                    {item.icon === "box" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      </svg>
+                    )}
+                    {item.icon === "file" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                    )}
+                    {item.icon === "download" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                    )}
+                    {item.icon === "heart" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    )}
+                    {item.icon === "user" && (
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    )}
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
 
