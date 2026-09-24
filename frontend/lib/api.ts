@@ -1,6 +1,7 @@
 import { getUserAuthHeaders } from "./userAuth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+const rawApiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+const API_BASE = rawApiBase.replace(/\/+$/, "");
 
 /**
  * Frontend API client with automatic token injection
