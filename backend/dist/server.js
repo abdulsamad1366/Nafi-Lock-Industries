@@ -26,6 +26,7 @@ const ledger_requests_routes_1 = __importDefault(require("./routes/admin/ledger-
 const sales_reps_routes_1 = __importDefault(require("./routes/admin/sales-reps.routes"));
 const catalogs_routes_2 = __importDefault(require("./routes/admin/catalogs.routes"));
 const error_middleware_1 = require("./middleware/error.middleware");
+const db_1 = __importDefault(require("./config/db"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5001;
@@ -33,11 +34,55 @@ const PORT = process.env.PORT || 5001;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Health check endpoint for cloud hosting / monitoring
-app.get("/health", (_req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/health", async (_req, res) => {
+    const dbConfigured = Boolean(process.env.DATABASE_URL);
+    let dbStatus = "unknown";
+    let dbError = null;
+    try {
+        if (dbConfigured) {
+            await db_1.default.$queryRaw `SELECT 1`;
+            dbStatus = "connected";
+        }
+        else {
+            dbStatus = "missing_env";
+        }
+    }
+    catch (err) {
+        dbStatus = "error";
+        dbError = err.message;
+    }
+    res.status(200).json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        dbConfigured,
+        dbStatus,
+        dbError,
+    });
 });
-app.get("/api/health", (_req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/api/health", async (_req, res) => {
+    const dbConfigured = Boolean(process.env.DATABASE_URL);
+    let dbStatus = "unknown";
+    let dbError = null;
+    try {
+        if (dbConfigured) {
+            await db_1.default.$queryRaw `SELECT 1`;
+            dbStatus = "connected";
+        }
+        else {
+            dbStatus = "missing_env";
+        }
+    }
+    catch (err) {
+        dbStatus = "error";
+        dbError = err.message;
+    }
+    res.status(200).json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        dbConfigured,
+        dbStatus,
+        dbError,
+    });
 });
 // Security: Explicitly block direct public access to private catalogs and ledgers
 app.use("/uploads/catalogs", (_req, res) => res.status(403).json({ error: "Access denied. Use gated download route." }));

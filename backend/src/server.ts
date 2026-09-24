@@ -25,6 +25,7 @@ import adminSalesRepsRouter from "./routes/admin/sales-reps.routes";
 import adminCatalogsRouter from "./routes/admin/catalogs.routes";
 
 import { errorHandler } from "./middleware/error.middleware";
+import prisma from "./config/db";
 
 dotenv.config();
 
@@ -36,11 +37,51 @@ app.use(cors());
 app.use(express.json());
 
 // Health check endpoint for cloud hosting / monitoring
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/health", async (_req, res) => {
+  const dbConfigured = Boolean(process.env.DATABASE_URL);
+  let dbStatus = "unknown";
+  let dbError: string | null = null;
+  try {
+    if (dbConfigured) {
+      await prisma.$queryRaw`SELECT 1`;
+      dbStatus = "connected";
+    } else {
+      dbStatus = "missing_env";
+    }
+  } catch (err: any) {
+    dbStatus = "error";
+    dbError = err.message;
+  }
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    dbConfigured,
+    dbStatus,
+    dbError,
+  });
 });
-app.get("/api/health", (_req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/api/health", async (_req, res) => {
+  const dbConfigured = Boolean(process.env.DATABASE_URL);
+  let dbStatus = "unknown";
+  let dbError: string | null = null;
+  try {
+    if (dbConfigured) {
+      await prisma.$queryRaw`SELECT 1`;
+      dbStatus = "connected";
+    } else {
+      dbStatus = "missing_env";
+    }
+  } catch (err: any) {
+    dbStatus = "error";
+    dbError = err.message;
+  }
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    dbConfigured,
+    dbStatus,
+    dbError,
+  });
 });
 
 // Security: Explicitly block direct public access to private catalogs and ledgers
