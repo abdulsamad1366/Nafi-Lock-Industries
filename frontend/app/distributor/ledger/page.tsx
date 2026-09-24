@@ -19,6 +19,79 @@ const PRESET_STATEMENT_PERIODS = [
   "GST & Tax Compliance Summary",
 ];
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+function getLedgerExpiryInfo(uploadedAtStr: string) {
+  const uploadedTime = new Date(uploadedAtStr).getTime();
+  const expiresTime = uploadedTime + SEVEN_DAYS_MS;
+  const msRemaining = expiresTime - Date.now();
+
+  if (msRemaining <= 0) {
+    return {
+      label: "Expired (Auto-Purged)",
+      daysLeft: 0,
+      hoursLeft: 0,
+      percentRemaining: 0,
+      isExpired: true,
+      color: "red",
+    };
+  }
+
+  const daysLeft = Math.ceil(msRemaining / (24 * 60 * 60 * 1000));
+  const hoursLeft = Math.floor(msRemaining / (60 * 60 * 1000));
+  const percentRemaining = Math.max(
+    5,
+    Math.min(100, Math.round((msRemaining / SEVEN_DAYS_MS) * 100))
+  );
+
+  if (daysLeft > 2) {
+    return {
+      label: `${daysLeft} days left`,
+      daysLeft,
+      hoursLeft,
+      percentRemaining,
+      isExpired: false,
+      color: "slate",
+    };
+  } else if (daysLeft === 2) {
+    return {
+      label: "2 days left",
+      daysLeft: 2,
+      hoursLeft,
+      percentRemaining,
+      isExpired: false,
+      color: "amber",
+    };
+  } else if (daysLeft === 1 && hoursLeft > 24) {
+    return {
+      label: "1 day left",
+      daysLeft: 1,
+      hoursLeft,
+      percentRemaining,
+      isExpired: false,
+      color: "urgent",
+    };
+  } else if (hoursLeft > 1) {
+    return {
+      label: `${hoursLeft} hours left`,
+      daysLeft: 1,
+      hoursLeft,
+      percentRemaining,
+      isExpired: false,
+      color: "urgent",
+    };
+  } else {
+    return {
+      label: "Expiring in < 1 hour",
+      daysLeft: 0,
+      hoursLeft: 0,
+      percentRemaining: 5,
+      isExpired: false,
+      color: "urgent",
+    };
+  }
+}
+
 export default function DistributorLedgerPage() {
   const [requests, setRequests] = useState<LedgerRequest[]>([]);
   const [ledgers, setLedgers] = useState<Ledger[]>([]);
@@ -139,7 +212,7 @@ export default function DistributorLedgerPage() {
             </span>
             <span className="text-xs text-muted font-mono">Available</span>
           </div>
-          <p className="text-[11px] text-muted mt-1">Signed PDF documents ready for download.</p>
+          <p className="text-[11px] text-muted mt-1">7-day active retention before auto-purge.</p>
         </div>
 
         <div className="bg-surface border border-divider rounded-2xl p-5 relative overflow-hidden">
@@ -195,9 +268,32 @@ export default function DistributorLedgerPage() {
               ({ledgers.length})
             </span>
           </h3>
-          <span className="text-[10px] font-mono text-muted uppercase tracking-wider hidden sm:inline">
-            Direct Plant Settlement Archive
+          <span className="text-[10px] font-mono text-accent font-semibold uppercase tracking-wider hidden sm:inline">
+            7-Day Auto-Purge Protection Active
           </span>
+        </div>
+
+        {/* 7-Day Policy Notice */}
+        <div className="p-3.5 bg-surface border border-accent/20 rounded-2xl flex items-start gap-3 text-xs text-muted shadow-xs">
+          <div className="w-7 h-7 rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center shrink-0 mt-0.5">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <strong className="text-primary font-semibold font-serif">
+                7-Day Automatic Expiry & Purge Policy
+              </strong>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/20 font-bold uppercase">
+                Data Minimization SLA
+              </span>
+            </div>
+            <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
+              To safeguard financial confidentiality, all certified ledger PDFs automatically delete from the server exactly 7 days after generation. Please download and preserve your local PDF copies.
+            </p>
+          </div>
         </div>
 
         {isLoading ? (
@@ -217,10 +313,10 @@ export default function DistributorLedgerPage() {
               </svg>
             </div>
             <h4 className="font-serif font-bold text-base text-primary mb-1">
-              No Fulfilled Ledger Documents Yet
+              No Active Ledger Documents
             </h4>
             <p className="text-xs text-muted max-w-md mx-auto mb-6">
-              When accounting uploads your stamped fiscal statements, you will be able to download them here directly.
+              Statements are available for download for 7 days after issue and automatically purge afterwards. When accounting fulfills a request, your statement will appear here.
             </p>
             <button
               type="button"
@@ -232,61 +328,146 @@ export default function DistributorLedgerPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {ledgers.map((l) => (
-              <div
-                key={l.id}
-                className="bg-surface border border-divider hover:border-accent/40 rounded-3xl p-6 flex flex-col justify-between transition-all shadow-xs group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                      Official PDF
-                    </span>
-                    <span className="text-[10px] font-mono text-muted">
-                      Uploaded{" "}
-                      {new Date(l.uploadedAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
+            {ledgers.map((l) => {
+              const expiry = getLedgerExpiryInfo(l.uploadedAt);
+
+              return (
+                <div
+                  key={l.id}
+                  className="bg-surface border border-divider hover:border-accent/40 rounded-3xl p-6 flex flex-col justify-between transition-all shadow-xs group"
+                >
+                  <div>
+                    {/* Header badge row with live countdown badge */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                          Official PDF
+                        </span>
+
+                        {/* Prominent Live Countdown Pill */}
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold tracking-tight border flex items-center gap-1.5 shadow-xs ${
+                            expiry.color === "urgent"
+                              ? "bg-red-500/20 text-red-400 border-red-500/40 animate-pulse"
+                              : expiry.color === "amber"
+                              ? "bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse"
+                              : "bg-accent/15 text-accent border-accent/30"
+                          }`}
+                          title="This ledger will automatically delete after 7 days"
+                        >
+                          <svg
+                            className="w-3 h-3 shrink-0"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                          </svg>
+                          <span>{expiry.label}</span>
+                        </span>
+                      </div>
+
+                      <span className="text-[10px] font-mono text-muted">
+                        Uploaded{" "}
+                        {new Date(l.uploadedAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    <h4 className="font-serif font-bold text-base text-primary group-hover:text-accent transition-colors mb-2">
+                      {l.title}
+                    </h4>
+                    <p className="text-xs text-muted leading-relaxed mb-4">
+                      Commercial statement generated by Nafi Lock Industries factory accounting desk for GST reconciliation and ledger audit.
+                    </p>
+
+                    {/* 7-Day Retention Window Progress Bar */}
+                    <div className="mb-5 p-3 bg-background/60 border border-divider rounded-xl space-y-1.5">
+                      <div className="flex items-center justify-between text-[10px] font-mono">
+                        <span className="text-muted flex items-center gap-1">
+                          <span>Auto-Delete Countdown:</span>
+                          <strong
+                            className={
+                              expiry.color === "urgent"
+                                ? "text-red-400 font-bold"
+                                : expiry.color === "amber"
+                                ? "text-amber-400 font-bold"
+                                : "text-accent font-bold"
+                            }
+                          >
+                            {expiry.label}
+                          </strong>
+                        </span>
+                        <span className="text-muted/80">
+                          Deletes:{" "}
+                          {new Date(
+                            new Date(l.uploadedAt).getTime() + SEVEN_DAYS_MS
+                          ).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-divider rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            expiry.color === "urgent"
+                              ? "bg-red-500"
+                              : expiry.color === "amber"
+                              ? "bg-amber-400"
+                              : "bg-accent"
+                          }`}
+                          style={{ width: `${expiry.percentRemaining}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-[9px] font-mono text-muted/70 pt-0.5">
+                        <span>7-day auto-purge policy</span>
+                        <span>Auto-deleted from server on expiry</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <h4 className="font-serif font-bold text-base text-primary group-hover:text-accent transition-colors mb-2">
-                    {l.title}
-                  </h4>
-                  <p className="text-xs text-muted leading-relaxed mb-6">
-                    Commercial statement generated by Nafi Lock Industries factory accounting desk for GST reconciliation and ledger audit.
-                  </p>
-                </div>
+                  <div className="pt-4 border-t border-divider flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
+                      <svg className="w-3.5 h-3.5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      </svg>
+                      <span>Digitally Certified</span>
+                    </div>
 
-                <div className="pt-4 border-t border-divider flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-                    <svg className="w-3.5 h-3.5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    <span>Digitally Certified</span>
+                    <button
+                      type="button"
+                      onClick={() => handleDownload(l)}
+                      disabled={downloadingId === l.id || expiry.isExpired}
+                      className={`px-4 py-2 font-serif font-bold text-xs rounded-full transition-all flex items-center gap-1.5 shadow-xs disabled:opacity-50 ${
+                        expiry.isExpired
+                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                          : "bg-accent text-background hover:bg-accent-hover cursor-pointer"
+                      }`}
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      <span>
+                        {downloadingId === l.id
+                          ? "Downloading..."
+                          : expiry.isExpired
+                          ? "Statement Expired"
+                          : "Download PDF"}
+                      </span>
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleDownload(l)}
-                    disabled={downloadingId === l.id}
-                    className="px-4 py-2 bg-accent text-background hover:bg-accent-hover font-serif font-bold text-xs rounded-full transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
-                  >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span>
-                      {downloadingId === l.id ? "Downloading..." : "Download PDF"}
-                    </span>
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

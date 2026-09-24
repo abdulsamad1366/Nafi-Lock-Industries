@@ -17,6 +17,7 @@ const user_auth_routes_1 = __importDefault(require("./routes/user-auth.routes"))
 const distributor_routes_1 = __importDefault(require("./routes/distributor.routes"));
 const orders_routes_1 = __importDefault(require("./routes/orders.routes"));
 const ledger_routes_1 = __importDefault(require("./routes/ledger.routes"));
+const ledger_controller_1 = require("./controllers/ledger.controller");
 const catalogs_routes_1 = __importDefault(require("./routes/catalogs.routes"));
 const likes_routes_1 = __importDefault(require("./routes/likes.routes"));
 // Phase 2: Admin Extension Routers
@@ -113,6 +114,12 @@ app.use("/api/admin/catalogs", catalogs_routes_2.default);
 app.use(error_middleware_1.errorHandler);
 app.listen(PORT, () => {
     console.log(`🔒 Nafi Lock Industries API running on port ${PORT}`);
+    // Initial purge of any ledgers older than 7 days
+    (0, ledger_controller_1.purgeExpiredLedgers)().catch((err) => console.error("Initial ledger purge error:", err));
+    // Recurring hourly auto-deletion daemon
+    setInterval(() => {
+        (0, ledger_controller_1.purgeExpiredLedgers)().catch((err) => console.error("Recurring ledger purge error:", err));
+    }, 60 * 60 * 1000);
 });
 exports.default = app;
 //# sourceMappingURL=server.js.map

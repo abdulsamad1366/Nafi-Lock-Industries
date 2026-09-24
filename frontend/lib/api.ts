@@ -368,6 +368,10 @@ export interface Ledger {
   title: string;
   fileUrl: string;
   uploadedAt: string;
+  expiresAt?: string;
+  daysLeft?: number;
+  hoursLeft?: number;
+  isExpired?: boolean;
 }
 
 export interface Catalog {

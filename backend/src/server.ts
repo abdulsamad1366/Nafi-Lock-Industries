@@ -14,6 +14,7 @@ import userAuthRouter from "./routes/user-auth.routes";
 import distributorRouter from "./routes/distributor.routes";
 import ordersRouter from "./routes/orders.routes";
 import ledgerRouter from "./routes/ledger.routes";
+import { purgeExpiredLedgers } from "./controllers/ledger.controller";
 import catalogsRouter from "./routes/catalogs.routes";
 import likesRouter from "./routes/likes.routes";
 
@@ -123,6 +124,16 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🔒 Nafi Lock Industries API running on port ${PORT}`);
+  // Initial purge of any ledgers older than 7 days
+  purgeExpiredLedgers().catch((err) =>
+    console.error("Initial ledger purge error:", err)
+  );
+  // Recurring hourly auto-deletion daemon
+  setInterval(() => {
+    purgeExpiredLedgers().catch((err) =>
+      console.error("Recurring ledger purge error:", err)
+    );
+  }, 60 * 60 * 1000);
 });
 
 export default app;

@@ -280,6 +280,16 @@ export default function AdminLedgerRequestsPage() {
                 />
               </div>
 
+              <div className="p-3 bg-background border border-divider rounded-xl text-[11px] text-muted flex items-start gap-2">
+                <svg className="w-4 h-4 text-accent shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>
+                  <strong>7-Day Retention:</strong> For confidentiality compliance, this uploaded ledger will be available to the distributor for 7 days, after which it will be automatically purged from the server.
+                </span>
+              </div>
+
               <div className="flex justify-end gap-3 pt-4 border-t border-divider">
                 <button
                   type="button"
