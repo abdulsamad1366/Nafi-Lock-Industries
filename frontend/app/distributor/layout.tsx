@@ -111,30 +111,37 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background pt-28 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Distributor Header Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-8 border-b border-divider gap-4 mb-8">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
-                Authorized Distributor Hub
-              </span>
-              <span className="text-xs text-muted font-mono">
-                {profileData?.distributorProfile?.companyName || user?.name}
-              </span>
-            </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-primary mt-1">
-              {profileData?.distributorProfile?.companyName || user?.name}
-            </h1>
-          </div>
+        {/* Fixed/Sticky Top Distributor Header Console */}
+        <div className="sticky top-20 sm:top-24 z-30 bg-surface/90 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-4 sm:p-5 mb-8 shadow-sm transition-all">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              {/* Company Initials Monogram Badge */}
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-base sm:text-lg shrink-0 shadow-2xs">
+                {(profileData?.distributorProfile?.companyName || user?.name || "D").charAt(0).toUpperCase()}
+              </div>
 
-          <div className="flex items-center gap-3">
-            <CartBadgeButton />
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-xs font-semibold rounded-full bg-surface border border-divider text-muted hover:text-primary transition-colors cursor-pointer"
-            >
-              Sign Out
-            </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
+                    Authorized Distributor Hub
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                </div>
+                <h1 className="font-serif text-lg sm:text-2xl font-bold text-primary mt-0.5 line-clamp-1">
+                  {profileData?.distributorProfile?.companyName || user?.name}
+                </h1>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 self-end sm:self-center">
+              <CartBadgeButton />
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-primary hover:border-accent transition-colors cursor-pointer shadow-2xs"
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
 
@@ -142,7 +149,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Navigation Sidebar */}
           <aside className="lg:col-span-3">
-            <nav className="bg-surface border border-divider rounded-3xl p-3 space-y-1 shadow-xs sticky top-32">
+            <nav className="bg-surface border border-divider rounded-3xl p-3 space-y-1 shadow-xs sticky top-48 sm:top-52">
               <div className="px-3 py-2 mb-2 border-b border-divider/60 flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-muted font-bold">
                   B2B Console
