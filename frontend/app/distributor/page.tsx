@@ -57,7 +57,12 @@ export default function DistributorOverviewPage() {
         </div>
       </div>
 
-      {/* Grid: 3 Metric Tiles & Sales Rep Card */}
+      {/* Assigned Sales Rep Section */}
+      <div>
+        <SalesRepCard rep={profile?.assignedRep} />
+      </div>
+
+      {/* Grid: 3 Metric Tiles & Account Verification */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Metric 1 */}
         <div className="bg-surface border border-divider rounded-2xl p-6">
@@ -110,11 +115,6 @@ export default function DistributorOverviewPage() {
               : "Dealer pricing unlocks upon approval."}
           </p>
         </div>
-      </div>
-
-      {/* Assigned Sales Rep Section */}
-      <div>
-        <SalesRepCard rep={profile?.assignedRep} />
       </div>
     </div>
   );
