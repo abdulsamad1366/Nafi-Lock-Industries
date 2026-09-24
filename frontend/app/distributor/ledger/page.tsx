@@ -525,19 +525,19 @@ export default function DistributorLedgerPage() {
       {/* Request Modal */}
       {showRequestModal && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-surface border border-divider rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-surface border border-divider rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowRequestModal(false)}
-              className="absolute top-5 right-5 text-muted hover:text-primary p-2 cursor-pointer"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 text-muted hover:text-primary p-2 cursor-pointer touch-manipulation"
             >
               ✕
             </button>
 
-            <div className="mb-6">
+            <div className="mb-5 sm:mb-6 pr-8">
               <span className="font-mono text-[10px] uppercase tracking-wider text-accent font-bold block mb-1">
                 Aligarh Accounts Desk
               </span>
-              <h3 className="font-serif text-xl font-bold text-primary">
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-primary">
                 Request Ledger Statement
               </h3>
               <p className="text-xs text-muted mt-1 leading-relaxed">
@@ -550,13 +550,13 @@ export default function DistributorLedgerPage() {
               <label className="block text-[10px] font-mono uppercase tracking-wider text-muted mb-2 font-semibold">
                 Quick Select Accounting Period:
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {PRESET_STATEMENT_PERIODS.map((preset) => (
                   <button
                     key={preset}
                     type="button"
                     onClick={() => setNote(preset)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-serif transition-colors text-left cursor-pointer border ${
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-serif transition-colors text-left cursor-pointer border touch-manipulation ${
                       note === preset
                         ? "bg-accent text-background font-bold border-accent shadow-xs"
                         : "bg-background border-divider text-muted hover:text-primary hover:border-accent/40"

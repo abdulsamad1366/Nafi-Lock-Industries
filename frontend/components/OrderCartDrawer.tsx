@@ -25,12 +25,12 @@ export default function OrderCartDrawer() {
         onClick={closeDrawer}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-surface border-l border-divider shadow-2xl flex flex-col">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+        <div className="w-screen max-w-md bg-surface border-l border-divider shadow-2xl flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-divider flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-accent">
+          <div className="p-4 sm:p-6 border-b border-divider flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-accent shrink-0">
                 <svg
                   className="w-4 h-4"
                   viewBox="0 0 24 24"
@@ -46,17 +46,17 @@ export default function OrderCartDrawer() {
                 </svg>
               </div>
               <div>
-                <h2 className="font-serif text-lg font-bold text-primary">
+                <h2 className="font-serif text-base sm:text-lg font-bold text-primary">
                   Distributor Order Cart
                 </h2>
-                <p className="text-xs text-muted">
+                <p className="text-[11px] sm:text-xs text-muted">
                   {itemCount} units across {items.length} product line(s)
                 </p>
               </div>
             </div>
             <button
               onClick={closeDrawer}
-              className="p-2 text-muted hover:text-primary rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="p-2 text-muted hover:text-primary rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors touch-manipulation"
               aria-label="Close cart"
             >
               <svg
@@ -73,7 +73,7 @@ export default function OrderCartDrawer() {
           </div>
 
           {/* Cart Item List */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4">
             {items.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-16 h-16 rounded-full bg-accent/10 text-accent mx-auto flex items-center justify-center mb-4">
@@ -106,10 +106,10 @@ export default function OrderCartDrawer() {
               items.map((item) => (
                 <div
                   key={item.productId}
-                  className="bg-background border border-divider rounded-xl p-4 flex gap-4 relative group"
+                  className="bg-background border border-divider rounded-xl p-3.5 sm:p-4 flex gap-3 sm:gap-4 relative group"
                 >
                   {/* Thumbnail */}
-                  <div className="w-20 h-20 bg-surface rounded-lg border border-divider flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface rounded-lg border border-divider flex items-center justify-center p-2 shrink-0 overflow-hidden">
                     {item.image ? (
                       <Image
                         src={item.image}
@@ -127,12 +127,12 @@ export default function OrderCartDrawer() {
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-serif text-sm font-semibold text-primary truncate">
+                        <h4 className="font-serif text-xs sm:text-sm font-semibold text-primary truncate">
                           {item.name}
                         </h4>
                         <button
                           onClick={() => removeItem(item.productId)}
-                          className="text-muted hover:text-red-500 transition-colors"
+                          className="p-1 -mr-1 text-muted hover:text-red-500 transition-colors touch-manipulation"
                           title="Remove item"
                         >
                           <svg
@@ -154,8 +154,8 @@ export default function OrderCartDrawer() {
                         </span>
                       )}
 
-                      <div className="mt-1 flex items-baseline gap-2">
-                        <span className="font-mono text-sm font-bold text-accent">
+                      <div className="mt-1 flex items-baseline gap-1.5 sm:gap-2">
+                        <span className="font-mono text-xs sm:text-sm font-bold text-accent">
                           ₹{item.unitPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </span>
                         <span className="text-[10px] text-muted">/ unit</span>
@@ -163,7 +163,7 @@ export default function OrderCartDrawer() {
                     </div>
 
                     {/* Quantity Selector with minOrderQty compliance */}
-                    <div className="mt-3 flex items-center justify-between pt-2 border-t border-divider/60">
+                    <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-divider/60">
                       <div className="flex items-center border border-divider rounded-lg overflow-hidden bg-surface">
                         <button
                           type="button"
@@ -174,7 +174,7 @@ export default function OrderCartDrawer() {
                             )
                           }
                           disabled={item.quantity <= item.minOrderQty}
-                          className="px-2.5 py-1 text-sm text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                         >
                           -
                         </button>
@@ -188,19 +188,19 @@ export default function OrderCartDrawer() {
                               updateQuantity(item.productId, Math.max(item.minOrderQty, val));
                             }
                           }}
-                          className="w-12 text-center text-xs font-mono font-bold bg-transparent text-primary focus:outline-hidden py-1"
+                          className="w-10 sm:w-12 h-7 sm:h-8 text-center text-xs font-mono font-bold bg-transparent text-primary focus:outline-hidden py-1"
                         />
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="px-2.5 py-1 text-sm text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors touch-manipulation"
                         >
                           +
                         </button>
                       </div>
 
                       <div className="text-right">
-                        <span className="text-[10px] text-muted block">
+                        <span className="text-[9px] sm:text-[10px] text-muted block">
                           MOQ: {item.minOrderQty}
                         </span>
                         <span className="font-mono text-xs font-bold text-primary">
@@ -216,17 +216,17 @@ export default function OrderCartDrawer() {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-divider bg-background/50 space-y-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Estimated Order Subtotal</span>
-                <span className="font-mono text-lg font-bold text-primary">
+            <div className="p-4 sm:p-6 border-t border-divider bg-background/50 space-y-3 sm:space-y-4 shrink-0 pb-6">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="text-muted">Estimated Subtotal</span>
+                <span className="font-mono text-base sm:text-lg font-bold text-primary">
                   ₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                 </span>
               </div>
               <p className="text-[10px] text-muted leading-tight">
-                * Taxes and freight terms will be verified upon order confirmation by your assigned sales executive.
+                * Taxes and freight terms will be verified upon order confirmation by sales executive.
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={closeDrawer}
@@ -239,7 +239,7 @@ export default function OrderCartDrawer() {
                   onClick={closeDrawer}
                   className="flex-1 py-2.5 bg-accent text-background rounded-full font-medium text-xs hover:bg-accent-hover transition-colors text-center font-serif tracking-wide shadow-md"
                 >
-                  Review & Place Order →
+                  Place Order →
                 </Link>
               </div>
             </div>

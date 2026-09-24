@@ -288,15 +288,15 @@ export default function DistributorOrdersPage() {
                 className="bg-surface border border-divider hover:border-accent/40 rounded-3xl overflow-hidden transition-all shadow-xs"
               >
                 {/* Order Top Summary Bar */}
-                <div className="p-6 border-b border-divider bg-background/40">
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="p-4 sm:p-6 border-b border-divider bg-background/40">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                      <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                        <span className="font-mono text-base font-bold text-primary tracking-tight">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-1.5">
+                        <span className="font-mono text-sm sm:text-base font-bold text-primary tracking-tight">
                           {order.orderNumber}
                         </span>
                         <span
-                          className={`px-3 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${
                             order.status === "DELIVERED"
                               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
                               : order.status === "SHIPPED"
@@ -312,7 +312,7 @@ export default function DistributorOrdersPage() {
                         >
                           {order.status}
                         </span>
-                        <span className="text-xs text-muted font-mono">
+                        <span className="text-[11px] sm:text-xs text-muted font-mono">
                           Placed:{" "}
                           {new Date(order.placedAt).toLocaleDateString("en-IN", {
                             day: "numeric",
@@ -322,7 +322,7 @@ export default function DistributorOrdersPage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-4 text-xs text-muted font-mono">
+                      <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs text-muted font-mono">
                         <span>{order.items.length} Product Models</span>
                         <span>·</span>
                         <span>{totalUnits} Total Units</span>
@@ -330,12 +330,12 @@ export default function DistributorOrdersPage() {
                     </div>
 
                     {/* Right side Total & Controls */}
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pt-3 sm:pt-0 border-t sm:border-t-0 border-divider/40">
+                      <div className="text-left sm:text-right">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
                           Consignment Total
                         </span>
-                        <span className="font-mono text-lg font-bold text-accent">
+                        <span className="font-mono text-base sm:text-lg font-bold text-accent">
                           ₹{totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
@@ -343,7 +343,7 @@ export default function DistributorOrdersPage() {
                       <button
                         type="button"
                         onClick={() => toggleExpand(order.id)}
-                        className="px-3.5 py-2 rounded-xl bg-surface border border-divider hover:border-accent text-xs font-serif font-bold text-primary transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                        className="px-3.5 py-2 rounded-xl bg-surface border border-divider hover:border-accent text-xs font-serif font-bold text-primary transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
                       >
                         <span>{isExpanded ? "Collapse" : "Review Items"}</span>
                         <svg
@@ -363,9 +363,9 @@ export default function DistributorOrdersPage() {
 
                   {/* Visual Status Stepper */}
                   {!isCancelled ? (
-                    <div className="mt-8 pt-6 border-t border-divider/60">
+                    <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-divider/60">
                       <div className="relative">
-                        {/* Connecting Line */}
+                        {/* Connecting Line (desktop only) */}
                         <div className="absolute top-4 left-4 right-4 h-0.5 bg-divider -z-0 hidden sm:block" />
                         <div
                           className="absolute top-4 left-4 h-0.5 bg-accent transition-all duration-500 -z-0 hidden sm:block"
@@ -375,7 +375,7 @@ export default function DistributorOrdersPage() {
                         />
 
                         {/* Stages */}
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10">
+                        <div className="flex sm:grid sm:grid-cols-5 overflow-x-auto no-scrollbar gap-2.5 sm:gap-4 pb-2 sm:pb-0 relative z-10">
                           {ORDER_STAGES.map((stage, idx) => {
                             const isCompleted = idx < stageIdx;
                             const isCurrent = idx === stageIdx;
@@ -384,19 +384,19 @@ export default function DistributorOrdersPage() {
                             return (
                               <div
                                 key={stage.key}
-                                className="flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 text-left sm:text-center"
+                                className="flex sm:flex-col items-center sm:items-center gap-2.5 sm:gap-2 text-left sm:text-center shrink-0 min-w-[145px] sm:min-w-0 p-2.5 sm:p-0 rounded-2xl bg-surface/70 border border-divider/50 sm:bg-transparent sm:border-0"
                               >
                                 <div
-                                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-all shrink-0 ${
+                                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-all shrink-0 ${
                                     isCurrent
-                                      ? "bg-accent text-background ring-4 ring-accent/20 scale-110 shadow-sm"
+                                      ? "bg-accent text-background ring-4 ring-accent/20 scale-105 sm:scale-110 shadow-sm"
                                       : isCompleted
                                       ? "bg-accent text-background"
                                       : "bg-surface border border-divider text-muted"
                                   }`}
                                 >
                                   {isCompleted ? (
-                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                       <polyline points="20 6 9 17 4 12" />
                                     </svg>
                                   ) : (
@@ -404,9 +404,9 @@ export default function DistributorOrdersPage() {
                                   )}
                                 </div>
 
-                                <div>
+                                <div className="min-w-0">
                                   <span
-                                    className={`text-xs block font-serif font-medium ${
+                                    className={`text-[11px] sm:text-xs block font-serif font-medium truncate sm:whitespace-normal ${
                                       isCurrent
                                         ? "text-accent font-bold"
                                         : isCompleted
@@ -416,7 +416,7 @@ export default function DistributorOrdersPage() {
                                   >
                                     {stage.label}
                                   </span>
-                                  <span className="text-[10px] text-muted font-mono block">
+                                  <span className="text-[9px] sm:text-[10px] text-muted font-mono block">
                                     {isCurrent ? "In progress" : isCompleted ? "Completed" : "Pending"}
                                   </span>
                                 </div>
@@ -441,7 +441,7 @@ export default function DistributorOrdersPage() {
 
                   {/* Factory Dispatch & Logistics Notes Callout */}
                   {order.notes && (
-                    <div className="mt-6 p-4 bg-background border border-divider rounded-2xl flex items-start gap-3">
+                    <div className="mt-5 sm:mt-6 p-3.5 sm:p-4 bg-background border border-divider rounded-2xl flex items-start gap-3">
                       <div className="w-8 h-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 mt-0.5">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="1" y="3" width="15" height="13" />
@@ -462,8 +462,8 @@ export default function DistributorOrdersPage() {
 
                 {/* Expanded Itemized Bill of Materials */}
                 {isExpanded && (
-                  <div className="p-6 bg-surface space-y-4 animate-in fade-in-50 duration-200">
-                    <div className="flex items-center justify-between pb-3 border-b border-divider">
+                  <div className="p-4 sm:p-6 bg-surface space-y-4 animate-in fade-in-50 duration-200">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-3 border-b border-divider">
                       <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
                         Itemized Bill of Materials
                       </span>
@@ -484,9 +484,9 @@ export default function DistributorOrdersPage() {
                         return (
                           <div
                             key={item.id}
-                            className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                            className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
                           >
-                            <div className="flex items-center gap-3.5">
+                            <div className="flex items-center gap-3">
                               <div className="w-12 h-12 rounded-xl bg-background border border-divider overflow-hidden flex items-center justify-center shrink-0 p-1 relative">
                                 <Image
                                   src={displayImg}
@@ -497,7 +497,7 @@ export default function DistributorOrdersPage() {
                                 />
                               </div>
 
-                              <div>
+                              <div className="min-w-0">
                                 <div className="flex items-center gap-2 mb-0.5">
                                   {product?.brand?.name && (
                                     <span className="px-2 py-0.2 rounded text-[9px] font-mono uppercase tracking-wider bg-background border border-divider text-accent font-bold">
@@ -510,7 +510,7 @@ export default function DistributorOrdersPage() {
                                     </span>
                                   )}
                                 </div>
-                                <h4 className="font-serif font-bold text-sm text-primary">
+                                <h4 className="font-serif font-bold text-xs sm:text-sm text-primary truncate">
                                   {product?.name || "Lock Model"}
                                 </h4>
                                 <span className="text-[11px] font-mono text-muted">
@@ -519,17 +519,17 @@ export default function DistributorOrdersPage() {
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between sm:justify-end gap-6 text-right">
+                            <div className="flex items-center justify-between sm:justify-end gap-6 text-right bg-background/60 sm:bg-transparent p-2.5 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-divider/40">
                               <div className="text-left sm:text-right">
                                 <span className="text-[10px] font-mono text-muted block">Quantity</span>
-                                <span className="font-mono text-sm font-bold text-accent">
+                                <span className="font-mono text-xs sm:text-sm font-bold text-accent">
                                   {item.quantity} Units
                                 </span>
                               </div>
 
-                              <div className="text-right min-w-28">
+                              <div className="text-right min-w-24 sm:min-w-28">
                                 <span className="text-[10px] font-mono text-muted block">Line Total</span>
-                                <span className="font-mono text-sm font-bold text-primary">
+                                <span className="font-mono text-xs sm:text-sm font-bold text-primary">
                                   ₹{(Number(item.unitPrice) * item.quantity).toLocaleString("en-IN", {
                                     minimumFractionDigits: 2,
                                   })}
@@ -542,11 +542,11 @@ export default function DistributorOrdersPage() {
                     </div>
 
                     {/* Bottom Actions Row */}
-                    <div className="pt-4 border-t border-divider flex flex-wrap items-center justify-between gap-4">
+                    <div className="pt-4 border-t border-divider flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
                       <button
                         type="button"
                         onClick={() => window.print()}
-                        className="px-4 py-2 bg-background border border-divider hover:border-accent rounded-full text-xs font-serif font-semibold text-primary transition-colors flex items-center gap-2 cursor-pointer shadow-2xs"
+                        className="w-full sm:w-auto px-4 py-2.5 bg-background border border-divider hover:border-accent rounded-full text-xs font-serif font-semibold text-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                       >
                         <svg className="w-3.5 h-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <polyline points="6 9 6 2 18 2 18 9" />
@@ -556,16 +556,16 @@ export default function DistributorOrdersPage() {
                         <span>Print Order Slip</span>
                       </button>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col sm:flex-row items-center gap-3">
                         {reorderSuccessId === order.id && (
-                          <span className="text-xs text-emerald-500 font-mono">
+                          <span className="text-xs text-emerald-500 font-mono text-center">
                             ✓ Items loaded to Order Cart
                           </span>
                         )}
                         <button
                           type="button"
                           onClick={() => handleReorder(order)}
-                          className="px-5 py-2 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
+                          className="w-full sm:w-auto px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="23 4 23 10 17 10" />

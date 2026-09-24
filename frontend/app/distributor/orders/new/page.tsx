@@ -176,7 +176,7 @@ export default function NewOrderPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6 justify-between sm:justify-end">
+                <div className="flex items-center gap-3 sm:gap-6 justify-between sm:justify-end bg-background/50 sm:bg-transparent p-2.5 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-divider/40">
                   <div className="flex items-center border border-divider rounded-xl overflow-hidden bg-background">
                     <button
                       type="button"
@@ -187,11 +187,11 @@ export default function NewOrderPage() {
                         )
                       }
                       disabled={item.quantity <= item.minOrderQty}
-                      className="px-2.5 py-1.5 text-xs text-muted hover:text-primary transition-colors disabled:opacity-30"
+                      className="w-8 h-8 flex items-center justify-center text-xs text-muted hover:text-primary transition-colors disabled:opacity-30 touch-manipulation"
                     >
                       -
                     </button>
-                    <span className="w-12 text-center text-xs font-mono font-bold text-primary">
+                    <span className="w-10 sm:w-12 text-center text-xs font-mono font-bold text-primary">
                       {item.quantity}
                     </span>
                     <button
@@ -199,14 +199,14 @@ export default function NewOrderPage() {
                       onClick={() =>
                         updateQuantity(item.productId, item.quantity + 1)
                       }
-                      className="px-2.5 py-1.5 text-xs text-muted hover:text-primary transition-colors"
+                      className="w-8 h-8 flex items-center justify-center text-xs text-muted hover:text-primary transition-colors touch-manipulation"
                     >
                       +
                     </button>
                   </div>
 
-                  <div className="text-right min-w-[90px]">
-                    <span className="font-mono text-sm font-bold text-primary">
+                  <div className="text-right min-w-[80px] sm:min-w-[90px]">
+                    <span className="font-mono text-xs sm:text-sm font-bold text-primary">
                       ₹{(item.unitPrice * item.quantity).toLocaleString("en-IN", {
                         minimumFractionDigits: 2,
                       })}
@@ -216,7 +216,7 @@ export default function NewOrderPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.productId)}
-                    className="p-1.5 text-muted hover:text-red-500 transition-colors"
+                    className="p-1.5 text-muted hover:text-red-500 transition-colors touch-manipulation"
                     title="Remove item"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -231,7 +231,7 @@ export default function NewOrderPage() {
         </div>
 
         {/* Dispatch Notes */}
-        <div className="bg-surface border border-divider rounded-2xl p-6">
+        <div className="bg-surface border border-divider rounded-2xl p-4 sm:p-6">
           <label className="block text-xs font-serif font-bold text-primary uppercase tracking-wider mb-2">
             Special Instructions / Transport Preference
           </label>
@@ -245,11 +245,11 @@ export default function NewOrderPage() {
         </div>
 
         {/* Order Summary Card & Submit */}
-        <div className="bg-surface border border-divider rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="bg-surface border border-divider rounded-2xl p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
           <div>
             <span className="text-xs text-muted block mb-1">Estimated Purchase Order Total</span>
             <div className="flex items-baseline gap-2">
-              <span className="font-serif text-3xl font-bold text-accent">
+              <span className="font-serif text-2xl sm:text-3xl font-bold text-accent">
                 ₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
               </span>
               <span className="text-xs text-muted">({itemCount} total units)</span>
@@ -259,17 +259,17 @@ export default function NewOrderPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Link
               href="/distributor/catalog"
-              className="px-5 py-3 border border-divider rounded-full font-serif font-medium text-xs text-primary hover:bg-background transition-colors"
+              className="w-full sm:w-auto px-5 py-3 border border-divider rounded-full font-serif font-medium text-xs text-primary hover:bg-background transition-colors text-center"
             >
               Add More Products
             </Link>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-lg disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-3 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-lg disabled:opacity-50 text-center cursor-pointer touch-manipulation"
             >
               {isSubmitting ? "Placing Purchase Order..." : "Confirm & Place Order →"}
             </button>

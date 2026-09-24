@@ -35,16 +35,16 @@ export default function DistributorOverviewPage() {
           </p>
 
           {isApproved ? (
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/distributor/catalog"
-                className="px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs"
+                className="w-full sm:w-auto text-center px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs touch-manipulation"
               >
                 Browse Dealer Catalog & Order →
               </Link>
               <Link
                 href="/distributor/orders"
-                className="px-5 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors"
+                className="w-full sm:w-auto text-center px-5 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors touch-manipulation"
               >
                 Track Purchase Orders
               </Link>
