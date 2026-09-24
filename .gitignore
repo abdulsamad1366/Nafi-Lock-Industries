@@ -36,4 +36,4 @@ yarn-error.log*
 prisma/*.db
 prisma/*.db-journal
 
-nafi-project-docs/*
+nafi-project-docs

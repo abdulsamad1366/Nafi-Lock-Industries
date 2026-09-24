@@ -1,4 +1,5 @@
 import "./theme.css";
+import ProductGrid from "@/components/ProductGrid";
 
 /**
  * ============================================================================
@@ -38,8 +39,7 @@ export default function GreekBrandPage() {
       {/* ── Section 2: Greek Filtered Product Grid ── */}
       <section className="py-20 px-6">
         <h2 className="font-headline text-2xl mb-8">Greek Products</h2>
-        {/* Product catalog will be loaded from backend API filtered by brand="greek" */}
-        <p className="text-muted">Products loading…</p>
+        <ProductGrid brandFilter="greek" hideFilters={true} />
       </section>
 
       {/* ── Section 3: Brand Differentiator ── */}

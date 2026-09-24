@@ -1,0 +1,1 @@
+{"version":3,"file":"distributor.routes.js","sourceRoot":"","sources":["../../src/routes/distributor.routes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,kFAG+C;AAC/C,6EAAiE;AAEjE,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,yEAAyE;AACzE,MAAM,CAAC,GAAG,CAAC,KAAK,EAAE,kCAAW,EAAE,yCAAgB,CAAC,CAAC;AACjD,MAAM,CAAC,IAAI,CAAC,QAAQ,EAAE,kCAAW,EAAE,yCAAgB,CAAC,CAAC;AAErD,kBAAe,MAAM,CAAC"}

@@ -84,3 +84,17 @@ the bottom as future discussions happen — don't rewrite history here.
     both dashboards (customer `/account`, distributor `/distributor/dashboard`)
     plus new admin panel sections (`/admin/distributors`, `/admin/orders`,
     `/admin/ledger-requests`, `/admin/sales-reps`, `/admin/catalogs`).
+24. **Correction: distributor login is now gated by approval, not just
+    dashboard content.** Originally a distributor could log in immediately
+    after applying and see a pending banner inside the dashboard. Changed to:
+    a `PENDING` or `REJECTED` distributor cannot log in at all (no JWT
+    issued, even with correct credentials) — only once an admin approves via
+    `/admin/distributors` can that account log in successfully. Requires a
+    patch to the already-generated `user-auth.controller.ts` login handler.
+25. **Product detail page added:** `/products/[slug]`, reached via a "View
+    Details" button on every `ProductCard` (Home, brand pages, distributor
+    catalog, liked products — all consistent). Themed by the product's own
+    brand regardless of the page it was clicked from. Shows gallery, specs,
+    description, brand-appropriate action area (enquire for guests/customers,
+    price + add-to-order for approved distributors, like icon for any
+    logged-in user), and related products.

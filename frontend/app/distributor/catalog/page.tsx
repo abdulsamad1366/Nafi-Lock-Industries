@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { getProducts, likeProduct, unlikeProduct, Product } from "@/lib/api";
 import { useOrderCart } from "@/components/OrderCartProvider";
 
@@ -371,8 +372,8 @@ export default function DistributorCatalogPage() {
                   </div>
                 </div>
 
-                {/* Card Footer: Quantity + Add to Order */}
-                <div className="p-5 pt-0">
+                {/* Card Footer: Quantity + Add to Order + View Details */}
+                <div className="p-5 pt-0 space-y-2.5">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center border border-divider rounded-xl overflow-hidden bg-background">
                       <button
@@ -381,7 +382,7 @@ export default function DistributorCatalogPage() {
                           handleQtyChange(product.id, currentQty - 1, minQty)
                         }
                         disabled={currentQty <= minQty}
-                        className="px-2.5 py-2 text-xs text-muted hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="px-2.5 py-2 text-xs text-muted hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                       >
                         -
                       </button>
@@ -403,7 +404,7 @@ export default function DistributorCatalogPage() {
                         onClick={() =>
                           handleQtyChange(product.id, currentQty + 1, minQty)
                         }
-                        className="px-2.5 py-2 text-xs text-muted hover:text-primary transition-colors"
+                        className="px-2.5 py-2 text-xs text-muted hover:text-primary transition-colors cursor-pointer"
                       >
                         +
                       </button>
@@ -412,7 +413,7 @@ export default function DistributorCatalogPage() {
                     <button
                       type="button"
                       onClick={() => handleAddToCart(product)}
-                      className="flex-1 py-2.5 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-1.5"
+                      className="flex-1 py-2.5 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M12 5v14M5 12h14" />
@@ -420,6 +421,14 @@ export default function DistributorCatalogPage() {
                       <span>Add to Order</span>
                     </button>
                   </div>
+
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="w-full py-2 px-3 rounded-xl border border-divider bg-background hover:bg-surface text-primary text-xs font-serif font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs hover:border-accent/60 text-center"
+                  >
+                    <span>View Details</span>
+                    <span className="text-[11px] text-muted">→</span>
+                  </Link>
                 </div>
               </div>
             );

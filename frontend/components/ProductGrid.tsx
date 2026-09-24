@@ -461,14 +461,28 @@ function SpecIcon({ type }: { type: ProductSpecItem["icon"] }) {
   }
 }
 
+export interface ProductGridProps {
+  brandFilter?: string;
+  categoryFilter?: string;
+  excludeSlug?: string;
+  limit?: number;
+  hideFilters?: boolean;
+}
+
 /**
  * ============================================================================
  * Component: ProductGrid
  * ============================================================================
  */
-export default function ProductGrid() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedBrand, setSelectedBrand] = useState<string>("all");
+export default function ProductGrid({
+  brandFilter,
+  categoryFilter,
+  excludeSlug,
+  limit,
+  hideFilters = false,
+}: ProductGridProps = {}) {
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryFilter || "all");
+  const [selectedBrand, setSelectedBrand] = useState<string>(brandFilter || "all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -501,16 +515,23 @@ export default function ProductGrid() {
 
   // Filter products dynamically
   const filteredProducts = useMemo(() => {
-    return CATALOG_PRODUCTS.filter((product) => {
-      // 1. Category matching
+    let items = CATALOG_PRODUCTS.filter((product) => {
+      // 1. Exclude current product if specified
+      if (excludeSlug && product.slug === excludeSlug) {
+        return false;
+      }
+
+      // 2. Category matching
+      const targetCat = categoryFilter || selectedCategory;
       const matchesCategory =
-        selectedCategory === "all" || product.categorySlug === selectedCategory;
+        targetCat === "all" || product.categorySlug === targetCat;
 
-      // 2. Brand matching
+      // 3. Brand matching
+      const targetBrand = brandFilter || selectedBrand;
       const matchesBrand =
-        selectedBrand === "all" || product.brandSlug === selectedBrand;
+        targetBrand === "all" || product.brandSlug === targetBrand;
 
-      // 3. Search query matching
+      // 4. Search query matching
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
@@ -523,13 +544,20 @@ export default function ProductGrid() {
 
       return matchesCategory && matchesBrand && matchesSearch;
     });
-  }, [selectedCategory, selectedBrand, searchQuery]);
+
+    if (limit && limit > 0) {
+      items = items.slice(0, limit);
+    }
+
+    return items;
+  }, [selectedCategory, selectedBrand, searchQuery, brandFilter, categoryFilter, excludeSlug, limit]);
 
   return (
     <div id="catalog" className="max-w-7xl mx-auto select-none">
       {/* ====================================================================
           1. TOP FILTER BAR (Exact match to reference photo)
           ==================================================================== */}
+      {!hideFilters && (
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
         {/* Left: Category Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
@@ -670,6 +698,7 @@ export default function ProductGrid() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ====================================================================
           2. 3-COLUMN PRODUCT CARDS GRID (Exact match to reference photo)
@@ -762,13 +791,13 @@ export default function ProductGrid() {
                 {/* ── Bottom Action Row: View Details & Add to Cart ── */}
                 <div className="p-3 sm:p-6 pt-0 grid grid-cols-2 gap-1.5 sm:gap-3">
                   {/* View Details Button */}
-                  <button
-                    onClick={() => setActiveModalProduct(product)}
-                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border border-[#E2E8F0] bg-white text-[#1E293B] text-[10.5px] sm:text-[13px] font-semibold hover:bg-gray-50 transition-colors text-center cursor-pointer shadow-2xs"
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border border-[#E2E8F0] bg-white text-[#1E293B] text-[10.5px] sm:text-[13px] font-semibold hover:bg-gray-50 transition-colors text-center cursor-pointer shadow-2xs flex items-center justify-center"
                   >
                     <span className="hidden sm:inline">View Details</span>
                     <span className="sm:hidden">Details</span>
-                  </button>
+                  </Link>
 
                   {/* Add to Cart Button */}
                   <button

@@ -132,11 +132,17 @@ export default function DistributorLikedPage() {
                 </div>
               </div>
 
-              <div className="p-5 pt-0">
+              <div className="p-5 pt-0 space-y-2">
+                <Link
+                  href={`/products/${product.slug}`}
+                  className="w-full block py-2 px-3 rounded-xl border border-divider bg-background hover:bg-surface text-primary text-xs font-serif font-bold transition-all text-center shadow-2xs hover:border-accent/60"
+                >
+                  View Details →
+                </Link>
                 <button
                   type="button"
                   onClick={() => handleAddToCart(product)}
-                  className="w-full py-2 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs"
+                  className="w-full py-2 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs cursor-pointer"
                 >
                   Add Batch to Cart
                 </button>

@@ -280,14 +280,37 @@ export default function LoginPage() {
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5 shadow-xs"
+                    className={`mb-5 p-3.5 rounded-xl border text-xs flex items-start gap-2.5 shadow-xs ${
+                      error.includes("pending review")
+                        ? "bg-amber-50 border-amber-200 text-amber-900"
+                        : "bg-red-50 border-red-200 text-red-700"
+                    }`}
                   >
-                    <svg className="w-4 h-4 shrink-0 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="8" x2="12" y2="12" />
-                      <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                    <span className="font-medium">{error}</span>
+                    {error.includes("pending review") ? (
+                      <svg className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 shrink-0 text-red-500 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    )}
+                    <div className="flex-1">
+                      <span className="font-semibold block">{error}</span>
+                      {error.includes("pending review") && (
+                        <span className="text-[11px] text-amber-700 mt-0.5 block">
+                          Your application is undergoing verification by factory administration. You will be able to sign in once approved.
+                        </span>
+                      )}
+                      {error.includes("not approved") && (
+                        <span className="text-[11px] text-red-600 mt-0.5 block">
+                          If you believe this is in error, please reach out to our distributor support desk.
+                        </span>
+                      )}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

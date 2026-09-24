@@ -80,10 +80,25 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       return { user, distributorProfile };
     });
 
+    if (role === "DISTRIBUTOR") {
+      return res.status(201).json({
+        token: null,
+        user: {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+          phone: result.user.phone,
+          role: result.user.role,
+        },
+        status: result.distributorProfile?.status || "PENDING",
+        message: "Application submitted — you'll be able to log in once it's reviewed.",
+      });
+    }
+
     const payload: UserAuthPayload = {
       id: result.user.id,
       email: result.user.email,
-      role: result.user.role as "CUSTOMER" | "DISTRIBUTOR",
+      role: result.user.role as "CUSTOMER",
     };
 
     const token = jwt.sign(payload, USER_JWT_SECRET, { expiresIn: "7d" });
@@ -97,7 +112,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
         phone: result.user.phone,
         role: result.user.role,
       },
-      status: result.distributorProfile?.status || null,
+      status: null,
     });
   } catch (err) {
     next(err);
@@ -130,6 +145,29 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // Distributor login gating: must have status === APPROVED
+    if (user.role === "DISTRIBUTOR") {
+      const status = user.distributorProfile?.status;
+      if (status !== "APPROVED") {
+        if (status === "PENDING") {
+          return res.status(403).json({
+            error: "Your distributor application is pending review.",
+            status: "PENDING",
+          });
+        }
+        if (status === "REJECTED") {
+          return res.status(403).json({
+            error: "Your distributor application was not approved.",
+            status: "REJECTED",
+          });
+        }
+        return res.status(403).json({
+          error: "Your distributor application is not approved.",
+          status: status || null,
+        });
+      }
     }
 
     const payload: UserAuthPayload = {

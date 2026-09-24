@@ -1,3 +1,5 @@
+import ProductGrid from "@/components/ProductGrid";
+
 /**
  * ============================================================================
  * Brand Showcase Page: S-Nafi
@@ -35,8 +37,7 @@ export default function SNafiBrandPage() {
       {/* ── Section 2: Filtered Product Grid ── */}
       <section className="py-20 px-6">
         <h2 className="font-headline text-2xl mb-8">S-Nafi Products</h2>
-        {/* Product catalog will be loaded from backend API filtered by brand="s-nafi" */}
-        <p className="text-muted">Products loading…</p>
+        <ProductGrid brandFilter="s-nafi" hideFilters={true} />
       </section>
 
       {/* ── Section 3: Value Proposition / Brand Differentiators ── */}

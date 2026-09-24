@@ -30,11 +30,13 @@ const ThemeContext = createContext<string>("nafi");
  */
 export default function ThemeProvider({
   children,
+  themeKey,
 }: {
   children: React.ReactNode;
+  themeKey?: string;
 }) {
   const pathname = usePathname();
-  const theme = getThemeForRoute(pathname);
+  const theme = themeKey || getThemeForRoute(pathname);
 
   return (
     <ThemeContext.Provider value={theme}>

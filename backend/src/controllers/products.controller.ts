@@ -42,7 +42,7 @@ export async function getProductBySlug(
       where: { slug: req.params.slug },
       include: { brand: true, category: true },
     });
-    if (!product) return res.status(404).json({ error: "Product not found" });
+    if (!product || !product.isActive) return res.status(404).json({ error: "Product not found" });
 
     const isApproved = await isUserApprovedDistributor(req.user);
     res.json(serializeProduct(product, isApproved));

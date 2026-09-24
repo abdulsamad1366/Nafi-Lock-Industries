@@ -1,4 +1,5 @@
 import "./theme.css";
+import ProductGrid from "@/components/ProductGrid";
 
 /**
  * ============================================================================
@@ -37,8 +38,7 @@ export default function RakshamBrandPage() {
       {/* ── Section 2: Raksham Filtered Product Grid ── */}
       <section className="py-20 px-6">
         <h2 className="font-headline text-2xl mb-8">Raksham Products</h2>
-        {/* Product catalog will be loaded from backend API filtered by brand="raksham" */}
-        <p className="text-muted">Products loading…</p>
+        <ProductGrid brandFilter="raksham" hideFilters={true} />
       </section>
 
       {/* ── Section 3: Brand Differentiator ── */}

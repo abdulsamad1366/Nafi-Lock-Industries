@@ -39,6 +39,7 @@ function SignupForm() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,13 +64,13 @@ function SignupForm() {
       }
 
       const res = await signupUser(payload);
-      setUserToken(res.token);
-      setUser(res.user);
-      setDistributorStatus(res.status);
 
       if (role === "DISTRIBUTOR") {
-        router.push("/distributor");
+        setIsSubmitted(true);
       } else {
+        setUserToken(res.token);
+        setUser(res.user);
+        setDistributorStatus(res.status);
         router.push("/account");
       }
     } catch (err: any) {
@@ -121,7 +122,60 @@ function SignupForm() {
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)]">
+        {isSubmitted ? (
+          <div className="bg-white border border-[#EBE7DF] rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] text-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#FAF6EE] border border-[#E8DFCF] text-[#A67C2E] flex items-center justify-center mx-auto mb-6 shadow-xs">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF6EE] text-[#7A5B20] border border-[#E8DFCF] text-xs font-mono uppercase tracking-wider mb-4">
+              <span className="w-2 h-2 rounded-full bg-[#A67C2E]" />
+              Application Submitted
+            </div>
+
+            <h2 className="font-serif text-2xl font-bold text-primary mb-3">
+              Application submitted — you&apos;ll be able to log in once it&apos;s reviewed.
+            </h2>
+
+            <p className="text-sm text-muted max-w-md mx-auto leading-relaxed mb-6">
+              Thank you for applying to join the Nafi Lock Industries authorized distributor network. Our factory administration team reviews all commercial credentials within 1–2 business days.
+            </p>
+
+            <div className="bg-[#FAF9F7] border border-[#E0DBD1] rounded-2xl p-4 max-w-md mx-auto text-left text-xs mb-8 space-y-2">
+              <div className="flex justify-between py-1 border-b border-divider/60">
+                <span className="text-muted">Registered Firm:</span>
+                <span className="font-semibold text-primary">{companyName || name}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-divider/60">
+                <span className="text-muted">Primary Email:</span>
+                <span className="font-mono text-primary">{email}</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-muted">Status:</span>
+                <span className="font-mono font-bold text-[#A67C2E]">Pending Review</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto px-6 py-3 bg-[#A67C2E] text-white font-sans font-bold text-sm rounded-xl hover:bg-[#8E6720] transition-colors shadow-sm"
+              >
+                Go to Sign In
+              </Link>
+              <Link
+                href="/"
+                className="w-full sm:w-auto px-6 py-3 bg-surface border border-divider text-primary font-sans font-semibold text-sm rounded-xl hover:bg-background transition-colors"
+              >
+                Return to Home
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)]">
           {/* Tab Switcher */}
           <div className="flex rounded-xl bg-[#F5F3EF] p-1 border border-[#EBE7DF] mb-6">
             <button
@@ -376,6 +430,7 @@ function SignupForm() {
             </p>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

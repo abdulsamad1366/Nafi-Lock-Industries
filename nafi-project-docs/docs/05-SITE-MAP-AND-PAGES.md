@@ -2,16 +2,23 @@
 
 ## Navigation (confirmed order)
 ```
-Home | S-Nafi | Greek | Raksham | Contact
+Home | S-Nafi | Raksham | Greek | Blog | Contact | Login
 ```
 
 ## Routes
 ```
 /                    → Home
 /brands/s-nafi       → S-Nafi brand page
-/brands/greek        → Greek brand page
 /brands/raksham      → Raksham brand page
+/brands/greek        → Greek brand page
+/products/[slug]     → Product detail page (NEW — see below)
+/blog                → Blog
 /contact             → About + inquiry form
+/login               → Public login (Customer or Distributor)
+/signup              → Signup (Customer or Distributor application)
+/account/*           → Customer dashboard (auth-gated)
+/distributor/*        → Distributor dashboard (auth-gated, approval-gated —
+                        see 10-AUTH-AND-DISTRIBUTOR-PORTAL.md)
 /admin/*             → Admin panel (auth-gated, not public nav)
 ```
 
@@ -39,6 +46,34 @@ Home | S-Nafi | Greek | Raksham | Contact
 4. **Specifications/Certifications block** — if applicable (ISI marks, etc.)
 5. **CTA** — "Interested in stocking [Brand]?" → links to `/contact`, ideally
    pre-filling which brand the inquiry is about.
+
+## Product detail page (`/products/[slug]`) — NEW
+Reached from a **"View Details" button on every `ProductCard`** — Home's
+catalog, brand pages, distributor catalog, liked-products lists, all link
+here the same way. Themed by the product's own brand (`themeKey`), regardless
+of which page the visitor arrived from — so an S-Nafi product looks
+brass-themed even when clicked from Home's mixed all-brands grid.
+
+1. **Breadcrumb** — Home / [Brand] / [Product name], brand link goes to
+   `/brands/[brandSlug]`
+2. **Image gallery** — `product.images[]`, main image + thumbnails (falls
+   back to the category placeholder icon if no real photos uploaded yet)
+3. **Title block** — product name, brand tag/badge, category
+4. **Spec table** — material, size, finish, number of keys, locking
+   mechanism, warranty (IBM Plex Mono, per design system) — only fields that
+   have a value are shown, no blank rows
+5. **Description** — product's `description` field
+6. **Action area — differs by who's viewing:**
+   - **Guest / Customer:** "Enquire About This Product" button →
+     `/contact`, pre-filling the product (and its brand) in the inquiry form
+   - **Approved Distributor:** `dealerPrice` and `minOrderQty` shown, plus a
+     quantity selector and "Add to Order" button — same `OrderCartProvider`
+     used on `/distributor/catalog`, so adding from the detail page and the
+     grid both land in the same cart
+   - **Any logged-in user (Customer or Distributor):** like/heart icon,
+     same as on `ProductCard`
+7. **Related products** — small `ProductGrid`, same brand or category,
+   excluding the current product (3–4 items)
 
 ## Contact page (`/contact`)
 - Company background (manufacturing capability, factory, dealer network)

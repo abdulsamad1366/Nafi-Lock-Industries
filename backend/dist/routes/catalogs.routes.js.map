@@ -1,0 +1,1 @@
+{"version":3,"file":"catalogs.routes.js","sourceRoot":"","sources":["../../src/routes/catalogs.routes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,4EAAmF;AACnF,mHAAmG;AAEnG,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,wCAAwC;AACxC,MAAM,CAAC,GAAG,CAAC,GAAG,EAAE,kCAAY,CAAC,CAAC;AAE9B,sEAAsE;AACtE,MAAM,CAAC,GAAG,CAAC,eAAe,EAAE,oEAA0B,EAAE,qCAAe,CAAC,CAAC;AAEzE,kBAAe,MAAM,CAAC"}

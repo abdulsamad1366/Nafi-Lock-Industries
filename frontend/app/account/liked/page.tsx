@@ -133,10 +133,16 @@ export default function AccountLikedPage() {
                 </div>
               </div>
 
-              <div className="p-4 pt-0">
+              <div className="p-4 pt-0 space-y-2">
                 <Link
-                  href={`/contact?product=${product.id}`}
-                  className="w-full block py-2 text-center text-xs font-serif font-bold rounded-xl bg-background border border-divider text-primary hover:border-accent transition-colors"
+                  href={`/products/${product.slug}`}
+                  className="w-full block py-2 text-center text-xs font-serif font-bold rounded-xl bg-background border border-divider text-primary hover:border-accent transition-colors shadow-2xs"
+                >
+                  View Details →
+                </Link>
+                <Link
+                  href={`/contact?productId=${product.id}&brandId=${product.brandId || ""}`}
+                  className="w-full block py-2 text-center text-xs font-serif font-bold rounded-xl bg-accent text-background hover:bg-accent-hover transition-colors shadow-xs"
                 >
                   Request Technical Quote
                 </Link>

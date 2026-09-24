@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOrderCart } from "./OrderCartProvider";
 import { likeProduct, unlikeProduct } from "@/lib/api";
@@ -9,6 +10,7 @@ import { isUserLoggedIn } from "@/lib/userAuth";
 
 interface ProductCardProps {
   id?: string;
+  slug?: string;
   name: string;
   brand?: string;
   category?: string;
@@ -23,6 +25,7 @@ interface ProductCardProps {
 
 export default function ProductCard({
   id,
+  slug,
   name,
   brand,
   category,
@@ -160,21 +163,29 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Action Footer if inside Distributor context */}
-      {isDistributor && dealerPrice !== undefined && dealerPrice !== null && cart && (
-        <div className="p-4 pt-0">
+      {/* Action Footer: Additive View Details button + (if distributor) Add to Order */}
+      <div className="p-4 pt-0 space-y-2">
+        <Link
+          href={`/products/${slug || id}`}
+          className="w-full py-2 px-3 rounded-xl border border-divider bg-background hover:bg-surface text-primary text-xs font-serif font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs hover:border-accent/60 text-center"
+        >
+          <span>View Details</span>
+          <span className="text-[11px] text-muted group-hover:text-accent transition-colors">→</span>
+        </Link>
+
+        {isDistributor && dealerPrice !== undefined && dealerPrice !== null && cart && (
           <button
             type="button"
             onClick={handleAddToOrder}
-            className="w-full py-2 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-1.5"
+            className="w-full py-2 bg-accent text-background rounded-xl font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 5v14M5 12h14" />
             </svg>
             <span>Add to Order Cart</span>
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

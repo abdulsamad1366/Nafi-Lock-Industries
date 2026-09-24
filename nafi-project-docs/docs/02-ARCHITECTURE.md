@@ -147,6 +147,9 @@ nafi-lock-industries/
 │   │   │   └── raksham/
 │   │   │       ├── page.tsx
 │   │   │       └── theme.css
+│   │   ├── products/
+│   │   │   └── [slug]/page.tsx       (NEW — product detail page, themed by
+│   │   │                              the product's own brand)
 │   │   ├── blog/page.tsx
 │   │   ├── contact/page.tsx
 │   │   ├── login/page.tsx            (UPDATED — public login, no longer
@@ -193,7 +196,11 @@ nafi-lock-industries/
 │   │   ├── BrandCard.tsx
 │   │   ├── ProductCard.tsx           (UPDATED — like/heart icon for logged-in
 │   │   │                              users; shows dealerPrice + "Add to Order"
-│   │   │                              only for approved distributors)
+│   │   │                              only for approved distributors; now also
+│   │   │                              has a "View Details" button → /products/[slug])
+│   │   ├── ProductGallery.tsx        (NEW — image gallery for product detail page)
+│   │   ├── ProductSpecTable.tsx      (NEW — spec table, IBM Plex Mono, only
+│   │   │                              non-empty fields rendered)
 │   │   ├── ProductGrid.tsx
 │   │   ├── ContactForm.tsx
 │   │   ├── ThemeProvider.tsx

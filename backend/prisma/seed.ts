@@ -97,6 +97,8 @@ async function main() {
         lockingMechanism: "Single bolt",
         warranty: "1 year",
         images: ["/placeholders/padlock.svg"],
+        dealerPrice: 420,
+        minOrderQty: 24,
       },
       {
         slug: "s-nafi-classic-padlock-65",
@@ -111,6 +113,8 @@ async function main() {
         lockingMechanism: "Double bolt",
         warranty: "1 year",
         images: ["/placeholders/padlock.svg"],
+        dealerPrice: 580,
+        minOrderQty: 20,
       },
       {
         slug: "s-nafi-mortise-lock-set",
@@ -125,6 +129,8 @@ async function main() {
         lockingMechanism: "Double bolt",
         warranty: "1 year",
         images: ["/placeholders/mortise-lock.svg"],
+        dealerPrice: 720,
+        minOrderQty: 10,
       },
       {
         slug: "s-nafi-cylindrical-knob-lock",
@@ -139,6 +145,8 @@ async function main() {
         lockingMechanism: "Single bolt",
         warranty: "1 year",
         images: ["/placeholders/cylindrical-lock.svg"],
+        dealerPrice: 480,
+        minOrderQty: 15,
       },
     ],
   });
@@ -160,6 +168,8 @@ async function main() {
         lockingMechanism: "Single bolt",
         warranty: "1 year",
         images: ["/placeholders/greek-padlock.svg"],
+        dealerPrice: 280,
+        minOrderQty: 30,
       },
       {
         slug: "greek-heritage-padlock-50",
@@ -174,6 +184,8 @@ async function main() {
         lockingMechanism: "Single bolt",
         warranty: "1 year",
         images: ["/placeholders/greek-padlock.svg"],
+        dealerPrice: 380,
+        minOrderQty: 25,
       },
       {
         slug: "greek-cabinet-lock-set",
@@ -188,6 +200,8 @@ async function main() {
         lockingMechanism: "Single bolt",
         warranty: "1 year",
         images: ["/placeholders/cabinet-lock.svg"],
+        dealerPrice: 210,
+        minOrderQty: 40,
       },
     ],
   });
@@ -209,6 +223,8 @@ async function main() {
         lockingMechanism: "Double bolt",
         warranty: "1 year",
         images: ["/placeholders/raksham-padlock.svg"],
+        dealerPrice: 490,
+        minOrderQty: 20,
       },
       {
         slug: "raksham-guard-padlock-65",
@@ -223,6 +239,8 @@ async function main() {
         lockingMechanism: "Double bolt",
         warranty: "1 year",
         images: ["/placeholders/raksham-padlock.svg"],
+        dealerPrice: 660,
+        minOrderQty: 15,
       },
       {
         slug: "raksham-hasp-staple-heavy-duty",
@@ -237,6 +255,8 @@ async function main() {
         lockingMechanism: "N/A",
         warranty: "1 year",
         images: ["/placeholders/hasp-staple.svg"],
+        dealerPrice: 310,
+        minOrderQty: 25,
       },
       {
         slug: "raksham-mortise-lock-set",
@@ -251,6 +271,8 @@ async function main() {
         lockingMechanism: "Double bolt",
         warranty: "1 year",
         images: ["/placeholders/raksham-padlock.svg"],
+        dealerPrice: 850,
+        minOrderQty: 10,
       },
     ],
   });

@@ -15,7 +15,6 @@ import {
 import { getDistributorProfile, DistributorMeResponse } from "@/lib/api";
 import { OrderCartProvider, useOrderCart } from "@/components/OrderCartProvider";
 import OrderCartDrawer from "@/components/OrderCartDrawer";
-import DistributorStatusBanner from "@/components/DistributorStatusBanner";
 
 function CartBadgeButton() {
   const { openDrawer, itemCount, subtotal } = useOrderCart();
@@ -44,7 +43,6 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [user, setUserState] = useState<AuthUser | null>(null);
   const [profileData, setProfileData] = useState<DistributorMeResponse | null>(null);
-  const [status, setStatusState] = useState<DistributorStatus | null>(null);
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -61,21 +59,23 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
 
     setUserState(currentUser);
 
-    // Fetch live profile to re-verify status directly from backend
+    // Live status re-check: in case status was revoked after login
     getDistributorProfile()
       .then((data) => {
-        setProfileData(data);
         const liveStatus = data.distributorProfile?.status || null;
-        setStatusState(liveStatus);
+        if (liveStatus !== "APPROVED") {
+          clearUserSession();
+          router.push("/login");
+          return;
+        }
+        setProfileData(data);
         setDistributorStatus(liveStatus);
+        setIsChecking(false);
       })
       .catch((err) => {
-        console.error("Failed to load distributor profile", err);
-        // Fallback to cached status
-        setStatusState(getDistributorStatus());
-      })
-      .finally(() => {
-        setIsChecking(false);
+        console.error("Failed to validate distributor approval status", err);
+        clearUserSession();
+        router.push("/login");
       });
   }, [router]);
 
@@ -97,23 +97,16 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const isApproved = status === "APPROVED";
-
-  // Navigation Links conditional on approval status
-  const navLinks = isApproved
-    ? [
-        { href: "/distributor", label: "Overview", icon: "dashboard" },
-        { href: "/distributor/catalog", label: "Dealer Catalog", icon: "catalog" },
-        { href: "/distributor/orders", label: "My Orders", icon: "box" },
-        { href: "/distributor/ledger", label: "Account Ledger", icon: "file" },
-        { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
-        { href: "/distributor/liked", label: "Liked Locks", icon: "heart" },
-        { href: "/distributor/profile", label: "Company Profile", icon: "user" },
-      ]
-    : [
-        { href: "/distributor", label: "Application Overview", icon: "dashboard" },
-        { href: "/distributor/profile", label: "Company Profile", icon: "user" },
-      ];
+  // Navigation Links for approved distributors
+  const navLinks = [
+    { href: "/distributor", label: "Overview", icon: "dashboard" },
+    { href: "/distributor/catalog", label: "Dealer Catalog", icon: "catalog" },
+    { href: "/distributor/orders", label: "My Orders", icon: "box" },
+    { href: "/distributor/ledger", label: "Account Ledger", icon: "file" },
+    { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
+    { href: "/distributor/liked", label: "Liked Locks", icon: "heart" },
+    { href: "/distributor/profile", label: "Company Profile", icon: "user" },
+  ];
 
   return (
     <div className="min-h-screen bg-background pt-28 pb-20">
@@ -135,23 +128,15 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {isApproved && <CartBadgeButton />}
+            <CartBadgeButton />
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-xs font-semibold rounded-full bg-surface border border-divider text-muted hover:text-primary transition-colors"
+              className="px-4 py-2 text-xs font-semibold rounded-full bg-surface border border-divider text-muted hover:text-primary transition-colors cursor-pointer"
             >
               Sign Out
             </button>
           </div>
         </div>
-
-        {/* Status Notice Banner if not approved */}
-        {!isApproved && (
-          <DistributorStatusBanner
-            status={status}
-            companyName={profileData?.distributorProfile?.companyName}
-          />
-        )}
 
         {/* Body Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
