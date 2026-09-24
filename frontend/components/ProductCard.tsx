@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useOrderCart } from "./OrderCartProvider";
 import { likeProduct, unlikeProduct } from "@/lib/api";
 import { isUserLoggedIn } from "@/lib/userAuth";
+import { getCategoryPlaceholder } from "./ProductGallery";
 
 interface ProductCardProps {
   id?: string;
@@ -84,7 +85,7 @@ export default function ProductCard({
         {/* Imagery Stage */}
         <div className="aspect-square bg-background flex items-center justify-center p-6 border-b border-divider relative">
           <Image
-            src={image}
+            src={image || getCategoryPlaceholder(category, brand)}
             alt={name}
             width={200}
             height={200}

@@ -98,3 +98,6 @@ the bottom as future discussions happen — don't rewrite history here.
     description, brand-appropriate action area (enquire for guests/customers,
     price + add-to-order for approved distributors, like icon for any
     logged-in user), and related products.
+26. **Product detail page + distributor login gating patch verified and closed:**
+    - `ProductGallery.tsx` and `ProductCard.tsx` robustly map category fallbacks to existing placeholder SVGs in `public/placeholders/` (`padlock.svg`, `mortise-lock.svg`, `cylindrical-lock.svg`, `cabinet-lock.svg`, `hasp-staple.svg`, `greek-padlock.svg`, `raksham-padlock.svg`).
+    - REJECTED distributor login gating was confirmed via automated API tests (403 Forbidden with `{ error: "Your distributor application was not approved.", status: "REJECTED" }`) and browser subagent UI testing confirming inline status alert rendering without session creation or dashboard navigation.

@@ -14,22 +14,35 @@ export function getCategoryPlaceholder(categorySlug?: string, brandSlug?: string
   const cat = (categorySlug || "").toLowerCase();
   const brand = (brandSlug || "").toLowerCase();
 
-  if (cat.includes("mortise") || cat === "door-locks-mortise") {
+  if (cat.includes("mortise") || cat.includes("door-locks-mortise") || cat === "door-locks-mortise") {
     return "/placeholders/mortise-lock.svg";
   }
-  if (cat.includes("cylindrical") || cat.includes("knob") || cat === "cylindrical-knob-locks") {
+  if (
+    cat.includes("cylindrical") ||
+    cat.includes("cylinder") ||
+    cat.includes("knob") ||
+    cat === "cylindrical-knob-locks"
+  ) {
     return "/placeholders/cylindrical-lock.svg";
   }
-  if (cat.includes("cabinet") || cat.includes("drawer") || cat === "cabinet-drawer-locks") {
+  if (
+    cat.includes("cabinet") ||
+    cat.includes("drawer") ||
+    cat === "cabinet-drawer-locks"
+  ) {
     return "/placeholders/cabinet-lock.svg";
   }
-  if (cat.includes("hasp") || cat === "hasp-staple") {
+  if (
+    cat.includes("hasp") ||
+    cat.includes("staple") ||
+    cat === "hasp-staple"
+  ) {
     return "/placeholders/hasp-staple.svg";
   }
-  if (brand === "greek") {
+  if (brand.includes("greek")) {
     return "/placeholders/greek-padlock.svg";
   }
-  if (brand === "raksham") {
+  if (brand.includes("raksham")) {
     return "/placeholders/raksham-padlock.svg";
   }
   return "/placeholders/padlock.svg";
