@@ -467,16 +467,18 @@ export default function Header() {
             3. Right Zone: Register Link + Login CTA Button & Hamburger
             ==================================================================== */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 relative">
-          {/* ── Not a member? Register link (Desktop only) ── */}
-          <div className="hidden lg:flex items-center text-xs text-gray-600 font-medium select-none">
-            <span>Not a member?&nbsp;</span>
-            <Link
-              href="/signup"
-              className="text-[#9A7228] font-bold hover:underline transition-colors"
-            >
-              Register
-            </Link>
-          </div>
+          {/* ── Not a member? Register link (Desktop only, when not logged in) ── */}
+          {!currentUser && (
+            <div className="hidden lg:flex items-center text-xs text-gray-600 font-medium select-none">
+              <span>Not a member?&nbsp;</span>
+              <Link
+                href="/signup"
+                className="text-[#9A7228] font-bold hover:underline transition-colors"
+              >
+                Register
+              </Link>
+            </div>
+          )}
 
           {/* ── Direct Login / Distributor Portal CTA Capsule Button (Desktop only) ── */}
           <Link

@@ -480,18 +480,18 @@ export default function MobileNavDrawer({
                 </svg>
               </Link>
 
-              {/* SIGN OUT */}
+              {/* SIGN OUT BUTTON (Styled just like Login) */}
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full text-center py-2 text-xs font-mono font-medium text-gray-500 hover:text-rose-600 transition-colors cursor-pointer touch-manipulation flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 px-6 rounded-full border border-gray-200 hover:border-rose-300 bg-gray-50/80 hover:bg-rose-50/50 text-gray-800 hover:text-rose-600 active:scale-[0.99] font-serif font-semibold text-xs sm:text-sm tracking-wide text-center transition-all flex items-center justify-center gap-2 touch-manipulation cursor-pointer"
               >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <span>Sign Out</span>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                   <polyline points="16 17 21 12 16 7" />
                   <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
-                <span>Sign Out</span>
               </button>
             </>
           ) : (
