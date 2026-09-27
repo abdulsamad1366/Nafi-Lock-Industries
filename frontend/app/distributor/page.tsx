@@ -37,90 +37,29 @@ export default function DistributorOverviewAndProfilePage() {
       {/* ── 1. Company Name & B2B Console Card (Position 1 on screen from top) ── */}
       <div className="bg-surface border border-divider rounded-2xl p-4 sm:p-6 lg:p-7 relative overflow-hidden shadow-xs">
         <div className="max-w-3xl">
-          {/* Header Tagline, Status & Mobile Logout */}
-          <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-accent font-semibold">
-                B2B Wholesale Portal
-              </span>
-              <span className="text-muted/40">·</span>
-              <span
-                className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider ${
-                  isApproved
-                    ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                    : isRejected
-                    ? "bg-rose-500/10 text-rose-500 border border-rose-500/20"
-                    : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                }`}
-              >
-                {profile?.status || "PENDING VERIFICATION"}
-              </span>
-            </div>
-
-            {/* Mobile Sign Out Button */}
-            <button
-              type="button"
-              onClick={handleMobileLogout}
-              className="lg:hidden text-[11px] font-mono text-muted hover:text-red-500 transition-colors flex items-center gap-1 touch-manipulation py-1 px-2 rounded-lg hover:bg-background border border-transparent hover:border-divider"
-              title="Sign Out of Distributor Account"
+          {/* Header Tagline & Status */}
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-accent font-semibold">
+              B2B Wholesale Portal
+            </span>
+            <span className="text-muted/40">·</span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider ${
+                isApproved
+                  ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                  : isRejected
+                  ? "bg-rose-500/10 text-rose-500 border border-rose-500/20"
+                  : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+              }`}
             >
-              <span>Sign Out</span>
-              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-            </button>
+              {profile?.status || "PENDING VERIFICATION"}
+            </span>
           </div>
 
           {/* Distributor Company Name */}
-          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1.5 leading-snug">
+          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-2.5 sm:mb-3 leading-snug">
             {profile?.companyName || "Distributor Partner"}
           </h2>
-
-          {/* ── Sales Representative Number Immediately After Distributor Company Name ── */}
-          <div className="flex flex-wrap items-center gap-2 mb-3.5 sm:mb-4">
-            <span className="text-[11px] sm:text-xs font-mono text-muted uppercase tracking-wider font-semibold">
-              Sales Rep Number:
-            </span>
-            <a
-              href={`tel:${repPhone.replace(/[^0-9+]/g, "")}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/30 text-accent hover:bg-accent hover:text-background transition-all text-xs font-mono font-bold touch-manipulation group shadow-2xs"
-              title="Call Assigned Sales Representative"
-            >
-              <svg
-                className="w-3.5 h-3.5 shrink-0 text-accent group-hover:text-background transition-colors"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>{repPhone}</span>
-              {rep?.name && (
-                <span className="text-[10px] font-sans font-normal opacity-85">
-                  · {rep.name}
-                </span>
-              )}
-            </a>
-
-            {rep?.phone && (
-              <a
-                href={`https://wa.me/${rep.phone.replace(/[^0-9]/g, "")}?text=Hi%20${encodeURIComponent(
-                  rep.name || "Representative"
-                )},%20inquiring%20about%20my%20Nafi%20Lock%20distributor%20account`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all text-xs font-mono font-bold touch-manipulation shadow-2xs"
-                title="Direct WhatsApp with Sales Representative"
-              >
-                WhatsApp
-              </a>
-            )}
-          </div>
 
           <p className="text-xs sm:text-sm text-muted leading-relaxed mb-4 sm:mb-5">
             Official verified B2B wholesale console for Nafi Lock Industries. Order hardware inventory at Tier-1 factory unit costs, review registered commercial credentials, and coordinate consignments with your dedicated representative.
@@ -298,6 +237,23 @@ export default function DistributorOverviewAndProfilePage() {
                 <div className="text-xs sm:text-sm font-mono text-primary bg-background border border-divider rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 truncate">
                   {data?.email} {data?.phone && `· ${data.phone}`}
                 </div>
+              </div>
+
+              {/* Account Sign Out (Mobile & Tablet) */}
+              <div className="sm:col-span-2 pt-3 border-t border-divider flex items-center justify-between">
+                <span className="text-[10px] font-mono text-muted">B2B Session Active</span>
+                <button
+                  type="button"
+                  onClick={handleMobileLogout}
+                  className="text-xs font-serif font-semibold text-rose-500 hover:text-rose-600 transition-colors flex items-center gap-1.5 touch-manipulation px-3 py-1.5 rounded-lg border border-rose-500/20 hover:border-rose-500/40 bg-rose-500/5 cursor-pointer"
+                >
+                  <span>Sign Out of Account</span>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
