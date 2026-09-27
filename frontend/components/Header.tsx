@@ -228,7 +228,7 @@ export default function Header() {
     }
     brandsTimeoutRef.current = setTimeout(() => {
       setBrandsDropdownOpen(false);
-    }, 250);
+    }, 400);
   };
 
   const handleHamburgerClick = () => {
@@ -303,9 +303,9 @@ export default function Header() {
         </div>
 
         {/* ====================================================================
-            2. Center Zone: Desktop Navigation (Home | Brand ▾ | Gallery | Blogs)
+            2. Center Zone: Desktop Navigation (Home | Brand ▾ | Gallery | Blogs | Contact Us)
             ==================================================================== */}
-        <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2 items-center pointer-events-auto">
+        <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 items-center pointer-events-auto">
           <ul className="flex items-center gap-1.5 text-xs sm:text-[14px]">
             {/* 1. Home */}
             <li>
@@ -324,7 +324,7 @@ export default function Header() {
             {/* 2. Brand ▾ (Dropdown: S-Nafi, Raksham, Greek) */}
             <li
               ref={brandsDropdownRef}
-              className="relative"
+              className="relative group/brand"
               onMouseEnter={handleBrandMouseEnter}
               onMouseLeave={handleBrandMouseLeave}
             >
@@ -336,10 +336,12 @@ export default function Header() {
                     ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
                     : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
                 }`}
+                aria-expanded={brandsDropdownOpen}
+                aria-haspopup="true"
               >
                 <span>Brand</span>
                 <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-200 group-hover/brand:rotate-180 ${
                     brandsDropdownOpen ? "rotate-180 text-accent" : ""
                   }`}
                   viewBox="0 0 24 24"
@@ -353,67 +355,72 @@ export default function Header() {
                 </svg>
               </button>
 
-              {/* Brands Floating Popover Menu with Zero-Gap Hover Bridge */}
-              {brandsDropdownOpen && (
+              {/* Brands Floating Popover Menu with Overlapping Hover Bridge */}
+              <div
+                className={`absolute top-full -mt-1 left-0 pt-2 w-64 z-50 transition-all duration-200 ${
+                  brandsDropdownOpen
+                    ? "visible opacity-100 pointer-events-auto translate-y-0"
+                    : "invisible opacity-0 pointer-events-none -translate-y-1 group-hover/brand:visible group-hover/brand:opacity-100 group-hover/brand:pointer-events-auto group-hover/brand:translate-y-0"
+                }`}
+                onMouseEnter={handleBrandMouseEnter}
+                onMouseLeave={handleBrandMouseLeave}
+              >
+                {/* 16px Invisible Hit Area Bridge connecting button to menu seamlessly */}
+                <div className="absolute -top-2 inset-x-0 h-5 bg-transparent pointer-events-auto" />
+
                 <div
-                  className="absolute top-full left-0 pt-2 z-50 pointer-events-auto"
-                  onMouseEnter={handleBrandMouseEnter}
-                  onMouseLeave={handleBrandMouseLeave}
+                  className="w-full bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 p-2"
+                  style={{ colorScheme: "light" }}
                 >
-                  <div
-                    className="w-64 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 p-2 animate-in fade-in zoom-in-95 duration-150"
-                    style={{ colorScheme: "light" }}
+                  <Link
+                    href="/brands/s-nafi"
+                    onClick={() => setBrandsDropdownOpen(false)}
+                    className="block px-3 py-2 rounded-xl hover:bg-amber-50/70 transition-colors group/item"
                   >
-                    <Link
-                      href="/brands/s-nafi"
-                      onClick={() => setBrandsDropdownOpen(false)}
-                      className="block px-3 py-2 rounded-xl hover:bg-amber-50/70 transition-colors group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#9A7228]" />
-                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#9A7228]">
-                          S-Nafi
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
-                        Architectural Mortise & Brass Masters
-                      </p>
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#9A7228]" />
+                      <span className="font-serif font-bold text-xs text-gray-900 group-hover/item:text-[#9A7228]">
+                        S-Nafi
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                      Architectural Mortise & Brass Masters
+                    </p>
+                  </Link>
 
-                    <Link
-                      href="/brands/raksham"
-                      onClick={() => setBrandsDropdownOpen(false)}
-                      className="block px-3 py-2 rounded-xl hover:bg-red-50/70 transition-colors group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#9A2F24]" />
-                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#9A2F24]">
-                          Raksham
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
-                        Hardened Shackle & Security Padlocks
-                      </p>
-                    </Link>
+                  <Link
+                    href="/brands/raksham"
+                    onClick={() => setBrandsDropdownOpen(false)}
+                    className="block px-3 py-2 rounded-xl hover:bg-red-50/70 transition-colors group/item"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#9A2F24]" />
+                      <span className="font-serif font-bold text-xs text-gray-900 group-hover/item:text-[#9A2F24]">
+                        Raksham
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                      Hardened Shackle & Security Padlocks
+                    </p>
+                  </Link>
 
-                    <Link
-                      href="/brands/greek"
-                      onClick={() => setBrandsDropdownOpen(false)}
-                      className="block px-3 py-2 rounded-xl hover:bg-sky-50/70 transition-colors group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#235F8E]" />
-                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#235F8E]">
-                          Greek
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
-                        Pin Cylinders & Classical Iron Locksets
-                      </p>
-                    </Link>
-                  </div>
+                  <Link
+                    href="/brands/greek"
+                    onClick={() => setBrandsDropdownOpen(false)}
+                    className="block px-3 py-2 rounded-xl hover:bg-sky-50/70 transition-colors group/item"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#235F8E]" />
+                      <span className="font-serif font-bold text-xs text-gray-900 group-hover/item:text-[#235F8E]">
+                        Greek
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                      Pin Cylinders & Classical Iron Locksets
+                    </p>
+                  </Link>
                 </div>
-              )}
+              </div>
             </li>
 
             {/* 3. Gallery */}
