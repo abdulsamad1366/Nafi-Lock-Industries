@@ -235,7 +235,7 @@ export default function Header() {
     if (typeof window !== "undefined" && window.innerWidth >= 1024) {
       setDesktopMenuOpen((prev) => !prev);
     } else {
-      setMobileMenuOpen(true);
+      setMobileMenuOpen((prev) => !prev);
     }
   };
 
@@ -515,101 +515,138 @@ export default function Header() {
             </svg>
           </Link>
 
-          {/* ── Hamburger Menu Toggle Button (Visible on Both Desktop & Mobile) ── */}
+          {/* ── Animated Morphing Hamburger Menu Toggle Button ── */}
           <button
             ref={hamburgerBtnRef}
             type="button"
             id="mobile-nav-hamburger-btn"
             onClick={handleHamburgerClick}
-            className={`p-2 rounded-full text-gray-700 hover:text-gray-900 hover:bg-gray-100 active:scale-95 transition-all cursor-pointer touch-manipulation ${
-              desktopMenuOpen ? "bg-gray-100 text-gray-900 ring-2 ring-accent/30" : ""
+            className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ease-out active:scale-90 cursor-pointer touch-manipulation group ${
+              desktopMenuOpen || mobileMenuOpen
+                ? "bg-amber-50 text-[#9A7228] ring-2 ring-[#9A7228]/30 shadow-xs"
+                : "text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 active:bg-gray-200/80"
             }`}
             aria-expanded={desktopMenuOpen || mobileMenuOpen}
             aria-label="Navigation Menu"
           >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="4" y1="7" x2="20" y2="7" />
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="17" x2="20" y2="17" />
-            </svg>
+            <div className="w-5 h-4 relative flex flex-col justify-between items-center pointer-events-none">
+              <span
+                className={`w-5 h-[2px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                  desktopMenuOpen || mobileMenuOpen
+                    ? "rotate-45 translate-y-[7px]"
+                    : "translate-y-0 rotate-0 group-hover:scale-x-90"
+                }`}
+              />
+              <span
+                className={`w-5 h-[2px] bg-current rounded-full transition-all duration-200 ease-out ${
+                  desktopMenuOpen || mobileMenuOpen
+                    ? "opacity-0 scale-x-0"
+                    : "opacity-100 scale-x-100 group-hover:scale-x-110"
+                }`}
+              />
+              <span
+                className={`w-5 h-[2px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                  desktopMenuOpen || mobileMenuOpen
+                    ? "-rotate-45 -translate-y-[7px]"
+                    : "translate-y-0 rotate-0 group-hover:scale-x-90"
+                }`}
+              />
+            </div>
           </button>
 
-          {/* ── Desktop Hamburger Popover Dropdown Menu (Matches Reference Design) ── */}
-          {desktopMenuOpen && (
-            <div
-              ref={desktopMenuRef}
-              className="hidden lg:block absolute right-0 top-full mt-2 w-72 bg-white text-gray-900 rounded-3xl shadow-2xl border border-gray-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150"
-              style={{ colorScheme: "light" }}
-            >
-              {currentUser ? (
-                <>
-                  <div className="px-3 py-1.5 flex items-center justify-between border-b border-gray-100 mb-1">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 font-bold">
-                      Distributor Portal
-                    </span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  </div>
+          {/* ── Desktop Hamburger Popover Dropdown Menu (With Spring Physics & Micro-Interactions) ── */}
+          <div
+            ref={desktopMenuRef}
+            className={`hidden lg:block absolute right-0 top-full mt-2.5 w-72 bg-white/95 backdrop-blur-xl text-gray-900 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.18)] border border-gray-100/90 p-2.5 z-50 origin-top-right transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              desktopMenuOpen
+                ? "opacity-100 scale-100 translate-y-0 visible pointer-events-auto"
+                : "opacity-0 scale-95 -translate-y-2 invisible pointer-events-none"
+            }`}
+            style={{ colorScheme: "light" }}
+          >
+            {currentUser ? (
+              <>
+                <div className="px-3 py-1.5 flex items-center justify-between border-b border-gray-100 mb-1">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 font-bold">
+                    Distributor Portal
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
 
-                  {/* 1. Company Profile */}
-                  <Link
-                    href="/distributor"
-                    onClick={() => setDesktopMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                {/* 1. Company Profile */}
+                <Link
+                  href="/distributor"
+                  onClick={() => setDesktopMenuOpen(false)}
+                  className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                       </svg>
                     </div>
-                    <span className="font-semibold text-gray-900">Company Profile</span>
-                  </Link>
+                    <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                      Company Profile
+                    </span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
 
-                  {/* 2. Liked Locks */}
-                  <Link
-                    href="/distributor/liked"
-                    onClick={() => setDesktopMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                {/* 2. Liked Locks */}
+                <Link
+                  href="/distributor/liked"
+                  onClick={() => setDesktopMenuOpen(false)}
+                  className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                       </svg>
                     </div>
-                    <span className="font-semibold text-gray-900">Liked Locks</span>
-                  </Link>
+                    <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                      Liked Locks
+                    </span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
 
-                  {/* 3. Orders */}
-                  <Link
-                    href="/distributor/orders"
-                    onClick={() => setDesktopMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                {/* 3. Orders */}
+                <Link
+                  href="/distributor/orders"
+                  onClick={() => setDesktopMenuOpen(false)}
+                  className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
                         <line x1="12" y1="22.08" x2="12" y2="12" />
                       </svg>
                     </div>
-                    <span className="font-semibold text-gray-900">Purchase Orders</span>
-                  </Link>
+                    <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                      Purchase Orders
+                    </span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
 
-                  {/* 4. Ledger */}
-                  <Link
-                    href="/distributor/ledger"
-                    onClick={() => setDesktopMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                {/* 4. Ledger */}
+                <Link
+                  href="/distributor/ledger"
+                  onClick={() => setDesktopMenuOpen(false)}
+                  className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
@@ -617,67 +654,95 @@ export default function Header() {
                         <line x1="16" y1="17" x2="8" y2="17" />
                       </svg>
                     </div>
-                    <span className="font-semibold text-gray-900">Account Ledger</span>
-                  </Link>
+                    <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                      Account Ledger
+                    </span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
 
-                  {/* 5. Catalog Downloads */}
-                  <Link
-                    href="/distributor/downloads"
-                    onClick={() => setDesktopMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                {/* 5. Catalog Downloads */}
+                <Link
+                  href="/distributor/downloads"
+                  onClick={() => setDesktopMenuOpen(false)}
+                  className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                       </svg>
                     </div>
-                    <span className="font-semibold text-gray-900">Catalog Downloads</span>
-                  </Link>
+                    <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                      Catalog Downloads
+                    </span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
 
-                  <div className="my-1.5 border-t border-dashed border-gray-200" />
-                </>
-              ) : null}
+                <div className="my-1.5 border-t border-dashed border-gray-200" />
+              </>
+            ) : null}
 
-              {/* Contact Us */}
-              <Link
-                href="/contact"
-                onClick={() => setDesktopMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            {/* Contact Us */}
+            <Link
+              href="/contact"
+              onClick={() => setDesktopMenuOpen(false)}
+              className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                   </svg>
                 </div>
-                <span className="font-semibold text-gray-900">Contact Us</span>
-              </Link>
+                <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                  Contact Us
+                </span>
+              </div>
+              <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
 
-              <div className="my-1.5 border-t border-dashed border-gray-200" />
+            <div className="my-1.5 border-t border-dashed border-gray-200" />
 
-              {/* Privacy Policy */}
-              <Link
-                href="/privacy"
-                onClick={() => setDesktopMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            {/* Privacy Policy */}
+            <Link
+              href="/privacy"
+              onClick={() => setDesktopMenuOpen(false)}
+              className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     <polyline points="9 12 11 14 15 10" />
                   </svg>
                 </div>
-                <span className="font-semibold text-gray-900">Privacy Policy</span>
-              </Link>
+                <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                  Privacy Policy
+                </span>
+              </div>
+              <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
 
-              {/* Terms of Condition */}
-              <Link
-                href="/terms"
-                onClick={() => setDesktopMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+            {/* Terms of Condition */}
+            <Link
+              href="/terms"
+              onClick={() => setDesktopMenuOpen(false)}
+              className="group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-200 hover:translate-x-1"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform duration-200">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
@@ -685,28 +750,40 @@ export default function Header() {
                     <line x1="16" y1="17" x2="8" y2="17" />
                   </svg>
                 </div>
-                <span className="font-semibold text-gray-900">Terms of Condition</span>
-              </Link>
+                <span className="font-semibold text-gray-900 group-hover:text-[#9A7228] transition-colors">
+                  Terms of Condition
+                </span>
+              </div>
+              <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
 
-              {currentUser && (
-                <>
-                  <div className="my-1.5 border-t border-gray-100" />
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-serif text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-2 cursor-pointer"
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    <span>Sign Out of Account</span>
-                  </button>
-                </>
-              )}
-            </div>
-          )}
+            {currentUser && (
+              <>
+                <div className="my-1.5 border-t border-gray-100" />
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="group w-full text-left px-3 py-2 rounded-2xl text-xs font-serif text-rose-600 hover:bg-rose-50 active:scale-[0.98] transition-all duration-200 hover:translate-x-1 flex items-center justify-between cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
+                      <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold">Sign Out of Account</span>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-rose-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </nav>
 
