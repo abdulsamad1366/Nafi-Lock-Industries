@@ -74,7 +74,7 @@ export default function AccountInquiriesPage() {
                   <span
                     className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
                       inq.status === "closed"
-                        ? "bg-gray-100 dark:bg-gray-800 text-gray-500"
+                        ? "bg-gray-100 text-gray-600"
                         : inq.status === "contacted"
                         ? "bg-emerald-500/10 text-emerald-600"
                         : "bg-blue-500/10 text-blue-600"

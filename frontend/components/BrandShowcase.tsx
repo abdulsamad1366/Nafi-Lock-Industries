@@ -341,8 +341,8 @@ export default function BrandShowcase() {
                 />
 
                 {/* Top Meta Bar */}
-                <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/10 mb-4 relative z-10">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10">
+                <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] mb-4 relative z-10">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/5">
                     <span
                       className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: brand.accentHex }}
@@ -378,7 +378,7 @@ export default function BrandShowcase() {
                   </div>
 
                   {/* Studio Product Photograph Frame */}
-                  <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-xl overflow-hidden shadow-xs border border-black/10 dark:border-white/10 mb-4 bg-black/5">
+                  <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-xl overflow-hidden shadow-xs border border-black/10 mb-4 bg-black/5">
                     <Image
                       src={brand.imageSrc}
                       alt={brand.altText}
@@ -402,7 +402,7 @@ export default function BrandShowcase() {
 
                   {/* 2 Specification Chips */}
                   <div className="flex flex-wrap items-center gap-2 mt-auto">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/[0.04] dark:bg-white/10 border border-black/5 dark:border-white/10">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/[0.04] border border-black/5">
                       <SpecIcon
                         icon={brand.spec1.icon}
                         accentColor={brand.accentHex}
@@ -414,7 +414,7 @@ export default function BrandShowcase() {
                       </span>
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/[0.04] dark:bg-white/10 border border-black/5 dark:border-white/10">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/[0.04] border border-black/5">
                       <SpecIcon
                         icon={brand.spec2.icon}
                         accentColor={brand.accentHex}
@@ -429,7 +429,7 @@ export default function BrandShowcase() {
                 </div>
 
                 {/* Bottom Action Row */}
-                <div className="pt-3.5 border-t border-black/[0.06] dark:border-white/10 flex items-center justify-between gap-3 relative z-10">
+                <div className="pt-3.5 border-t border-black/[0.06] flex items-center justify-between gap-3 relative z-10">
                   <Link
                     href={`/brands/${brand.slug}`}
                     className={`inline-flex items-center gap-2 text-white ${brand.btnBgClass} ${brand.btnHoverClass} text-xs font-semibold px-4 py-2 rounded-full shadow-xs hover:shadow active:scale-95 transition-all duration-200 group/btn`}

@@ -101,9 +101,10 @@ export default function MobileNavDrawer({
 
       {/* ── 2. Full-Screen Sliding Drawer Window (Cover Screen) ── */}
       <div
-        className={`fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-md bg-white dark:bg-[#13151b] flex flex-col shadow-2xl transition-transform duration-300 ease-out z-[10000] ${
+        className={`fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-md bg-white text-gray-900 flex flex-col shadow-2xl transition-transform duration-300 ease-out z-[10000] ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ colorScheme: "light" }}
       >
         {/* ── Header Banner Bar (Matched to Reference Styling with Brand Colors) ── */}
         <div className="bg-[#9A7228] text-white px-4 py-3 sm:py-3.5 flex items-center justify-between shadow-md shrink-0 relative select-none">
@@ -152,8 +153,8 @@ export default function MobileNavDrawer({
 
             {/* Location Dropdown Popover */}
             {isLocationOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white text-primary rounded-2xl shadow-2xl border border-divider p-1.5 z-20 animate-in fade-in zoom-in-95 duration-150">
-                <span className="block px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-muted font-bold">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-200 p-1.5 z-20 animate-in fade-in zoom-in-95 duration-150">
+                <span className="block px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-gray-400 font-bold">
                   Dispatch Depots
                 </span>
                 {locations.map((loc) => (
@@ -166,13 +167,13 @@ export default function MobileNavDrawer({
                     }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-serif transition-colors flex items-center justify-between ${
                       locationPill === loc.label
-                        ? "bg-accent/10 text-accent font-bold"
-                        : "hover:bg-surface text-primary"
+                        ? "bg-amber-50 text-[#9A7228] font-bold"
+                        : "hover:bg-gray-50 text-gray-800"
                     }`}
                   >
                     <span>{loc.label}</span>
                     {locationPill === loc.label && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#9A7228]" />
                     )}
                   </button>
                 ))}
@@ -203,15 +204,15 @@ export default function MobileNavDrawer({
         </div>
 
         {/* ── Scrollable Body Area ── */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-1">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-1 bg-white">
           {/* 1. Home */}
           <Link
             href="/"
             onClick={onClose}
             className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
               pathname === "/"
-                ? "bg-accent/10 text-accent font-bold"
-                : "text-primary hover:bg-surface/80"
+                ? "bg-amber-50 text-[#9A7228] font-bold"
+                : "text-gray-900 hover:bg-amber-50/50"
             }`}
           >
             <div className="flex items-center gap-3.5">
@@ -231,8 +232,8 @@ export default function MobileNavDrawer({
               onClick={() => toggleSection("brands")}
               className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
                 pathname.startsWith("/brands")
-                  ? "bg-accent/10 text-accent font-bold"
-                  : "text-primary hover:bg-surface/80"
+                  ? "bg-amber-50 text-[#9A7228] font-bold"
+                  : "text-gray-900 hover:bg-amber-50/50"
               }`}
             >
               <div className="flex items-center gap-3.5">
@@ -244,8 +245,8 @@ export default function MobileNavDrawer({
                 <span className="font-serif text-sm font-semibold">Our Brands</span>
               </div>
               <svg
-                className={`w-4 h-4 text-muted transition-transform duration-200 ${
-                  expandedSection === "brands" ? "rotate-180 text-accent" : ""
+                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                  expandedSection === "brands" ? "rotate-180 text-[#9A7228]" : ""
                 }`}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -263,26 +264,26 @@ export default function MobileNavDrawer({
                 <Link
                   href="/brands/s-nafi"
                   onClick={onClose}
-                  className="block px-3 py-2 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-primary block">S-Nafi</span>
-                  <span className="text-[11px] opacity-75">Architectural Mortise & Brass Masters</span>
+                  <span className="font-bold text-gray-900 block">S-Nafi</span>
+                  <span className="text-[11px] text-gray-500">Architectural Mortise & Brass Masters</span>
                 </Link>
                 <Link
                   href="/brands/raksham"
                   onClick={onClose}
-                  className="block px-3 py-2 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-primary block">Raksham</span>
-                  <span className="text-[11px] opacity-75">Hardened Shackle & Security Padlocks</span>
+                  <span className="font-bold text-gray-900 block">Raksham</span>
+                  <span className="text-[11px] text-gray-500">Hardened Shackle & Security Padlocks</span>
                 </Link>
                 <Link
                   href="/brands/greek"
                   onClick={onClose}
-                  className="block px-3 py-2 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-primary block">Greek</span>
-                  <span className="text-[11px] opacity-75">Pin Cylinders & Classical Iron Locksets</span>
+                  <span className="font-bold text-gray-900 block">Greek</span>
+                  <span className="text-[11px] text-gray-500">Pin Cylinders & Classical Iron Locksets</span>
                 </Link>
               </div>
             )}
@@ -295,8 +296,8 @@ export default function MobileNavDrawer({
               onClick={() => toggleSection("catalog")}
               className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
                 pathname === "/#catalog" || pathname.startsWith("/products")
-                  ? "bg-accent/10 text-accent font-bold"
-                  : "text-primary hover:bg-surface/80"
+                  ? "bg-amber-50 text-[#9A7228] font-bold"
+                  : "text-gray-900 hover:bg-amber-50/50"
               }`}
             >
               <div className="flex items-center gap-3.5">
@@ -310,8 +311,8 @@ export default function MobileNavDrawer({
                 <span className="font-serif text-sm font-semibold">Lock Catalog</span>
               </div>
               <svg
-                className={`w-4 h-4 text-muted transition-transform duration-200 ${
-                  expandedSection === "catalog" ? "rotate-180 text-accent" : ""
+                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                  expandedSection === "catalog" ? "rotate-180 text-[#9A7228]" : ""
                 }`}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -329,35 +330,35 @@ export default function MobileNavDrawer({
                 <Link
                   href="/#catalog"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Padlocks & Brass Shackle Locks
                 </Link>
                 <Link
                   href="/#catalog"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Mortise Locks & Door Hardware
                 </Link>
                 <Link
                   href="/#catalog"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Cylindrical Knob Locks
                 </Link>
                 <Link
                   href="/#catalog"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Armored Heavy-Duty Security Locks
                 </Link>
                 <Link
                   href="/#catalog"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif font-bold text-accent hover:underline"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif font-bold text-[#9A7228] hover:underline"
                 >
                   View Complete Catalog →
                 </Link>
@@ -372,8 +373,8 @@ export default function MobileNavDrawer({
               onClick={() => toggleSection("distributor")}
               className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
                 pathname.startsWith("/distributor")
-                  ? "bg-accent/10 text-accent font-bold"
-                  : "text-primary hover:bg-surface/80"
+                  ? "bg-amber-50 text-[#9A7228] font-bold"
+                  : "text-gray-900 hover:bg-amber-50/50"
               }`}
             >
               <div className="flex items-center gap-3.5">
@@ -388,8 +389,8 @@ export default function MobileNavDrawer({
                 </div>
               </div>
               <svg
-                className={`w-4 h-4 text-muted transition-transform duration-200 ${
-                  expandedSection === "distributor" ? "rotate-180 text-accent" : ""
+                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                  expandedSection === "distributor" ? "rotate-180 text-[#9A7228]" : ""
                 }`}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -407,35 +408,35 @@ export default function MobileNavDrawer({
                 <Link
                   href="/distributor"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   B2B Company Profile
                 </Link>
                 <Link
                   href="/distributor/orders"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Track Purchase Orders
                 </Link>
                 <Link
                   href="/distributor/ledger"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Account Ledger & Invoices
                 </Link>
                 <Link
                   href="/distributor/liked"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Liked Catalog Locks
                 </Link>
                 <Link
                   href="/distributor/downloads"
                   onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-muted hover:text-accent hover:bg-surface transition-colors"
+                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
                   Catalog Downloads & PDFs
                 </Link>
@@ -447,7 +448,7 @@ export default function MobileNavDrawer({
           <Link
             href="/#heritage"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-primary hover:bg-surface/80 transition-all"
+            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -465,7 +466,7 @@ export default function MobileNavDrawer({
           <Link
             href="/#process"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-primary hover:bg-surface/80 transition-all"
+            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -484,8 +485,8 @@ export default function MobileNavDrawer({
             onClick={onClose}
             className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
               pathname.startsWith("/blog")
-                ? "bg-accent/10 text-accent font-bold"
-                : "text-primary hover:bg-surface/80"
+                ? "bg-amber-50 text-[#9A7228] font-bold"
+                : "text-gray-900 hover:bg-amber-50/50"
             }`}
           >
             <div className="flex items-center gap-3.5">
@@ -505,8 +506,8 @@ export default function MobileNavDrawer({
             onClick={onClose}
             className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
               pathname === "/contact"
-                ? "bg-accent/10 text-accent font-bold"
-                : "text-primary hover:bg-surface/80"
+                ? "bg-amber-50 text-[#9A7228] font-bold"
+                : "text-gray-900 hover:bg-amber-50/50"
             }`}
           >
             <div className="flex items-center gap-3.5">
@@ -521,14 +522,14 @@ export default function MobileNavDrawer({
 
           {/* ── Subtle Dashed Divider (Matched to Reference) ── */}
           <div className="pt-3 pb-1">
-            <div className="border-t border-dashed border-divider" />
+            <div className="border-t border-dashed border-gray-200" />
           </div>
 
           {/* 9. Privacy Policy */}
           <Link
             href="/privacy"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-primary hover:bg-surface/80 transition-all"
+            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -545,7 +546,7 @@ export default function MobileNavDrawer({
           <Link
             href="/terms"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-primary hover:bg-surface/80 transition-all"
+            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 shadow-2xs">
@@ -560,10 +561,10 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          </div>
+        </div>
 
         {/* ── Bottom Sticky Action Button (Matched to Reference Sign In Pill) ── */}
-        <div className="p-4 sm:p-5 border-t border-divider bg-surface/95 backdrop-blur-md shrink-0 space-y-2">
+        <div className="p-4 sm:p-5 border-t border-gray-100 bg-white/95 backdrop-blur-md shrink-0 space-y-2">
           {currentUser ? (
             <>
               <Link
@@ -584,7 +585,7 @@ export default function MobileNavDrawer({
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full text-center py-1.5 text-xs font-mono text-muted hover:text-rose-500 transition-colors cursor-pointer touch-manipulation"
+                className="w-full text-center py-1.5 text-xs font-mono text-gray-500 hover:text-rose-600 transition-colors cursor-pointer touch-manipulation"
               >
                 Sign Out of Account
               </button>

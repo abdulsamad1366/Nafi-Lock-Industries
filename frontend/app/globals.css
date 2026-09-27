@@ -17,8 +17,10 @@
    Background is crisp white (#FFFFFF) with warm charcoal text (#111827)
    and refined brass/gold accent tones (#9A7228).
    ───────────────────────────────────────────────────────────────────────── */
-:root {
-  color-scheme: light;
+:root,
+html,
+body {
+  color-scheme: light !important;
   /* Page backdrop color: pure white for clean, modern readability */
   --color-background: #FFFFFF;
 

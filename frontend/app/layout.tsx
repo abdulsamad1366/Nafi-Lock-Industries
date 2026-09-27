@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Marquee from "@/components/Marquee";
@@ -42,9 +42,14 @@ const plexMono = IBM_Plex_Mono({
 
 /**
  * ============================================================================
- * Global SEO Metadata
+ * Global SEO Metadata & Viewport
  * ============================================================================
  */
+export const viewport: Viewport = {
+  themeColor: "#9A7228",
+  colorScheme: "light",
+};
+
 export const metadata: Metadata = {
   title: "Nafi Lock Industries — Premium Lock Manufacturer",
   description:
@@ -77,8 +82,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
+      style={{ colorScheme: "light" }}
     >
-      <body className="bg-background text-primary font-body antialiased">
+      <body
+        className="bg-background text-primary font-body antialiased"
+        style={{ colorScheme: "light" }}
+      >
         {/* Client-side Theme Provider handles multi-brand palette switching */}
         <ThemeProvider>
           {/* Global Order Cart State & Slide-out Drawer */}

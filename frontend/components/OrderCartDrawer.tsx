@@ -56,7 +56,7 @@ export default function OrderCartDrawer() {
             </div>
             <button
               onClick={closeDrawer}
-              className="p-2 text-muted hover:text-primary rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors touch-manipulation"
+              className="p-2 text-muted hover:text-primary rounded-full hover:bg-black/5 transition-colors touch-manipulation"
               aria-label="Close cart"
             >
               <svg
@@ -174,7 +174,7 @@ export default function OrderCartDrawer() {
                             )
                           }
                           disabled={item.quantity <= item.minOrderQty}
-                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
+                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                         >
                           -
                         </button>
@@ -193,7 +193,7 @@ export default function OrderCartDrawer() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors touch-manipulation"
+                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 transition-colors touch-manipulation"
                         >
                           +
                         </button>

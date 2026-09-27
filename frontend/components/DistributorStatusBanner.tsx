@@ -65,7 +65,7 @@ export default function DistributorStatusBanner({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-amber-600">
                 APPLICATION STATUS
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-black uppercase">
