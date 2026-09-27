@@ -77,10 +77,10 @@ export default function DistributorLikedPage() {
             Bookmark high-turnover lock models in the dealer catalog to reorder quickly from this tab.
           </p>
           <Link
-            href="/distributor/catalog"
+            href="/#catalog"
             className="px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors"
           >
-            Browse Dealer Catalog
+            Browse Hardware Catalog
           </Link>
         </div>
       ) : (

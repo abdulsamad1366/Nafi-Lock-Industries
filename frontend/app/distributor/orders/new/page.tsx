@@ -85,7 +85,7 @@ export default function NewOrderPage() {
             View All Orders →
           </Link>
           <Link
-            href="/distributor/catalog"
+            href="/#catalog"
             className="w-full sm:w-auto px-6 py-3 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors"
           >
             Continue Ordering
@@ -105,10 +105,10 @@ export default function NewOrderPage() {
           Add hardware line items from the dealer catalog before proceeding to order checkout.
         </p>
         <Link
-          href="/distributor/catalog"
+          href="/#catalog"
           className="px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs"
         >
-          Open Dealer Catalog
+          Browse Hardware Catalog
         </Link>
       </div>
     );
@@ -261,7 +261,7 @@ export default function NewOrderPage() {
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Link
-              href="/distributor/catalog"
+              href="/#catalog"
               className="w-full sm:w-auto px-5 py-3 border border-divider rounded-full font-serif font-medium text-xs text-primary hover:bg-background transition-colors text-center"
             >
               Add More Products

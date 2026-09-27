@@ -9,8 +9,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import ProductGallery, { getCategoryPlaceholder } from "@/components/ProductGallery";
 import ProductSpecTable from "@/components/ProductSpecTable";
 import ProductGrid, { CatalogProduct } from "@/components/ProductGrid";
-import { OrderCartProvider, useOrderCart } from "@/components/OrderCartProvider";
-import OrderCartDrawer from "@/components/OrderCartDrawer";
+import { useOrderCart } from "@/components/OrderCartProvider";
 
 // Local catalog fallback for offline / development resilience
 const LOCAL_CATALOG_FALLBACK: Record<string, Partial<Product>> = {
@@ -419,29 +418,107 @@ function ProductDetailContent({ product }: { product: Product }) {
 
                 <div className="flex items-center justify-between text-[11px] text-muted font-mono pt-1">
                   <span>Batch Total: ₹{(quantity * Number(product.dealerPrice || 0)).toLocaleString("en-IN")}</span>
-                  <Link href="/distributor/catalog" className="text-accent hover:underline">
-                    View Dealer Catalog →
+                  <Link href="/#catalog" className="text-accent hover:underline">
+                    Browse More Locks →
                   </Link>
                 </div>
               </div>
             ) : (
-              /* Public / Retail / Customer Branch */
-              <div className="space-y-3">
-                <Link
-                  href={`/contact?productId=${encodeURIComponent(product.id)}&brandId=${encodeURIComponent(product.brandId || "")}`}
-                  className="w-full py-3.5 px-6 rounded-xl bg-accent text-background hover:bg-accent-hover font-serif font-bold text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 text-center"
-                >
-                  <span>Enquire About This Product</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </Link>
+              /* Public / Customer / Guest Branch with Direct Ordering */
+              <div className="p-5 rounded-2xl bg-surface border border-divider shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-divider">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
+                      FACTORY DIRECT ORDER
+                    </span>
+                    <div className="flex items-baseline gap-1.5 mt-0.5">
+                      <span className="font-serif text-lg font-bold text-primary">
+                        Direct Wholesale & Retail
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="flex items-center justify-between text-xs text-muted pt-1">
-                  <span>Authorized Wholesale Dealer?</span>
-                  <Link href="/login" className="text-accent font-semibold hover:underline">
-                    Sign In for B2B Pricing →
+                  <div className="text-right">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
+                      BATCH SIZING
+                    </span>
+                    <span className="font-mono text-xs font-bold text-accent mt-0.5 block">
+                      Flexible Batch
+                    </span>
+                  </div>
+                </div>
+
+                {/* Quantity Input + Add to Order */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex items-center border border-divider rounded-xl overflow-hidden bg-background shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                      disabled={quantity <= 1}
+                      className="px-3 py-3 text-sm text-muted hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        setQuantity(isNaN(val) ? 1 : Math.max(1, val));
+                      }}
+                      className="w-16 text-center text-sm font-mono font-bold bg-transparent text-primary focus:outline-hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((prev) => prev + 1)}
+                      className="px-3 py-3 text-sm text-muted hover:text-primary transition-colors cursor-pointer"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className={`flex-1 py-3 px-6 rounded-xl font-serif font-bold text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer ${
+                      isAddedToCart
+                        ? "bg-emerald-600 text-white"
+                        : "bg-accent text-background hover:bg-accent-hover active:scale-[0.99]"
+                    }`}
+                  >
+                    {isAddedToCart ? (
+                      <>
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Added to Order Cart</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        <span>Add {quantity} to Order Cart</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-muted pt-2 gap-2 border-t border-divider/60">
+                  <div className="flex items-center gap-1.5">
+                    <span>Authorized Wholesale Dealer?</span>
+                    <Link href={`/login?redirect=${encodeURIComponent(`/products/${product.slug}`)}`} className="text-accent font-semibold hover:underline">
+                      Sign In for B2B Margins →
+                    </Link>
+                  </div>
+                  <Link
+                    href={`/contact?productId=${encodeURIComponent(product.id)}&brandId=${encodeURIComponent(product.brandId || "")}`}
+                    className="text-xs text-muted hover:text-primary underline"
+                  >
+                    Custom Pinning / Factory Quote
                   </Link>
                 </div>
               </div>
@@ -478,9 +555,6 @@ function ProductDetailContent({ product }: { product: Product }) {
           hideFilters={true}
         />
       </section>
-
-      {/* Global slide-out order cart drawer for quick review */}
-      <OrderCartDrawer />
     </div>
   );
 }
@@ -588,9 +662,7 @@ export default function ProductDetailPage() {
 
   return (
     <ThemeProvider themeKey={brandThemeKey}>
-      <OrderCartProvider>
-        <ProductDetailContent product={product} />
-      </OrderCartProvider>
+      <ProductDetailContent product={product} />
     </ThemeProvider>
   );
 }

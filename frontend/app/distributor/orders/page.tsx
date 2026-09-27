@@ -140,7 +140,7 @@ export default function DistributorOrdersPage() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/distributor/catalog"
+            href="/#catalog"
             className="px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-all shadow-xs flex items-center gap-2 cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -263,10 +263,10 @@ export default function DistributorOrdersPage() {
               : "No orders match your filter criteria. Try clearing your search query."}
           </p>
           <Link
-            href="/distributor/catalog"
+            href="/#catalog"
             className="px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs inline-flex items-center gap-2"
           >
-            <span>Explore Wholesale Catalog</span>
+            <span>Explore Hardware Catalog</span>
             <span>→</span>
           </Link>
         </div>

@@ -13,8 +13,7 @@ import {
   AuthUser,
 } from "@/lib/userAuth";
 import { getDistributorProfile, DistributorMeResponse } from "@/lib/api";
-import { OrderCartProvider, useOrderCart } from "@/components/OrderCartProvider";
-import OrderCartDrawer from "@/components/OrderCartDrawer";
+import { useOrderCart } from "@/components/OrderCartProvider";
 
 function CartBadgeButton() {
   const { openDrawer, itemCount, subtotal } = useOrderCart();
@@ -99,10 +98,9 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Navigation Links for approved distributors
+  // Navigation Links for approved distributors (Catalog is browsed on main web)
   const navLinks = [
     { href: "/distributor", label: "Company Profile", icon: "user" },
-    { href: "/distributor/catalog", label: "Dealer Catalog", icon: "catalog" },
     { href: "/distributor/orders", label: "My Orders", icon: "box" },
     { href: "/distributor/ledger", label: "Account Ledger", icon: "file" },
     { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
@@ -322,18 +320,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
             <span>Profile</span>
           </Link>
 
-          <Link
-            href="/distributor/catalog"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] font-mono transition-colors ${
-              pathname === "/distributor/catalog" ? "text-accent font-bold" : "text-muted hover:text-primary"
-            }`}
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-            <span>Catalog</span>
-          </Link>
+
 
           <Link
             href="/distributor/orders"
@@ -383,9 +370,6 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </div>
-
-      {/* Global Slide-out Order Cart Drawer */}
-      <OrderCartDrawer />
     </div>
   );
 }
@@ -395,9 +379,5 @@ export default function DistributorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <OrderCartProvider>
-      <DistributorLayoutInner>{children}</DistributorLayoutInner>
-    </OrderCartProvider>
-  );
+  return <DistributorLayoutInner>{children}</DistributorLayoutInner>;
 }

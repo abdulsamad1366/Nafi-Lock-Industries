@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useOrderCart } from "./OrderCartProvider";
+import { getProducts, Product } from "@/lib/api";
 
 /**
  * ============================================================================
@@ -489,6 +491,32 @@ export default function ProductGrid({
   const [cartItems, setCartItems] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeModalProduct, setActiveModalProduct] = useState<CatalogProduct | null>(null);
+  const [liveProducts, setLiveProducts] = useState<Product[]>([]);
+
+  let cart: ReturnType<typeof useOrderCart> | null = null;
+  try {
+    cart = useOrderCart();
+  } catch {
+    cart = null;
+  }
+
+  useEffect(() => {
+    getProducts()
+      .then((data) => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          setLiveProducts(data);
+        }
+      })
+      .catch((err) => console.warn("Failed to fetch live products in ProductGrid", err));
+  }, []);
+
+  const liveProductMap = useMemo(() => {
+    const map = new Map<string, Product>();
+    liveProducts.forEach((p) => {
+      if (p.slug) map.set(p.slug, p);
+    });
+    return map;
+  }, [liveProducts]);
 
   // Toggle favorite
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
@@ -504,13 +532,34 @@ export default function ProductGrid({
     });
   };
 
-  // Add to cart / quotation
+  // Add to order cart
   const handleAddToCart = (product: CatalogProduct) => {
-    setCartItems((prev) => [...prev, product.id]);
-    setToastMessage(`✓ Added "${product.name}" to quotation list`);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3500);
+    const live = liveProductMap.get(product.slug);
+    const prodId = live?.id || product.id;
+    const price = live?.dealerPrice ? Number(live.dealerPrice) : 450;
+    const minQty = live?.minOrderQty || 1;
+
+    if (cart) {
+      cart.addItem({
+        productId: prodId,
+        name: product.name,
+        modelCode: product.modelCode || product.size,
+        image: product.image,
+        unitPrice: price,
+        minOrderQty: minQty,
+        quantity: minQty,
+      });
+      setToastMessage(`✓ Added "${product.name}" to Order Cart`);
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3500);
+    } else {
+      setCartItems((prev) => [...prev, product.id]);
+      setToastMessage(`✓ Added "${product.name}" to quotation list`);
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3500);
+    }
   };
 
   // Filter products dynamically
@@ -785,6 +834,26 @@ export default function ProductGrid({
                     <h3 className="font-serif text-[13.5px] sm:text-[18px] font-bold text-[#111827] leading-snug line-clamp-2 min-h-[38px] sm:min-h-[48px]">
                       {product.name}
                     </h3>
+
+                    {/* Live Pricing & Wholesale MOQ block */}
+                    {liveProductMap.get(product.slug)?.dealerPrice ? (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F1F5F9] text-xs font-mono">
+                        <div>
+                          <span className="text-[9px] uppercase tracking-wider text-muted block">Dealer Price</span>
+                          <span className="font-bold text-accent">
+                            ₹{Number(liveProductMap.get(product.slug)?.dealerPrice).toLocaleString("en-IN")}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-muted">
+                          MOQ: {liveProductMap.get(product.slug)?.minOrderQty || 1} pcs
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F1F5F9] text-[10px] font-mono text-muted">
+                        <span>Factory Wholesale</span>
+                        <span className="text-accent font-semibold">Tier-1 Direct</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -829,13 +898,14 @@ export default function ProductGrid({
       )}
 
       {/* ====================================================================
-          3. FLOATING CART / QUOTATION PILL (When items added)
+          3. FLOATING CART PILL (When items in cart)
           ==================================================================== */}
-      {cartItems.length > 0 && (
+      {cart && cart.itemCount > 0 && (
         <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
-          <Link
-            href="/contact?type=bulk_quote"
-            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#0F172A] text-white shadow-xl hover:bg-black transition-all hover:scale-105 border border-white/10"
+          <button
+            type="button"
+            onClick={cart.openDrawer}
+            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#0F172A] text-white shadow-xl hover:bg-black transition-all hover:scale-105 border border-white/10 cursor-pointer"
           >
             <div className="relative">
               <svg
@@ -850,12 +920,12 @@ export default function ProductGrid({
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
               <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[#A98048] text-[9px] font-bold flex items-center justify-center">
-                {cartItems.length}
+                {cart.itemCount}
               </span>
             </div>
-            <span className="text-xs font-semibold">Request Bulk Quote</span>
+            <span className="text-xs font-semibold">View Order Cart</span>
             <span className="text-xs">→</span>
-          </Link>
+          </button>
         </div>
       )}
 

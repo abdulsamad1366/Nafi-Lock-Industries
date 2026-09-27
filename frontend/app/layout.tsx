@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import Marquee from "@/components/Marquee";
 import Footer from "@/components/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
+import { OrderCartProvider } from "@/components/OrderCartProvider";
+import OrderCartDrawer from "@/components/OrderCartDrawer";
 import "./globals.css";
 
 /**
@@ -59,10 +61,12 @@ export const metadata: Metadata = {
  * 1. <html>: Injects CSS variable classes for all three font families.
  * 2. <body>: Sets base background, text color, and anti-aliased font rendering.
  * 3. <ThemeProvider>: Injects dynamic data-theme attributes based on active route.
- * 4. <Marquee>: Top announcement ribbon with ISO & manufacturer credentials.
- * 5. <Header>: Main site brand navigation (Home | Brands | Contact).
- * 6. <main>: Slot for the active page route content.
- * 7. <Footer>: Global site footer with links and company info.
+ * 4. <OrderCartProvider>: Provides global B2B order cart state across the entire site.
+ * 5. <Marquee>: Top announcement ribbon with ISO & manufacturer credentials.
+ * 6. <Header>: Main site brand navigation (Home | Brands | Contact) with cart badge.
+ * 7. <main>: Slot for the active page route content.
+ * 8. <Footer>: Global site footer with links and company info.
+ * 9. <OrderCartDrawer>: Global slide-out order cart drawer.
  */
 export default function RootLayout({
   children,
@@ -77,17 +81,23 @@ export default function RootLayout({
       <body className="bg-background text-primary font-body antialiased">
         {/* Client-side Theme Provider handles multi-brand palette switching */}
         <ThemeProvider>
-          {/* Top Marquee Ribbon: Stays dark with gold accents above the header */}
-          <Marquee />
+          {/* Global Order Cart State & Slide-out Drawer */}
+          <OrderCartProvider>
+            {/* Top Marquee Ribbon: Stays dark with gold accents above the header */}
+            <Marquee />
 
-          {/* Primary Navigation Header */}
-          <Header />
+            {/* Primary Navigation Header */}
+            <Header />
 
-          {/* Active Page Route Body */}
-          <main>{children}</main>
+            {/* Active Page Route Body */}
+            <main>{children}</main>
 
-          {/* Site-wide Footer */}
-          <Footer />
+            {/* Site-wide Footer */}
+            <Footer />
+
+            {/* Global Slide-out Order Cart Drawer */}
+            <OrderCartDrawer />
+          </OrderCartProvider>
         </ThemeProvider>
       </body>
     </html>

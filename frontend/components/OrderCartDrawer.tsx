@@ -95,11 +95,11 @@ export default function OrderCartDrawer() {
                   Select products from the B2B catalog with verified dealer pricing and minimum order quantities.
                 </p>
                 <Link
-                  href="/distributor/catalog"
+                  href="/#catalog"
                   onClick={closeDrawer}
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background rounded-full font-medium text-xs hover:bg-accent-hover transition-colors"
                 >
-                  Browse Dealer Catalog
+                  Browse Hardware Catalog
                 </Link>
               </div>
             ) : (

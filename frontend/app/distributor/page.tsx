@@ -53,10 +53,10 @@ export default function DistributorOverviewAndProfilePage() {
           {isApproved ? (
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/distributor/catalog"
+                href="/#catalog"
                 className="w-full sm:w-auto text-center px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs touch-manipulation"
               >
-                Browse Dealer Catalog & Order →
+                Browse Hardware Catalog & Order →
               </Link>
               <Link
                 href="/distributor/orders"

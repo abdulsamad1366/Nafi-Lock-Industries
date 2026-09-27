@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { getUser, AuthUser } from "@/lib/userAuth";
+import { useOrderCart } from "@/components/OrderCartProvider";
 
 /**
  * ============================================================================
@@ -43,6 +44,16 @@ export default function Header() {
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef<boolean>(true);
+
+  let cartCount = 0;
+  let openCart = () => {};
+  try {
+    const cart = useOrderCart();
+    cartCount = cart.itemCount;
+    openCart = cart.openDrawer;
+  } catch {
+    // outside provider
+  }
 
   /**
    * 1. Passive Scroll Listener Hook
@@ -305,7 +316,27 @@ export default function Header() {
         {/* ====================================================================
             3. Right Zone: Login CTA Button & Mobile Toggle
             ==================================================================== */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Cart Drawer Trigger Button */}
+          <button
+            type="button"
+            onClick={openCart}
+            className="relative p-2 rounded-full text-primary hover:text-accent hover:bg-surface transition-colors cursor-pointer touch-manipulation"
+            title="Order Cart"
+            aria-label="View Order Cart"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-accent text-background text-[10px] font-bold font-mono flex items-center justify-center shadow-xs">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           {/* ── Direct Login CTA Capsule Button ── */}
           <Link
             ref={ctaRef}
