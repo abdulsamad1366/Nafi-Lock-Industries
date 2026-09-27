@@ -5,36 +5,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
-import { getUser, AuthUser } from "@/lib/userAuth";
+import { getUser, clearUserSession, AuthUser } from "@/lib/userAuth";
 import MobileNavDrawer from "@/components/MobileNavDrawer";
 
 /**
  * ============================================================================
- * Type Definition: NavLinkItem
+ * Component: Header (GSAP Animated Navigation with Desktop Popover & Mobile Drawer)
  * ============================================================================
- */
-interface NavLinkItem {
-  href: string;
-  label: string;
-}
-
-/**
- * ============================================================================
- * Component: Header (GSAP Animated Dual-State Bi-directional Navigation)
- * ============================================================================
- * High-performance, GSAP-driven navigation header featuring continuous physics-based
- * morphing in BOTH directions:
+ * Desktop Navigation Structure:
+ * - Left: Official Brand Logo & Name
+ * - Center: Home | Brand ▾ (S-Nafi, Raksham, Greek) | Gallery | Blogs
+ * - Right:
+ *   - "Not a member? Register" link (/signup)
+ *   - Login / Distributor Portal CTA Button
+ *   - Hamburger icon (☰) triggering Desktop Popover or Mobile Drawer
  *
- * 1. Full-Width -> Round Floating Capsule (when scrolling down)
- * 2. Round Floating Capsule -> Full-Width (when scrolling back to top)
- * 3. Navigation Links (Requested Order):
- *    - Home, S-Nafi, Raksham, Greek, Blog, Contact
- * 4. Action Button:
- *    - "Login" capsule button linking to /login (or /account / /distributor if logged in).
+ * Hamburger Menu Content:
+ * - If not logged in: Contact Us, Privacy Policy, Terms of Condition
+ * - If logged in: Distributor Portal (all 5 tab links) + Contact Us, Privacy Policy, Terms of Condition, Sign Out
  */
 export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState<boolean>(false);
+  const [brandsDropdownOpen, setBrandsDropdownOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const handleCloseMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
@@ -43,7 +37,10 @@ export default function Header() {
   const dockRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const desktopMenuRef = useRef<HTMLDivElement>(null);
+  const hamburgerBtnRef = useRef<HTMLButtonElement>(null);
+  const brandsDropdownRef = useRef<HTMLLIElement>(null);
+  const brandsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialRender = useRef<boolean>(true);
 
   /**
@@ -67,7 +64,49 @@ export default function Header() {
   }, [pathname]);
 
   /**
-   * 2. Component Lifetime GSAP Context (Reverts only on component unmount)
+   * Click-outside & Keyboard handlers for desktop menus
+   */
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        desktopMenuRef.current &&
+        !desktopMenuRef.current.contains(e.target as Node) &&
+        hamburgerBtnRef.current &&
+        !hamburgerBtnRef.current.contains(e.target as Node)
+      ) {
+        setDesktopMenuOpen(false);
+      }
+      if (
+        brandsDropdownRef.current &&
+        !brandsDropdownRef.current.contains(e.target as Node)
+      ) {
+        setBrandsDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setDesktopMenuOpen(false);
+        setBrandsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setDesktopMenuOpen(false);
+    setBrandsDropdownOpen(false);
+  }, [pathname]);
+
+  /**
+   * 2. Component Lifetime GSAP Context
    */
   useEffect(() => {
     const ctx = gsap.context(() => {});
@@ -76,12 +115,10 @@ export default function Header() {
 
   /**
    * 3. GSAP Bi-Directional Morphing Controller
-   * Handles BOTH (full-width -> round) AND (round -> full-width) seamlessly.
    */
   useEffect(() => {
     if (!dockRef.current) return;
 
-    // Skip animation delay on initial page load / refresh
     if (isInitialRender.current) {
       isInitialRender.current = false;
       if (isScrolled) {
@@ -105,7 +142,6 @@ export default function Header() {
     }
 
     if (isScrolled) {
-      /* ── Animation: Full Width -> Round Floating Pill Header ── */
       gsap.to(dockRef.current, {
         width: "calc(100% - 32px)",
         maxWidth: 1152,
@@ -141,13 +177,9 @@ export default function Header() {
         });
       }
     } else {
-      /* ── Animation: Round Floating Pill Header -> Full Width Header ── */
-      const targetMaxWidth =
-        typeof window !== "undefined" ? window.innerWidth : 1920;
-
       gsap.to(dockRef.current, {
         width: "calc(100% - 0px)",
-        maxWidth: targetMaxWidth,
+        maxWidth: "100%",
         borderRadius: 0,
         y: 0,
         paddingTop: 14,
@@ -160,11 +192,6 @@ export default function Header() {
         duration: 0.45,
         ease: "power3.out",
         overwrite: "auto",
-        onComplete: () => {
-          if (dockRef.current) {
-            dockRef.current.style.maxWidth = "100%";
-          }
-        },
       });
 
       if (logoRef.current) {
@@ -187,36 +214,36 @@ export default function Header() {
     }
   }, [isScrolled]);
 
-  /**
-   * 4. Mobile Drawer Transition Hook
-   */
-  useEffect(() => {
-    if (mobileMenuOpen && mobileMenuRef.current) {
-      gsap.fromTo(
-        mobileMenuRef.current,
-        { opacity: 0, y: -8, scale: 0.99 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "power2.out" }
-      );
+  const handleBrandMouseEnter = () => {
+    if (brandsTimeoutRef.current) {
+      clearTimeout(brandsTimeoutRef.current);
+      brandsTimeoutRef.current = null;
     }
-  }, [mobileMenuOpen]);
+    setBrandsDropdownOpen(true);
+  };
 
-  /**
-   * 5. Navigation Links (Configured Exactly per User Request)
-   * 1. Home
-   * 2. S-Nafi
-   * 3. Raksham
-   * 4. Greek
-   * 5. Blog
-   * 6. Contact
-   */
-  const navLinks: NavLinkItem[] = [
-    { href: "/", label: "Home" },
-    { href: "/brands/s-nafi", label: "S-Nafi" },
-    { href: "/brands/raksham", label: "Raksham" },
-    { href: "/brands/greek", label: "Greek" },
-    { href: "/blog", label: "Blog" },
-    { href: "/contact", label: "Contact" },
-  ];
+  const handleBrandMouseLeave = () => {
+    if (brandsTimeoutRef.current) {
+      clearTimeout(brandsTimeoutRef.current);
+    }
+    brandsTimeoutRef.current = setTimeout(() => {
+      setBrandsDropdownOpen(false);
+    }, 250);
+  };
+
+  const handleHamburgerClick = () => {
+    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+      setDesktopMenuOpen((prev) => !prev);
+    } else {
+      setMobileMenuOpen(true);
+    }
+  };
+
+  const handleLogout = () => {
+    clearUserSession();
+    setDesktopMenuOpen(false);
+    window.location.href = "/login";
+  };
 
   return (
     <header
@@ -252,7 +279,7 @@ export default function Header() {
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-3 group transition-transform duration-300 hover:scale-[1.01]"
+            className="flex items-center gap-2.5 sm:gap-3 group transition-transform duration-300 hover:scale-[1.01]"
             aria-label="Nafi Lock Industries Homepage"
           >
             <div
@@ -276,39 +303,175 @@ export default function Header() {
         </div>
 
         {/* ====================================================================
-            2. Center Zone: Desktop Navigation (Mathematically Dead-Center)
+            2. Center Zone: Desktop Navigation (Home | Brand ▾ | Gallery | Blogs)
             ==================================================================== */}
         <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2 items-center pointer-events-auto">
-          <ul className="flex items-center gap-1">
-            {navLinks.map((link) => {
-              const isActive =
-                link.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(link.href);
+          <ul className="flex items-center gap-1.5 text-xs sm:text-[14px]">
+            {/* 1. Home */}
+            <li>
+              <Link
+                href="/"
+                className={`relative flex items-center px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 ${
+                  pathname === "/"
+                    ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
+                    : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+                }`}
+              >
+                <span>Home</span>
+              </Link>
+            </li>
 
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className={`relative flex items-center px-3.5 py-1.5 rounded-full text-xs sm:text-[14px] tracking-wide transition-all duration-200 ${
-                      isActive
-                        ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
-                        : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
-                    }`}
+            {/* 2. Brand ▾ (Dropdown: S-Nafi, Raksham, Greek) */}
+            <li
+              ref={brandsDropdownRef}
+              className="relative"
+              onMouseEnter={handleBrandMouseEnter}
+              onMouseLeave={handleBrandMouseLeave}
+            >
+              <button
+                type="button"
+                onClick={() => setBrandsDropdownOpen((prev) => !prev)}
+                className={`relative flex items-center gap-1 px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 cursor-pointer ${
+                  pathname.startsWith("/brands")
+                    ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
+                    : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+                }`}
+              >
+                <span>Brand</span>
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    brandsDropdownOpen ? "rotate-180 text-accent" : ""
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {/* Brands Floating Popover Menu with Zero-Gap Hover Bridge */}
+              {brandsDropdownOpen && (
+                <div
+                  className="absolute top-full left-0 pt-2 z-50 pointer-events-auto"
+                  onMouseEnter={handleBrandMouseEnter}
+                  onMouseLeave={handleBrandMouseLeave}
+                >
+                  <div
+                    className="w-64 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 p-2 animate-in fade-in zoom-in-95 duration-150"
+                    style={{ colorScheme: "light" }}
                   >
-                    <span>{link.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
+                    <Link
+                      href="/brands/s-nafi"
+                      onClick={() => setBrandsDropdownOpen(false)}
+                      className="block px-3 py-2 rounded-xl hover:bg-amber-50/70 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#9A7228]" />
+                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#9A7228]">
+                          S-Nafi
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                        Architectural Mortise & Brass Masters
+                      </p>
+                    </Link>
+
+                    <Link
+                      href="/brands/raksham"
+                      onClick={() => setBrandsDropdownOpen(false)}
+                      className="block px-3 py-2 rounded-xl hover:bg-red-50/70 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#9A2F24]" />
+                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#9A2F24]">
+                          Raksham
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                        Hardened Shackle & Security Padlocks
+                      </p>
+                    </Link>
+
+                    <Link
+                      href="/brands/greek"
+                      onClick={() => setBrandsDropdownOpen(false)}
+                      className="block px-3 py-2 rounded-xl hover:bg-sky-50/70 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#235F8E]" />
+                        <span className="font-serif font-bold text-xs text-gray-900 group-hover:text-[#235F8E]">
+                          Greek
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 pl-4 mt-0.5">
+                        Pin Cylinders & Classical Iron Locksets
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </li>
+
+            {/* 3. Gallery */}
+            <li>
+              <Link
+                href="/#heritage"
+                className="relative flex items-center px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+              >
+                <span>Gallery</span>
+              </Link>
+            </li>
+
+            {/* 4. Blogs */}
+            <li>
+              <Link
+                href="/blog"
+                className={`relative flex items-center px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 ${
+                  pathname.startsWith("/blog")
+                    ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
+                    : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+                }`}
+              >
+                <span>Blogs</span>
+              </Link>
+            </li>
+
+            {/* 5. Contact Us */}
+            <li>
+              <Link
+                href="/contact"
+                className={`relative flex items-center px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 ${
+                  pathname === "/contact"
+                    ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
+                    : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+                }`}
+              >
+                <span>Contact Us</span>
+              </Link>
+            </li>
           </ul>
         </div>
 
         {/* ====================================================================
-            3. Right Zone: Login CTA Button & Mobile Toggle
+            3. Right Zone: Register Link + Login CTA Button & Hamburger
             ==================================================================== */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* ── Direct Login CTA Capsule Button ── */}
+        <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 relative">
+          {/* ── Not a member? Register link ── */}
+          <div className="hidden sm:flex items-center text-xs text-gray-600 font-medium select-none">
+            <span>Not a member?&nbsp;</span>
+            <Link
+              href="/signup"
+              className="text-[#9A7228] font-bold hover:underline transition-colors"
+            >
+              Register
+            </Link>
+          </div>
+
+          {/* ── Direct Login / Distributor Portal CTA Capsule Button ── */}
           <Link
             ref={ctaRef}
             href={
@@ -318,7 +481,7 @@ export default function Header() {
                 ? "/account"
                 : "/login"
             }
-            className="hidden sm:inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
+            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
           >
             <span>
               {currentUser?.role === "DISTRIBUTOR"
@@ -343,29 +506,198 @@ export default function Header() {
             </svg>
           </Link>
 
-          {/* ── Mobile Hamburger Menu Toggle Button ── */}
+          {/* ── Hamburger Menu Toggle Button (Visible on Both Desktop & Mobile) ── */}
           <button
+            ref={hamburgerBtnRef}
             type="button"
             id="mobile-nav-hamburger-btn"
-            onClick={() => setMobileMenuOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-muted hover:text-primary hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer touch-manipulation"
-            aria-expanded={mobileMenuOpen}
-            aria-label="Open mobile menu"
+            onClick={handleHamburgerClick}
+            className={`p-2 rounded-full text-gray-700 hover:text-gray-900 hover:bg-gray-100 active:scale-95 transition-all cursor-pointer touch-manipulation ${
+              desktopMenuOpen ? "bg-gray-100 text-gray-900 ring-2 ring-accent/30" : ""
+            }`}
+            aria-expanded={desktopMenuOpen || mobileMenuOpen}
+            aria-label="Navigation Menu"
           >
             <svg
               className="w-5 h-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
             </svg>
           </button>
+
+          {/* ── Desktop Hamburger Popover Dropdown Menu (Matches Reference Design) ── */}
+          {desktopMenuOpen && (
+            <div
+              ref={desktopMenuRef}
+              className="hidden lg:block absolute right-0 top-full mt-2 w-72 bg-white text-gray-900 rounded-3xl shadow-2xl border border-gray-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150"
+              style={{ colorScheme: "light" }}
+            >
+              {currentUser ? (
+                <>
+                  <div className="px-3 py-1.5 flex items-center justify-between border-b border-gray-100 mb-1">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 font-bold">
+                      Distributor Portal
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+
+                  {/* 1. Company Profile */}
+                  <Link
+                    href="/distributor"
+                    onClick={() => setDesktopMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-900">Company Profile</span>
+                  </Link>
+
+                  {/* 2. Liked Locks */}
+                  <Link
+                    href="/distributor/liked"
+                    onClick={() => setDesktopMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-900">Liked Locks</span>
+                  </Link>
+
+                  {/* 3. Orders */}
+                  <Link
+                    href="/distributor/orders"
+                    onClick={() => setDesktopMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-900">Purchase Orders</span>
+                  </Link>
+
+                  {/* 4. Ledger */}
+                  <Link
+                    href="/distributor/ledger"
+                    onClick={() => setDesktopMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-900">Account Ledger</span>
+                  </Link>
+
+                  {/* 5. Catalog Downloads */}
+                  <Link
+                    href="/distributor/downloads"
+                    onClick={() => setDesktopMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-900">Catalog Downloads</span>
+                  </Link>
+
+                  <div className="my-1.5 border-t border-dashed border-gray-200" />
+                </>
+              ) : null}
+
+              {/* Contact Us */}
+              <Link
+                href="/contact"
+                onClick={() => setDesktopMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+              >
+                <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                  </svg>
+                </div>
+                <span className="font-semibold text-gray-900">Contact Us</span>
+              </Link>
+
+              <div className="my-1.5 border-t border-dashed border-gray-200" />
+
+              {/* Privacy Policy */}
+              <Link
+                href="/privacy"
+                onClick={() => setDesktopMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <polyline points="9 12 11 14 15 10" />
+                  </svg>
+                </div>
+                <span className="font-semibold text-gray-900">Privacy Policy</span>
+              </Link>
+
+              {/* Terms of Condition */}
+              <Link
+                href="/terms"
+                onClick={() => setDesktopMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-serif text-gray-700 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+              >
+                <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                </div>
+                <span className="font-semibold text-gray-900">Terms of Condition</span>
+              </Link>
+
+              {currentUser && (
+                <>
+                  <div className="my-1.5 border-t border-gray-100" />
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-serif text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    <span>Sign Out of Account</span>
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </nav>
 
