@@ -25,10 +25,6 @@ export default function MobileNavDrawer({
   // Accordion state for expandable menu items
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
-  // Location selector state
-  const [locationPill, setLocationPill] = useState("All Locations");
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -39,7 +35,6 @@ export default function MobileNavDrawer({
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      setIsLocationOpen(false);
     }
     return () => {
       document.body.style.overflow = "";
@@ -76,13 +71,6 @@ export default function MobileNavDrawer({
     router.push("/login");
   };
 
-  const locations = [
-    { id: "all", label: "All Locations" },
-    { id: "aligarh", label: "Aligarh Foundry (HQ)" },
-    { id: "delhi", label: "Delhi Freight Hub" },
-    { id: "mumbai", label: "Mumbai Commercial Hub" },
-  ];
-
   if (!mounted) return null;
 
   return createPortal(
@@ -106,90 +94,39 @@ export default function MobileNavDrawer({
         }`}
         style={{ colorScheme: "light" }}
       >
-        {/* ── Header Banner Bar (Matched to Reference Styling with Brand Colors) ── */}
-        <div className="bg-[#9A7228] text-white px-4 py-3 sm:py-3.5 flex items-center justify-between shadow-md shrink-0 relative select-none">
-          {/* Brand Monogram / Emblem */}
+        {/* ── Header Bar: Matched to Website Brand Header (White + Logo + Close) ── */}
+        <div className="bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between shadow-xs shrink-0 select-none">
+          {/* Official Brand Identity (Exact match to Website Header) */}
           <Link
             href="/"
             onClick={onClose}
-            className="flex items-center gap-2 group touch-manipulation"
+            className="flex items-center gap-2.5 sm:gap-3 group transition-transform duration-300 hover:scale-[1.01]"
+            aria-label="Nafi Lock Industries Homepage"
           >
-            <div className="w-8 h-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center p-1 shadow-2xs group-hover:bg-white/30 transition-colors overflow-hidden">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0 transition-transform duration-300 group-hover:scale-105 will-change-transform">
               <Image
                 src="/logos/nafi-logo.svg"
-                alt="Nafi Crest"
-                width={28}
-                height={28}
-                className="w-full h-full object-contain"
+                alt="Nafi Lock Industries Official Logo"
+                width={36}
+                height={36}
+                priority
+                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(184,146,63,0.3)]"
               />
             </div>
-            <span className="font-serif font-bold text-sm tracking-wide hidden xs:inline">
-              Nafi Lock
+            <span className="font-headline text-base sm:text-lg font-bold tracking-tight text-gray-900 flex items-center gap-1.5">
+              Nafi <span className="text-[#9A7228] font-serif font-normal">Lock Industries</span>
             </span>
           </Link>
-
-          {/* Location / Territory Selector Capsule Pill */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsLocationOpen((prev) => !prev)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#9A7228] font-serif font-bold text-xs shadow-xs hover:bg-white/95 active:scale-95 transition-all touch-manipulation cursor-pointer"
-            >
-              <span className="truncate max-w-[140px]">{locationPill}</span>
-              <svg
-                className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${
-                  isLocationOpen ? "rotate-180" : ""
-                }`}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-
-            {/* Location Dropdown Popover */}
-            {isLocationOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-200 p-1.5 z-20 animate-in fade-in zoom-in-95 duration-150">
-                <span className="block px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-gray-400 font-bold">
-                  Dispatch Depots
-                </span>
-                {locations.map((loc) => (
-                  <button
-                    key={loc.id}
-                    type="button"
-                    onClick={() => {
-                      setLocationPill(loc.label);
-                      setIsLocationOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-serif transition-colors flex items-center justify-between ${
-                      locationPill === loc.label
-                        ? "bg-amber-50 text-[#9A7228] font-bold"
-                        : "hover:bg-gray-50 text-gray-800"
-                    }`}
-                  >
-                    <span>{loc.label}</span>
-                    {locationPill === loc.label && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#9A7228]" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
           {/* Close 'X' Button */}
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-white/20 active:scale-95 text-white transition-colors touch-manipulation cursor-pointer"
-            aria-label="Close Navigation"
+            className="p-2 -mr-1 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 active:scale-95 transition-all touch-manipulation cursor-pointer"
+            aria-label="Close Navigation Menu"
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5 sm:w-6 sm:h-6"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
