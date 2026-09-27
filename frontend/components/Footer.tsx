@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 /**
  * ============================================================================
  * Component: Footer
  * ============================================================================
- * Global site footer rendered across all pages at the bottom of the layout.
+ * Global site footer rendered across public pages at the bottom of the layout.
+ * Automatically hidden on the distributor portal and admin routes.
  *
  * Structure (3 Columns + Bottom Copyright Bar):
  * - Column 1: Company identity, brand statement, and manufacturing legacy.
@@ -13,6 +17,13 @@ import Link from "next/link";
  * - Bottom Bar: Dynamic copyright notice with current year.
  */
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Do not render the global public footer inside the distributor portal
+  if (pathname?.startsWith("/distributor")) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-divider bg-surface py-12 px-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
