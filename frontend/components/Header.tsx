@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { getUser, AuthUser } from "@/lib/userAuth";
 import { useOrderCart } from "@/components/OrderCartProvider";
+import MobileNavDrawer from "@/components/MobileNavDrawer";
 
 /**
  * ============================================================================
@@ -37,6 +38,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const handleCloseMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
   const headerRef = useRef<HTMLElement>(null);
   const dockRef = useRef<HTMLElement>(null);
@@ -375,123 +377,37 @@ export default function Header() {
           {/* ── Mobile Hamburger Menu Toggle Button ── */}
           <button
             type="button"
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="lg:hidden p-2 rounded-lg text-muted hover:text-primary hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+            id="mobile-nav-hamburger-btn"
+            onClick={() => setMobileMenuOpen(true)}
+            className="lg:hidden p-2 rounded-lg text-muted hover:text-primary hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer touch-manipulation"
             aria-expanded={mobileMenuOpen}
-            aria-label="Toggle mobile menu"
+            aria-label="Open mobile menu"
           >
-            {mobileMenuOpen ? (
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            ) : (
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            )}
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
         </div>
       </nav>
 
       {/* ====================================================================
-          4. Responsive Mobile Navigation Drawer (GSAP-Animated)
+          4. Responsive Full-Screen Mobile Navigation Drawer (Window Slide)
           ==================================================================== */}
-      {mobileMenuOpen && (
-        <div
-          ref={mobileMenuRef}
-          className={`pointer-events-auto w-full transition-all duration-300 ${
-            isScrolled ? "mt-2 px-4 sm:px-6 max-w-6xl" : "px-6"
-          }`}
-        >
-          <div
-            className={`w-full bg-white/98 backdrop-blur-2xl px-6 py-4 shadow-2xl border ${
-              isScrolled
-                ? "rounded-3xl border-black/[0.06]"
-                : "border-t border-divider/60"
-            }`}
-          >
-            <ul className="space-y-1">
-              {navLinks.map((link) => {
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(link.href);
-
-                return (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-lg text-base transition-colors ${
-                        isActive
-                          ? "bg-surface text-accent font-semibold"
-                          : "text-muted hover:text-primary hover:bg-surface/60 font-medium"
-                      }`}
-                    >
-                      <span>{link.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* Direct Mobile Login CTA */}
-            <div className="mt-4 pt-4 border-t border-divider/60">
-              <Link
-                href={
-                  currentUser?.role === "DISTRIBUTOR"
-                    ? "/distributor"
-                    : currentUser
-                    ? "/account"
-                    : "/login"
-                }
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-colors"
-              >
-                <span>
-                  {currentUser?.role === "DISTRIBUTOR"
-                    ? "Distributor Portal"
-                    : currentUser
-                    ? "My Account"
-                    : "Login"}
-                </span>
-                <svg
-                  className="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                  <polyline points="10 17 15 12 10 7" />
-                  <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+      <MobileNavDrawer
+        isOpen={mobileMenuOpen}
+        onClose={handleCloseMobileMenu}
+        currentUser={currentUser}
+      />
     </header>
   );
 }
