@@ -73,18 +73,6 @@
   --color-muted: #78716C;
 }
 
-/* ── Dark Mode Overrides (Activated via Theme Switcher) ───────────────────────
-   Applied when `data-mode="dark"` is present on the root html container.
-   ───────────────────────────────────────────────────────────────────────── */
-[data-mode="dark"] {
-  --color-background: #0f1115;
-  --color-surface: #181b21;
-  --color-divider: #262b35;
-  --color-primary: #f3f4f6;
-  --color-muted: #9ca3af;
-  --color-secondary: #d1d5db;
-}
-
 /* ==========================================================================
    Base Document Styling
    ========================================================================== */

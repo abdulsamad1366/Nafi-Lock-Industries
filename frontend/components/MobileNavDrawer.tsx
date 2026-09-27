@@ -29,34 +29,9 @@ export default function MobileNavDrawer({
   const [locationPill, setLocationPill] = useState("All Locations");
   const [isLocationOpen, setIsLocationOpen] = useState(false);
 
-  // Dark / Light theme toggle state
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Initialize theme from document or localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("nafi_theme_mode");
-      if (savedTheme === "dark") {
-        setIsDarkMode(true);
-        document.documentElement.setAttribute("data-mode", "dark");
-      }
-    }
-  }, []);
-
-  const toggleTheme = (targetDark: boolean) => {
-    setIsDarkMode(targetDark);
-    if (targetDark) {
-      document.documentElement.setAttribute("data-mode", "dark");
-      localStorage.setItem("nafi_theme_mode", "dark");
-    } else {
-      document.documentElement.removeAttribute("data-mode");
-      localStorage.setItem("nafi_theme_mode", "light");
-    }
-  };
 
   // Lock body scroll when drawer is open
   useEffect(() => {
@@ -585,65 +560,7 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          {/* ── Another Subtle Divider ── */}
-          <div className="pt-2 pb-1">
-            <div className="border-t border-divider/60" />
           </div>
-
-          {/* 11. Theme Switcher Row (Matched to Reference Layout with Sun & Moon Icons) ── */}
-          <div className="flex items-center justify-between p-2.5 rounded-2xl">
-            <div className="flex items-center gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.64 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-4 8c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm3-3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm3 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm3 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
-                </svg>
-              </div>
-              <span className="font-serif text-sm font-semibold text-primary">Theme</span>
-            </div>
-
-            {/* Sun / Moon Switch Capsule */}
-            <div className="flex items-center p-1 bg-surface border border-divider rounded-full shadow-2xs">
-              <button
-                type="button"
-                onClick={() => toggleTheme(false)}
-                className={`p-1.5 rounded-full transition-all touch-manipulation cursor-pointer ${
-                  !isDarkMode
-                    ? "bg-white text-amber-500 shadow-xs"
-                    : "text-muted hover:text-primary"
-                }`}
-                title="Light Mode"
-                aria-label="Switch to Light Theme"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => toggleTheme(true)}
-                className={`p-1.5 rounded-full transition-all touch-manipulation cursor-pointer ${
-                  isDarkMode
-                    ? "bg-[#181b21] text-accent shadow-xs"
-                    : "text-muted hover:text-primary"
-                }`}
-                title="Dark Mode"
-                aria-label="Switch to Dark Theme"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* ── Bottom Sticky Action Button (Matched to Reference Sign In Pill) ── */}
         <div className="p-4 sm:p-5 border-t border-divider bg-surface/95 backdrop-blur-md shrink-0 space-y-2">
