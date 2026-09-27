@@ -101,13 +101,12 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
 
   // Navigation Links for approved distributors
   const navLinks = [
-    { href: "/distributor", label: "Overview", icon: "dashboard" },
+    { href: "/distributor", label: "Company Profile", icon: "user" },
     { href: "/distributor/catalog", label: "Dealer Catalog", icon: "catalog" },
     { href: "/distributor/orders", label: "My Orders", icon: "box" },
     { href: "/distributor/ledger", label: "Account Ledger", icon: "file" },
     { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
     { href: "/distributor/liked", label: "Liked Locks", icon: "heart" },
-    { href: "/distributor/profile", label: "Company Profile", icon: "user" },
   ];
 
   return (
@@ -156,7 +155,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           <div className="lg:hidden mt-3 pt-2.5 border-t border-divider/60">
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth">
               {navLinks.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (item.href === "/distributor" && pathname === "/distributor/profile");
                 return (
                   <Link
                     key={item.href}
@@ -231,7 +230,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
               </div>
 
               {navLinks.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (item.href === "/distributor" && pathname === "/distributor/profile");
                 return (
                   <Link
                     key={item.href}
@@ -313,16 +312,14 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           <Link
             href="/distributor"
             className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] font-mono transition-colors ${
-              pathname === "/distributor" ? "text-accent font-bold" : "text-muted hover:text-primary"
+              pathname === "/distributor" || pathname === "/distributor/profile" ? "text-accent font-bold" : "text-muted hover:text-primary"
             }`}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
-            <span>Home</span>
+            <span>Profile</span>
           </Link>
 
           <Link
