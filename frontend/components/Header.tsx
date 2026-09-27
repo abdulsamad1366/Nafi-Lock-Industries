@@ -467,8 +467,8 @@ export default function Header() {
             3. Right Zone: Register Link + Login CTA Button & Hamburger
             ==================================================================== */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 relative">
-          {/* ── Not a member? Register link ── */}
-          <div className="hidden sm:flex items-center text-xs text-gray-600 font-medium select-none">
+          {/* ── Not a member? Register link (Desktop only) ── */}
+          <div className="hidden lg:flex items-center text-xs text-gray-600 font-medium select-none">
             <span>Not a member?&nbsp;</span>
             <Link
               href="/signup"
@@ -478,7 +478,7 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* ── Direct Login / Distributor Portal CTA Capsule Button ── */}
+          {/* ── Direct Login / Distributor Portal CTA Capsule Button (Desktop only) ── */}
           <Link
             ref={ctaRef}
             href={
@@ -488,7 +488,7 @@ export default function Header() {
                 ? "/account"
                 : "/login"
             }
-            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
+            className="hidden lg:inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
           >
             <span>
               {currentUser?.role === "DISTRIBUTOR"

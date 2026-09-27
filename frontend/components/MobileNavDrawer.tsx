@@ -13,6 +13,40 @@ interface MobileNavDrawerProps {
   currentUser: AuthUser | null;
 }
 
+/**
+ * ============================================================================
+ * Component: MobileNavDrawer (Responsive Sliding Navigation Drawer)
+ * ============================================================================
+ * Matches exact mobile specifications:
+ *
+ * IF NOT LOGIN:
+ * - Header Bar: LOGO + NAME + Close button
+ * - Menu list:
+ *   1. HOME (/)
+ *   2. OUR BRANDS { S-Nafi, Raksham, Greek } (Expandable accordion)
+ *   3. GALLERY (/#heritage)
+ *   4. BLOGS & ARTICLES (/blog)
+ *   5. CONTACT US (/contact)
+ *   6. PRIVACY POLICY (/privacy)
+ *   7. TERMS OF CONDITION (/terms)
+ * - Bottom Action: LOGIN (/login)
+ *
+ * IF LOGIN:
+ * - Header Bar: LOGO + NAME + Close button
+ * - Menu list:
+ *   1. HOME (/)
+ *   2. OUR BRANDS { S-Nafi, Raksham, Greek } (Expandable accordion)
+ *   3. DISTRIBUTOR PORTAL { Profile, Orders, Ledger, Liked, Downloads } (Expandable accordion)
+ *   4. GALLERY (/#heritage)
+ *   5. BLOGS & ARTICLES (/blog)
+ *   6. CONTACT US (/contact)
+ *   7. PRIVACY POLICY (/privacy)
+ *   8. TERMS OF CONDITION (/terms)
+ * - Bottom Actions:
+ *   - DISTRIBUTOR PORTAL CTA button (/distributor)
+ *   - SIGN OUT button (clearUserSession)
+ * ============================================================================
+ */
 export default function MobileNavDrawer({
   isOpen,
   onClose,
@@ -22,7 +56,7 @@ export default function MobileNavDrawer({
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  // Accordion state for expandable menu items
+  // Accordion state for expandable menu items ("brands" or "distributor")
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   useEffect(() => {
@@ -52,7 +86,7 @@ export default function MobileNavDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Close drawer on route change (only when route actually changes)
+  // Close drawer on route change
   const prevPathnameRef = useRef(pathname);
   useEffect(() => {
     if (prevPathnameRef.current !== pathname) {
@@ -94,7 +128,7 @@ export default function MobileNavDrawer({
         }`}
         style={{ colorScheme: "light" }}
       >
-        {/* ── Header Bar: Matched to Website Brand Header (White + Logo + Close) ── */}
+        {/* ── Header Bar: Logo + Name + Close Button ── */}
         <div className="bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between shadow-xs shrink-0 select-none">
           {/* Official Brand Identity (Exact match to Website Header) */}
           <Link
@@ -142,7 +176,7 @@ export default function MobileNavDrawer({
 
         {/* ── Scrollable Body Area ── */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-1 bg-white">
-          {/* 1. Home */}
+          {/* 1. HOME */}
           <Link
             href="/"
             onClick={onClose}
@@ -162,7 +196,7 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          {/* 2. Brands (Expandable Accordion) */}
+          {/* 2. OUR BRANDS (Expandable Accordion: S-Nafi, Raksham, Greek) */}
           <div>
             <button
               type="button"
@@ -203,185 +237,125 @@ export default function MobileNavDrawer({
                   onClick={onClose}
                   className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-gray-900 block">S-Nafi</span>
-                  <span className="text-[11px] text-gray-500">Architectural Mortise & Brass Masters</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#9A7228]" />
+                    <span className="font-bold text-gray-900 block">S-Nafi</span>
+                  </div>
+                  <span className="text-[11px] text-gray-500 pl-4 mt-0.5 block">
+                    Architectural Mortise & Brass Masters
+                  </span>
                 </Link>
                 <Link
                   href="/brands/raksham"
                   onClick={onClose}
                   className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-gray-900 block">Raksham</span>
-                  <span className="text-[11px] text-gray-500">Hardened Shackle & Security Padlocks</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#9A2F24]" />
+                    <span className="font-bold text-gray-900 block">Raksham</span>
+                  </div>
+                  <span className="text-[11px] text-gray-500 pl-4 mt-0.5 block">
+                    Hardened Shackle & Security Padlocks
+                  </span>
                 </Link>
                 <Link
                   href="/brands/greek"
                   onClick={onClose}
                   className="block px-3 py-2 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
                 >
-                  <span className="font-bold text-gray-900 block">Greek</span>
-                  <span className="text-[11px] text-gray-500">Pin Cylinders & Classical Iron Locksets</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#235F8E]" />
+                    <span className="font-bold text-gray-900 block">Greek</span>
+                  </div>
+                  <span className="text-[11px] text-gray-500 pl-4 mt-0.5 block">
+                    Pin Cylinders & Classical Iron Locksets
+                  </span>
                 </Link>
               </div>
             )}
           </div>
 
-          {/* 3. Lock Catalog (Expandable Accordion) */}
-          <div>
-            <button
-              type="button"
-              onClick={() => toggleSection("catalog")}
-              className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
-                pathname === "/#catalog" || pathname.startsWith("/products")
-                  ? "bg-amber-50 text-[#9A7228] font-bold"
-                  : "text-gray-900 hover:bg-amber-50/50"
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0 shadow-2xs">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 01-8 0" />
-                  </svg>
-                </div>
-                <span className="font-serif text-sm font-semibold">Lock Catalog</span>
-              </div>
-              <svg
-                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                  expandedSection === "catalog" ? "rotate-180 text-[#9A7228]" : ""
+          {/* 3. DISTRIBUTOR PORTAL { ALL LINK } (Rendered ONLY IF Logged In) */}
+          {currentUser && (
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection("distributor")}
+                className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
+                  pathname.startsWith("/distributor")
+                    ? "bg-amber-50 text-[#9A7228] font-bold"
+                    : "text-gray-900 hover:bg-amber-50/50"
                 }`}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
               >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-
-            {expandedSection === "catalog" && (
-              <div className="pl-14 pr-2 py-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
-                <Link
-                  href="/#catalog"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Padlocks & Brass Shackle Locks
-                </Link>
-                <Link
-                  href="/#catalog"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Mortise Locks & Door Hardware
-                </Link>
-                <Link
-                  href="/#catalog"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Cylindrical Knob Locks
-                </Link>
-                <Link
-                  href="/#catalog"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Armored Heavy-Duty Security Locks
-                </Link>
-                <Link
-                  href="/#catalog"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif font-bold text-[#9A7228] hover:underline"
-                >
-                  View Complete Catalog →
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* 4. Distributor Portal (Expandable Accordion) */}
-          <div>
-            <button
-              type="button"
-              onClick={() => toggleSection("distributor")}
-              className={`w-full flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer ${
-                pathname.startsWith("/distributor")
-                  ? "bg-amber-50 text-[#9A7228] font-bold"
-                  : "text-gray-900 hover:bg-amber-50/50"
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
-                  </svg>
+                <div className="flex items-center gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                      <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <span className="font-serif text-sm font-semibold block">Distributor Portal</span>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <span className="font-serif text-sm font-semibold block">Distributor Hub</span>
+                <svg
+                  className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                    expandedSection === "distributor" ? "rotate-180 text-[#9A7228]" : ""
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {expandedSection === "distributor" && (
+                <div className="pl-14 pr-2 py-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <Link
+                    href="/distributor"
+                    onClick={onClose}
+                    className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    B2B Company Profile
+                  </Link>
+                  <Link
+                    href="/distributor/orders"
+                    onClick={onClose}
+                    className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    Track Purchase Orders
+                  </Link>
+                  <Link
+                    href="/distributor/ledger"
+                    onClick={onClose}
+                    className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    Account Ledger & Invoices
+                  </Link>
+                  <Link
+                    href="/distributor/liked"
+                    onClick={onClose}
+                    className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    Liked Catalog Locks
+                  </Link>
+                  <Link
+                    href="/distributor/downloads"
+                    onClick={onClose}
+                    className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
+                  >
+                    Catalog Downloads & PDFs
+                  </Link>
                 </div>
-              </div>
-              <svg
-                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                  expandedSection === "distributor" ? "rotate-180 text-[#9A7228]" : ""
-                }`}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
+              )}
+            </div>
+          )}
 
-            {expandedSection === "distributor" && (
-              <div className="pl-14 pr-2 py-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
-                <Link
-                  href="/distributor"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  B2B Company Profile
-                </Link>
-                <Link
-                  href="/distributor/orders"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Track Purchase Orders
-                </Link>
-                <Link
-                  href="/distributor/ledger"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Account Ledger & Invoices
-                </Link>
-                <Link
-                  href="/distributor/liked"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Liked Catalog Locks
-                </Link>
-                <Link
-                  href="/distributor/downloads"
-                  onClick={onClose}
-                  className="block px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 transition-colors"
-                >
-                  Catalog Downloads & PDFs
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* 5. Foundry Gallery & Heritage */}
+          {/* 4. GALLERY */}
           <Link
             href="/#heritage"
             onClick={onClose}
@@ -395,28 +369,11 @@ export default function MobileNavDrawer({
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
               </div>
-              <span className="font-serif text-sm font-semibold">Foundry Gallery</span>
+              <span className="font-serif text-sm font-semibold">Gallery</span>
             </div>
           </Link>
 
-          {/* 6. Craft & Engineering Specs */}
-          <Link
-            href="/#process"
-            onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="8" rx="2" />
-                  <path d="M22 6h-2v4a2 2 0 01-2 2h-4v8a2 2 0 01-2 2h0a2 2 0 01-2-2v-8H6a2 2 0 01-2-2V6H2" />
-                </svg>
-              </div>
-              <span className="font-serif text-sm font-semibold">Engineering Specs</span>
-            </div>
-          </Link>
-
-          {/* 7. Technical Journal & Blogs */}
+          {/* 5. BLOGS & ARTICLES */}
           <Link
             href="/blog"
             onClick={onClose}
@@ -437,7 +394,7 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          {/* 8. Contact Us & Support */}
+          {/* 6. CONTACT US */}
           <Link
             href="/contact"
             onClick={onClose}
@@ -457,16 +414,20 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          {/* ── Subtle Dashed Divider (Matched to Reference) ── */}
+          {/* ── Subtle Dashed Divider ── */}
           <div className="pt-3 pb-1">
             <div className="border-t border-dashed border-gray-200" />
           </div>
 
-          {/* 9. Privacy Policy */}
+          {/* 7. PRIVACY POLICY */}
           <Link
             href="/privacy"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
+            className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
+              pathname === "/privacy"
+                ? "bg-amber-50 text-[#9A7228] font-bold"
+                : "text-gray-900 hover:bg-amber-50/50"
+            }`}
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -479,11 +440,15 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
-          {/* 10. Terms of Service */}
+          {/* 8. TERMS OF CONDITION */}
           <Link
             href="/terms"
             onClick={onClose}
-            className="flex items-center justify-between p-2.5 rounded-2xl text-gray-900 hover:bg-amber-50/50 transition-all"
+            className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
+              pathname === "/terms"
+                ? "bg-amber-50 text-[#9A7228] font-bold"
+                : "text-gray-900 hover:bg-amber-50/50"
+            }`}
           >
             <div className="flex items-center gap-3.5">
               <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 shadow-2xs">
@@ -494,46 +459,50 @@ export default function MobileNavDrawer({
                   <line x1="16" y1="17" x2="8" y2="17" />
                 </svg>
               </div>
-              <span className="font-serif text-sm font-semibold">Terms of Service</span>
+              <span className="font-serif text-sm font-semibold">Terms of Condition</span>
             </div>
           </Link>
-
         </div>
 
-        {/* ── Bottom Sticky Action Button (Matched to Reference Sign In Pill) ── */}
+        {/* ── Bottom Sticky Action Buttons ── */}
         <div className="p-4 sm:p-5 border-t border-gray-100 bg-white/95 backdrop-blur-md shrink-0 space-y-2">
           {currentUser ? (
             <>
+              {/* DISTRIBUTOR PORTAL CTA */}
               <Link
-                href={currentUser.role === "DISTRIBUTOR" ? "/distributor" : "/account"}
+                href="/distributor"
                 onClick={onClose}
                 className="w-full py-3.5 px-6 rounded-full bg-[#9A7228] hover:bg-[#85601E] active:scale-[0.99] text-white font-serif font-bold text-sm tracking-wide text-center shadow-lg transition-all flex items-center justify-center gap-2 touch-manipulation"
               >
-                <span>
-                  {currentUser.role === "DISTRIBUTOR"
-                    ? "Distributor Portal"
-                    : "My Account"}
-                </span>
+                <span>Distributor Portal</span>
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M5 12h14" />
                   <path d="M12 5l7 7-7 7" />
                 </svg>
               </Link>
+
+              {/* SIGN OUT */}
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full text-center py-1.5 text-xs font-mono text-gray-500 hover:text-rose-600 transition-colors cursor-pointer touch-manipulation"
+                className="w-full text-center py-2 text-xs font-mono font-medium text-gray-500 hover:text-rose-600 transition-colors cursor-pointer touch-manipulation flex items-center justify-center gap-1.5"
               >
-                Sign Out of Account
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                <span>Sign Out</span>
               </button>
             </>
           ) : (
+            /* LOGIN CTA */
             <Link
               href="/login"
               onClick={onClose}
               className="w-full py-3.5 px-6 rounded-full bg-[#9A7228] hover:bg-[#85601E] active:scale-[0.99] text-white font-serif font-bold text-sm tracking-wide text-center shadow-lg transition-all flex items-center justify-center gap-2 touch-manipulation"
             >
-              <span>Sign In</span>
+              <span>Login</span>
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
                 <polyline points="10 17 15 12 10 7" />
