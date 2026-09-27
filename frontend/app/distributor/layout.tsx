@@ -303,8 +303,12 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
 
           {/* 5. Catalog */}
           <Link
-            href="/#catalog"
-            className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono text-muted hover:text-primary transition-colors"
+            href="/distributor/downloads"
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
+              pathname?.startsWith("/distributor/downloads") || pathname === "/distributor/catalog"
+                ? "text-accent font-bold"
+                : "text-muted hover:text-primary"
+            }`}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
