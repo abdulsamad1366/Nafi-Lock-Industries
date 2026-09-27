@@ -414,8 +414,43 @@ export default function MobileNavDrawer({
             </div>
           </Link>
 
+          {/* ── Direct 'Become a Distributor' Quick Action Card ── */}
+          {(!currentUser || currentUser.role !== "DISTRIBUTOR") && (
+            <div className="pt-2 pb-1">
+              <Link
+                href="/signup?role=distributor"
+                onClick={onClose}
+                className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-amber-50 via-amber-100/40 to-amber-50 border border-amber-200/80 hover:border-[#9A7228] transition-all group shadow-2xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#9A7228] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <line x1="19" y1="8" x2="19" y2="14" />
+                      <line x1="22" y1="11" x2="16" y2="11" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <span className="font-serif text-sm font-bold text-gray-900 block group-hover:text-[#9A7228] transition-colors">
+                      Become a Distributor
+                    </span>
+                    <span className="text-[11px] text-gray-500 block">
+                      Wholesale dealership & factory pricing
+                    </span>
+                  </div>
+                </div>
+                <div className="w-7 h-7 rounded-full bg-white text-[#9A7228] flex items-center justify-center shadow-2xs group-hover:translate-x-0.5 transition-transform">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </div>
+              </Link>
+            </div>
+          )}
+
           {/* ── Subtle Dashed Divider ── */}
-          <div className="pt-3 pb-1">
+          <div className="pt-2 pb-1">
             <div className="border-t border-dashed border-gray-200" />
           </div>
 
@@ -496,19 +531,36 @@ export default function MobileNavDrawer({
               </button>
             </>
           ) : (
-            /* LOGIN CTA */
-            <Link
-              href="/login"
-              onClick={onClose}
-              className="w-full py-3.5 px-6 rounded-full bg-[#9A7228] hover:bg-[#85601E] active:scale-[0.99] text-white font-serif font-bold text-sm tracking-wide text-center shadow-lg transition-all flex items-center justify-center gap-2 touch-manipulation"
-            >
-              <span>Login</span>
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                <polyline points="10 17 15 12 10 7" />
-                <line x1="15" y1="12" x2="3" y2="12" />
-              </svg>
-            </Link>
+            <div className="space-y-2">
+              {/* DIRECT 'BECOME A DISTRIBUTOR' PRIMARY CAPSULE BUTTON */}
+              <Link
+                href="/signup?role=distributor"
+                onClick={onClose}
+                className="w-full py-3.5 px-6 rounded-full bg-[#9A7228] hover:bg-[#85601E] active:scale-[0.99] text-white font-serif font-bold text-sm tracking-wide text-center shadow-lg transition-all flex items-center justify-center gap-2 touch-manipulation"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <line x1="19" y1="8" x2="19" y2="14" />
+                  <line x1="22" y1="11" x2="16" y2="11" />
+                </svg>
+                <span>Become a Distributor</span>
+              </Link>
+
+              {/* LOGIN BUTTON */}
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="w-full py-2.5 px-6 rounded-full border border-gray-200 hover:border-[#9A7228] bg-gray-50/80 hover:bg-amber-50/50 text-gray-800 hover:text-[#9A7228] active:scale-[0.99] font-serif font-semibold text-xs sm:text-sm tracking-wide text-center transition-all flex items-center justify-center gap-2 touch-manipulation"
+              >
+                <span>Login</span>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  <polyline points="10 17 15 12 10 7" />
+                  <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+              </Link>
+            </div>
           )}
         </div>
       </div>
