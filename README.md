@@ -2,7 +2,7 @@
 
 Premium lock manufacturer website — **S-Nafi · Greek · Raksham**
 
-A multi-brand digital showroom, customer portal, and gated B2B distributor portal.
+A multi-brand digital showroom and gated B2B distributor portal.
 
 ---
 
@@ -114,9 +114,9 @@ nafi-lock-industries/
 │   │   ├── controllers/       # Products, Brands, Auth, Distributor, Orders, Ledger
 │   │   ├── middleware/        # Auth gates, optionalAuth, distributor approval checks
 │   │   └── routes/            # Public, Distributor, and Admin API endpoints
-│   └── uploads/               # Product photos, catalogs, and customer ledgers
+│   └── uploads/               # Product photos, catalogs, and distributor ledgers
 ├── frontend/                  # Next.js App Router
-│   ├── app/                   # Pages: Home, Brand pages, /products/[slug], /distributor, /account, /admin
+│   ├── app/                   # Pages: Home, Brand pages, /products/[slug], /distributor, /admin
 │   ├── components/            # ProductCard, ProductGallery, ProductSpecTable, OrderCartDrawer, etc.
 │   ├── lib/                   # API client (fetchAPI), userAuth helpers, theme tokens
 │   └── public/                # Static brand logos & placeholder SVGs
@@ -128,6 +128,5 @@ nafi-lock-industries/
 
 ## 🔐 Key User Roles & Portals
 
-- **Customer:** Public catalog browsing, inquiry submission, and liked products collection (`/account/liked`).
-- **Distributor:** Gated B2B dealer experience (`/distributor/dashboard`). Requires admin review before login. Includes dealer pricing, order cart drawer, order tracking, catalog downloads, and sales representative contact.
+- **Distributor:** Gated B2B dealer experience (`/distributor`). Requires admin review before login. Includes dealer pricing, order cart drawer, order tracking, catalog downloads, and sales representative contact.
 - **Admin:** Management portal (`/admin`) for product catalog, distributor approvals, order statuses, sales reps, and ledger fulfillment.
