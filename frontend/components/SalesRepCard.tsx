@@ -106,12 +106,13 @@ export default function SalesRepCard({ rep, className = "" }: SalesRepCardProps)
       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-divider">
         <a
           href={`tel:${cleanPhone}`}
-          className="min-h-[40px] px-2 py-2 text-center rounded-xl bg-background border border-divider text-xs text-primary font-serif font-semibold hover:border-accent hover:text-accent transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          className="min-h-[44px] px-2 py-2 text-center rounded-xl bg-background border border-divider text-xs text-primary font-semibold hover:border-accent hover:text-accent active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          title={`Call ${rep.name}`}
         >
-          <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-5 h-5 text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
-          <span className="hidden xs:inline">Call</span>
+          <span className="font-medium whitespace-nowrap tracking-tight">Call</span>
         </a>
 
         <a
@@ -120,23 +121,25 @@ export default function SalesRepCard({ rep, className = "" }: SalesRepCardProps)
           )},%20inquiring%20about%20my%20Nafi%20Lock%20distributor%20account`}
           target="_blank"
           rel="noopener noreferrer"
-          className="min-h-[40px] px-2 py-2 text-center rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-xs text-white font-serif font-bold transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          className="min-h-[44px] px-2 py-2 text-center rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-xs text-white font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          title={`WhatsApp ${rep.name}`}
         >
-          <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.586 1.861.899 2.796.899 3.182 0 5.769-2.587 5.77-5.767.001-3.182-2.585-5.769-5.766-5.769zm3.387 8.169c-.145.409-.844.757-1.164.805-.319.049-.733.073-2.385-.599-1.993-.81-3.266-2.825-3.366-2.957-.099-.133-.804-1.071-.804-2.043 0-.972.51-1.45.691-1.649.181-.199.395-.249.527-.249.132 0 .264.002.378.007.121.006.283-.046.443.338.166.398.568 1.385.618 1.487.05.102.083.221.016.353-.066.133-.1.215-.198.331-.099.116-.208.26-.297.35-.099.099-.202.207-.087.405.115.198.513.847 1.1 1.37.756.673 1.393.882 1.591.981.198.099.314.083.43-.05.116-.133.496-.579.628-.778.132-.199.264-.165.446-.099.182.066 1.155.545 1.353.644.198.099.33.149.379.232.049.083.049.48-.096.889z" />
           </svg>
-          <span className="hidden xs:inline">WhatsApp</span>
+          <span className="font-bold whitespace-nowrap tracking-tight">WhatsApp</span>
         </a>
 
         <a
           href={`mailto:${rep.email}`}
-          className="min-h-[40px] px-2 py-2 text-center rounded-xl bg-background border border-divider text-xs text-primary font-serif font-semibold hover:border-accent hover:text-accent transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          className="min-h-[44px] px-2 py-2 text-center rounded-xl bg-background border border-divider text-xs text-primary font-semibold hover:border-accent hover:text-accent active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 touch-manipulation shadow-2xs"
+          title={`Email ${rep.name}`}
         >
-          <svg className="w-3.5 h-3.5 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-5 h-5 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
             <polyline points="22,6 12,13 2,6" />
           </svg>
-          <span className="hidden xs:inline">Email</span>
+          <span className="font-medium whitespace-nowrap tracking-tight">Email</span>
         </a>
       </div>
     </div>
