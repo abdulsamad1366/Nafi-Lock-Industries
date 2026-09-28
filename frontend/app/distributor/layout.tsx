@@ -109,39 +109,41 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background pt-4 sm:pt-6 pb-28 lg:pb-20">
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-        {/* Compact & Responsive Top Distributor Header Console (Desktop Only) */}
-        <div className="hidden lg:block sticky top-20 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-5 mb-5 sm:mb-8 shadow-sm transition-all">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+    <div className="min-h-screen bg-background pt-2 sm:pt-6 pb-24 lg:pb-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        {/* ── Desktop Top Header Console ── */}
+        <div className="hidden lg:block sticky top-20 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 mb-5 sm:mb-8 shadow-xs transition-all">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0">
               {/* Company Initials Monogram Badge */}
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-sm sm:text-lg shrink-0 shadow-2xs">
+              <div className="w-11 h-11 rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-lg shrink-0 shadow-2xs">
                 {(profileData?.distributorProfile?.companyName || user?.name || "D").charAt(0).toUpperCase()}
               </div>
 
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background truncate">
-                    Distributor Hub
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
+                    Distributor Portal
                   </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-500 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Verified Active
+                  </span>
                 </div>
-                <h1 className="font-serif text-sm sm:text-xl md:text-2xl font-bold text-primary mt-0.5 truncate">
+                <h1 className="font-serif text-xl sm:text-2xl font-bold text-primary mt-0.5 truncate">
                   {profileData?.distributorProfile?.companyName || user?.name}
                 </h1>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               <CartBadgeButton />
               <button
                 onClick={handleLogout}
-                title="Sign Out"
-                className="px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-primary hover:border-accent transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5 shrink-0 touch-manipulation"
+                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-rose-500 hover:border-rose-500/30 transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5 shrink-0 touch-manipulation"
               >
-                <span className="hidden sm:inline">Sign Out</span>
-                <svg className="w-3.5 h-3.5 sm:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <span>Sign Out</span>
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                   <polyline points="16 17 21 12 16 7" />
                   <line x1="21" y1="12" x2="9" y2="12" />
@@ -149,48 +151,37 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </div>
-
         </div>
 
-        {/* Body Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        {/* ── Body Grid Layout ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8">
           {/* Navigation Sidebar (Desktop Only) */}
           <aside className="hidden lg:block lg:col-span-3">
             <nav className="bg-surface border border-divider rounded-3xl p-3 space-y-1 shadow-xs sticky top-48 sm:top-52">
               <div className="px-3 py-2 mb-2 border-b border-divider/60 flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-muted font-bold">
-                  B2B Console
+                  Navigation
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               </div>
 
               {navLinks.map((item) => {
-                const isActive = pathname === item.href || (item.href === "/distributor" && pathname === "/distributor/profile");
+                const isActive =
+                  pathname === item.href ||
+                  (item.href === "/distributor" && pathname === "/distributor/profile") ||
+                  (item.href === "/distributor/orders" && pathname?.startsWith("/distributor/orders")) ||
+                  (item.href === "/distributor/downloads" && pathname?.startsWith("/distributor/downloads"));
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-serif transition-all ${
                       isActive
-                        ? "bg-accent text-background font-bold shadow-xs scale-[1.02]"
+                        ? "bg-accent text-background font-bold shadow-xs scale-[1.01]"
                         : "text-muted hover:text-primary hover:bg-background/80"
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      {item.icon === "dashboard" && (
-                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="7" height="7" rx="1" />
-                          <rect x="14" y="3" width="7" height="7" rx="1" />
-                          <rect x="14" y="14" width="7" height="7" rx="1" />
-                          <rect x="3" y="14" width="7" height="7" rx="1" />
-                        </svg>
-                      )}
-                      {item.icon === "catalog" && (
-                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                        </svg>
-                      )}
                       {item.icon === "box" && (
                         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
@@ -241,59 +232,48 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Persistent Mobile Bottom App Bar (Native App Feel) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-lg border-t border-divider px-1.5 py-1.5 shadow-2xl">
-        <div className="flex items-center justify-around max-w-md mx-auto">
+      {/* ── Persistent Mobile Bottom App Bar (Ergonomic Touch Targets) ── */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-lg border-t border-divider px-2 py-1.5 shadow-2xl safe-area-pb">
+        <div className="flex items-center justify-around max-w-lg mx-auto">
           {/* 1. Profile */}
           <Link
             href="/distributor"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
-              pathname === "/distributor" || pathname === "/distributor/profile" ? "text-accent font-bold" : "text-muted hover:text-primary"
+            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
+              pathname === "/distributor" || pathname === "/distributor/profile"
+                ? "text-accent font-bold"
+                : "text-muted hover:text-primary"
             }`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
             <span>Profile</span>
           </Link>
 
-          {/* 2. Liked */}
-          <Link
-            href="/distributor/liked"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
-              pathname === "/distributor/liked" ? "text-accent font-bold" : "text-muted hover:text-primary"
-            }`}
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-            <span>Liked</span>
-          </Link>
-
-          {/* 3. Order */}
+          {/* 2. Orders */}
           <Link
             href="/distributor/orders"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
+            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
               pathname?.startsWith("/distributor/orders") ? "text-accent font-bold" : "text-muted hover:text-primary"
             }`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
               <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
               <line x1="12" y1="22.08" x2="12" y2="12" />
             </svg>
-            <span>Order</span>
+            <span>Orders</span>
           </Link>
 
-          {/* 4. Ledger */}
+          {/* 3. Ledger */}
           <Link
             href="/distributor/ledger"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
+            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
               pathname === "/distributor/ledger" ? "text-accent font-bold" : "text-muted hover:text-primary"
             }`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
               <line x1="16" y1="13" x2="8" y2="13" />
@@ -302,20 +282,34 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
             <span>Ledger</span>
           </Link>
 
-          {/* 5. Catalog */}
+          {/* 4. Downloads */}
           <Link
             href="/distributor/downloads"
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-mono transition-colors ${
-              pathname?.startsWith("/distributor/downloads") || pathname === "/distributor/catalog"
+            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
+              pathname?.startsWith("/distributor/downloads")
                 ? "text-accent font-bold"
                 : "text-muted hover:text-primary"
             }`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            <span>Catalog</span>
+            <span>Downloads</span>
+          </Link>
+
+          {/* 5. Liked */}
+          <Link
+            href="/distributor/liked"
+            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
+              pathname === "/distributor/liked" ? "text-accent font-bold" : "text-muted hover:text-primary"
+            }`}
+          >
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <span>Liked</span>
           </Link>
         </div>
       </div>

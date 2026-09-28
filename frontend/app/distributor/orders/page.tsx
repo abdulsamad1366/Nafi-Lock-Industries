@@ -120,92 +120,87 @@ export default function DistributorOrdersPage() {
   );
 
   return (
-    <div className="space-y-8">
-      {/* Top Header & Fast Metrics */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-divider">
+    <div className="space-y-4 sm:space-y-6">
+      {/* ── Top Header & Fast Action ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-divider">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-1">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">
-              Manufacturing & Logistics Console
+            <span className="text-[10px] font-mono uppercase tracking-wider text-accent font-semibold">
+              Consignment Tracking
             </span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-primary">
-            Purchase Orders & Shipments
+          <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary">
+            Purchase Orders
           </h2>
-          <p className="text-xs text-muted max-w-xl mt-1">
-            Real-time manufacturing dispatch, logistics freight tracking, and itemized billing for Aligarh foundry consignments.
+          <p className="text-xs text-muted mt-0.5">
+            Real-time foundry dispatch status and itemized purchase order history.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/#catalog"
-            className="px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-all shadow-xs flex items-center gap-2 cursor-pointer"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            <span>New Order Batch</span>
-          </Link>
-        </div>
+        <Link
+          href="/#catalog"
+          className="min-h-[42px] px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer touch-manipulation self-start sm:self-auto w-full sm:w-auto"
+        >
+          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          <span>New Order Batch</span>
+        </Link>
       </div>
 
-      {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-surface border border-divider rounded-2xl p-5 relative overflow-hidden">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted block mb-1">
-            Active Consignments
+      {/* ── KPI Tiles Row ── */}
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+        <div className="bg-surface border border-divider rounded-2xl p-3 sm:p-4 text-center sm:text-left">
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted block mb-0.5">
+            Active
           </span>
-          <div className="flex items-baseline gap-2">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
+          <div className="flex items-baseline justify-center sm:justify-start gap-1">
+            <span className="font-serif text-lg sm:text-2xl font-bold text-primary">
               {activeOrdersCount}
             </span>
-            <span className="text-xs text-accent font-medium">in pipeline</span>
+            <span className="text-[10px] text-accent hidden xs:inline">orders</span>
           </div>
-          <p className="text-[11px] text-muted mt-1">In tooling, packaging, or road transit.</p>
         </div>
 
-        <div className="bg-surface border border-divider rounded-2xl p-5 relative overflow-hidden">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted block mb-1">
-            Total Procured Volume
+        <div className="bg-surface border border-divider rounded-2xl p-3 sm:p-4 text-center sm:text-left">
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted block mb-0.5">
+            Total Units
           </span>
-          <div className="flex items-baseline gap-2">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
+          <div className="flex items-baseline justify-center sm:justify-start gap-1">
+            <span className="font-serif text-lg sm:text-2xl font-bold text-primary">
               {totalVolumeUnits.toLocaleString("en-IN")}
             </span>
-            <span className="text-xs text-muted font-mono">Units</span>
+            <span className="text-[10px] text-muted hidden xs:inline">pcs</span>
           </div>
-          <p className="text-[11px] text-muted mt-1">Across all historical order consignments.</p>
         </div>
 
-        <div className="bg-surface border border-divider rounded-2xl p-5 relative overflow-hidden">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted block mb-1">
-            Cumulative Value
+        <div className="bg-surface border border-divider rounded-2xl p-3 sm:p-4 text-center sm:text-left">
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted block mb-0.5">
+            Total Value
           </span>
-          <div className="flex items-baseline gap-2">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-accent">
+          <div className="flex items-baseline justify-center sm:justify-start gap-1">
+            <span className="font-serif text-base sm:text-2xl font-bold text-accent truncate">
               ₹{totalProcurementValue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             </span>
           </div>
-          <p className="text-[11px] text-muted mt-1">Tier-1 wholesale factory pricing locked.</p>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-surface border border-divider rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+      {/* ── Filter and Search Bar ── */}
+      <div className="bg-surface border border-divider rounded-2xl p-2.5 sm:p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 no-scrollbar">
           {[
-            { id: "ALL", label: "All Orders" },
-            { id: "ACTIVE", label: "In Progress" },
+            { id: "ALL", label: "All" },
+            { id: "ACTIVE", label: "Active" },
             { id: "DELIVERED", label: "Delivered" },
             { id: "CANCELLED", label: "Cancelled" },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-serif transition-all whitespace-nowrap cursor-pointer ${
+              className={`min-h-[36px] px-3.5 py-1.5 rounded-xl text-xs font-serif transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
                 statusFilter === tab.id
                   ? "bg-accent text-background font-bold shadow-2xs"
                   : "text-muted hover:text-primary hover:bg-background/80"
@@ -216,16 +211,16 @@ export default function DistributorOrdersPage() {
           ))}
         </div>
 
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-64">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search PO #, notes, or product..."
-            className="w-full bg-background border border-divider rounded-xl pl-9 pr-4 py-2 text-xs text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent transition-colors"
+            placeholder="Search PO # or lock name..."
+            className="w-full bg-background border border-divider rounded-xl pl-9 pr-3 py-2 text-xs text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent transition-colors"
           />
           <svg
-            className="w-4 h-4 absolute left-3 top-2.5 text-muted pointer-events-none"
+            className="w-3.5 h-3.5 absolute left-3 top-2.5 text-muted pointer-events-none"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -237,41 +232,41 @@ export default function DistributorOrdersPage() {
         </div>
       </div>
 
-      {/* Orders List */}
+      {/* ── Orders List ── */}
       {isLoading ? (
-        <div className="py-24 text-center">
-          <div className="w-10 h-10 rounded-full border-2 border-accent border-t-transparent animate-spin mx-auto mb-4" />
+        <div className="py-20 text-center">
+          <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin mx-auto mb-3" />
           <p className="text-xs text-muted font-mono uppercase tracking-wider">
-            Fetching purchase order records...
+            Loading orders...
           </p>
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="bg-surface border border-divider rounded-3xl p-12 text-center shadow-xs">
-          <div className="w-16 h-16 rounded-2xl bg-accent/10 text-accent mx-auto flex items-center justify-center mb-4 border border-accent/20">
-            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <div className="bg-surface border border-divider rounded-3xl p-8 sm:p-12 text-center shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent mx-auto flex items-center justify-center mb-3 border border-accent/20">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
               <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
               <line x1="12" y1="22.08" x2="12" y2="12" />
             </svg>
           </div>
-          <h3 className="font-serif font-bold text-lg text-primary mb-1">
-            No Matching Purchase Orders
+          <h3 className="font-serif font-bold text-base sm:text-lg text-primary mb-1">
+            No Orders Found
           </h3>
-          <p className="text-xs text-muted max-w-md mx-auto mb-6">
+          <p className="text-xs text-muted max-w-sm mx-auto mb-5">
             {orders.length === 0
-              ? "You haven't placed any wholesale purchase orders yet. Browse the dealer catalog to build your first inventory batch."
-              : "No orders match your filter criteria. Try clearing your search query."}
+              ? "You haven't placed any wholesale purchase orders yet."
+              : "No orders match your filter criteria."}
           </p>
           <Link
             href="/#catalog"
-            className="px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs inline-flex items-center gap-2"
+            className="min-h-[40px] px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs inline-flex items-center gap-1.5 touch-manipulation"
           >
-            <span>Explore Hardware Catalog</span>
+            <span>Explore Catalog</span>
             <span>→</span>
           </Link>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {filteredOrders.map((order) => {
             const isExpanded = expandedOrders[order.id];
             const stageIdx = getStageIndex(order.status);
@@ -285,18 +280,18 @@ export default function DistributorOrdersPage() {
             return (
               <div
                 key={order.id}
-                className="bg-surface border border-divider hover:border-accent/40 rounded-3xl overflow-hidden transition-all shadow-xs"
+                className="bg-surface border border-divider hover:border-accent/40 rounded-2xl sm:rounded-3xl overflow-hidden transition-all shadow-xs"
               >
-                {/* Order Top Summary Bar */}
-                <div className="p-4 sm:p-6 border-b border-divider bg-background/40">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-1.5">
-                        <span className="font-mono text-sm sm:text-base font-bold text-primary tracking-tight">
+                {/* ── Order Card Header Bar ── */}
+                <div className="p-3.5 sm:p-5 bg-background/40">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="font-mono text-sm sm:text-base font-bold text-primary">
                           {order.orderNumber}
                         </span>
                         <span
-                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${
+                          className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider border ${
                             order.status === "DELIVERED"
                               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
                               : order.status === "SHIPPED"
@@ -312,8 +307,7 @@ export default function DistributorOrdersPage() {
                         >
                           {order.status}
                         </span>
-                        <span className="text-[11px] sm:text-xs text-muted font-mono">
-                          Placed:{" "}
+                        <span className="text-[11px] text-muted font-mono">
                           {new Date(order.placedAt).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",
@@ -322,20 +316,20 @@ export default function DistributorOrdersPage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs text-muted font-mono">
+                      <div className="flex items-center gap-2 text-[11px] text-muted font-mono">
                         <span>{order.items.length} Product Models</span>
                         <span>·</span>
-                        <span>{totalUnits} Total Units</span>
+                        <span>{totalUnits} Units</span>
                       </div>
                     </div>
 
-                    {/* Right side Total & Controls */}
-                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pt-3 sm:pt-0 border-t sm:border-t-0 border-divider/40">
-                      <div className="text-left sm:text-right">
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
-                          Consignment Total
+                    {/* Amount & Expand Toggle */}
+                    <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-divider/40">
+                      <div>
+                        <span className="text-[9px] font-mono uppercase tracking-wider text-muted block">
+                          Total
                         </span>
-                        <span className="font-mono text-base sm:text-lg font-bold text-accent">
+                        <span className="font-mono text-sm sm:text-base font-bold text-accent">
                           ₹{totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
@@ -343,9 +337,9 @@ export default function DistributorOrdersPage() {
                       <button
                         type="button"
                         onClick={() => toggleExpand(order.id)}
-                        className="px-3.5 py-2 rounded-xl bg-surface border border-divider hover:border-accent text-xs font-serif font-bold text-primary transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
+                        className="min-h-[38px] px-3 py-1.5 rounded-xl bg-surface border border-divider hover:border-accent text-xs font-serif font-bold text-primary transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0 touch-manipulation"
                       >
-                        <span>{isExpanded ? "Collapse" : "Review Items"}</span>
+                        <span>{isExpanded ? "Hide" : "Details"}</span>
                         <svg
                           className={`w-3.5 h-3.5 transition-transform duration-200 ${
                             isExpanded ? "rotate-180" : ""
@@ -361,42 +355,43 @@ export default function DistributorOrdersPage() {
                     </div>
                   </div>
 
-                  {/* Visual Status Stepper */}
+                  {/* ── Status Stepper (Rendered on both Mobile & Desktop) ── */}
                   {!isCancelled ? (
-                    <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-divider/60">
-                      <div className="relative">
-                        {/* Connecting Line (desktop only) */}
-                        <div className="absolute top-4 left-4 right-4 h-0.5 bg-divider -z-0 hidden sm:block" />
+                    <div className="mt-3.5 pt-3 border-t border-divider/50 overflow-x-auto no-scrollbar">
+                      <div className="min-w-[310px] sm:min-w-0 relative py-1">
+                        {/* Base Connecting Line (starts at center of circle 1 = 10%, ends at center of circle 5 = 90%) */}
+                        <div className="absolute top-3 sm:top-3.5 left-[10%] right-[10%] h-0.5 bg-divider -z-0" />
+                        
+                        {/* Progress Filled Connecting Line */}
                         <div
-                          className="absolute top-4 left-4 h-0.5 bg-accent transition-all duration-500 -z-0 hidden sm:block"
+                          className="absolute top-3 sm:top-3.5 left-[10%] h-0.5 bg-accent transition-all duration-500 -z-0"
                           style={{
-                            width: `${(stageIdx / (ORDER_STAGES.length - 1)) * 95}%`,
+                            width: `${(stageIdx / (ORDER_STAGES.length - 1)) * 80}%`,
                           }}
                         />
 
-                        {/* Stages */}
-                        <div className="flex sm:grid sm:grid-cols-5 overflow-x-auto no-scrollbar gap-2.5 sm:gap-4 pb-2 sm:pb-0 relative z-10">
+                        {/* 5 Stage Nodes */}
+                        <div className="grid grid-cols-5 relative z-10">
                           {ORDER_STAGES.map((stage, idx) => {
                             const isCompleted = idx < stageIdx;
                             const isCurrent = idx === stageIdx;
-                            const isUpcoming = idx > stageIdx;
 
                             return (
                               <div
                                 key={stage.key}
-                                className="flex sm:flex-col items-center sm:items-center gap-2.5 sm:gap-2 text-left sm:text-center shrink-0 min-w-[145px] sm:min-w-0 p-2.5 sm:p-0 rounded-2xl bg-surface/70 border border-divider/50 sm:bg-transparent sm:border-0"
+                                className="flex flex-col items-center text-center px-0.5"
                               >
                                 <div
-                                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-all shrink-0 ${
+                                  className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-mono font-bold transition-all shrink-0 mb-1 ${
                                     isCurrent
-                                      ? "bg-accent text-background ring-4 ring-accent/20 scale-105 sm:scale-110 shadow-sm"
+                                      ? "bg-accent text-background ring-4 ring-blue-400/35 dark:ring-blue-400/40 scale-105 shadow-xs"
                                       : isCompleted
                                       ? "bg-accent text-background"
                                       : "bg-surface border border-divider text-muted"
                                   }`}
                                 >
                                   {isCompleted ? (
-                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <svg className="w-3.5 h-3.5 text-background" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                       <polyline points="20 6 9 17 4 12" />
                                     </svg>
                                   ) : (
@@ -404,22 +399,17 @@ export default function DistributorOrdersPage() {
                                   )}
                                 </div>
 
-                                <div className="min-w-0">
-                                  <span
-                                    className={`text-[11px] sm:text-xs block font-serif font-medium truncate sm:whitespace-normal ${
-                                      isCurrent
-                                        ? "text-accent font-bold"
-                                        : isCompleted
-                                        ? "text-primary"
-                                        : "text-muted"
-                                    }`}
-                                  >
-                                    {stage.label}
-                                  </span>
-                                  <span className="text-[9px] sm:text-[10px] text-muted font-mono block">
-                                    {isCurrent ? "In progress" : isCompleted ? "Completed" : "Pending"}
-                                  </span>
-                                </div>
+                                <span
+                                  className={`text-[9px] sm:text-[10px] block font-serif leading-tight ${
+                                    isCurrent
+                                      ? "text-accent font-bold"
+                                      : isCompleted
+                                      ? "text-primary font-medium"
+                                      : "text-muted"
+                                  }`}
+                                >
+                                  {stage.label}
+                                </span>
                               </div>
                             );
                           })}
@@ -427,50 +417,41 @@ export default function DistributorOrdersPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-3">
-                      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <div className="mt-3 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="10" />
                         <line x1="15" y1="9" x2="9" y2="15" />
                         <line x1="9" y1="9" x2="15" y2="15" />
                       </svg>
-                      <span>
-                        This purchase order consignment has been cancelled. Please consult your factory representative for settlement or re-issue.
-                      </span>
+                      <span>This order consignment has been cancelled.</span>
                     </div>
                   )}
 
-                  {/* Factory Dispatch & Logistics Notes Callout */}
+                  {/* Dispatch Notes */}
                   {order.notes && (
-                    <div className="mt-5 sm:mt-6 p-3.5 sm:p-4 bg-background border border-divider rounded-2xl flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 mt-0.5">
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="1" y="3" width="15" height="13" />
-                          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                          <circle cx="5.5" cy="18.5" r="2.5" />
-                          <circle cx="18.5" cy="18.5" r="2.5" />
-                        </svg>
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-accent font-semibold block mb-0.5">
-                          Aligarh Dispatch & Logistics Remarks
+                    <div className="mt-3 p-3 bg-background border border-divider rounded-xl flex items-start gap-2.5 text-xs">
+                      <svg className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="1" y="3" width="15" height="13" />
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                        <circle cx="5.5" cy="18.5" r="2.5" />
+                        <circle cx="18.5" cy="18.5" r="2.5" />
+                      </svg>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-accent font-bold block mb-0.5">
+                          Logistics Notes:
                         </span>
-                        <p className="text-primary leading-relaxed">{order.notes}</p>
+                        <p className="text-primary text-[11px] leading-relaxed">{order.notes}</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Expanded Itemized Bill of Materials */}
+                {/* ── Expanded Bill of Materials ── */}
                 {isExpanded && (
-                  <div className="p-4 sm:p-6 bg-surface space-y-4 animate-in fade-in-50 duration-200">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-3 border-b border-divider">
-                      <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                        Itemized Bill of Materials
-                      </span>
-                      <span className="text-[10px] font-mono text-muted">
-                        Snapshot prices locked at order placement
-                      </span>
-                    </div>
+                  <div className="p-3.5 sm:p-5 bg-surface space-y-3 border-t border-divider animate-in fade-in-50 duration-200">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-bold block pb-1 border-b border-divider">
+                      Itemized Line Items
+                    </span>
 
                     <div className="divide-y divide-divider/60">
                       {order.items.map((item) => {
@@ -484,57 +465,45 @@ export default function DistributorOrdersPage() {
                         return (
                           <div
                             key={item.id}
-                            className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
+                            className="py-2.5 flex items-center justify-between gap-3"
                           >
-                            <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-xl bg-background border border-divider overflow-hidden flex items-center justify-center shrink-0 p-1 relative">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="w-10 h-10 rounded-lg bg-background border border-divider overflow-hidden flex items-center justify-center shrink-0 p-1">
                                 <Image
                                   src={displayImg}
                                   alt={product?.name || "Product"}
-                                  width={44}
-                                  height={44}
+                                  width={36}
+                                  height={36}
                                   className="object-contain"
                                 />
                               </div>
 
                               <div className="min-w-0">
-                                <div className="flex items-center gap-2 mb-0.5">
+                                <div className="flex items-center gap-1.5">
                                   {product?.brand?.name && (
-                                    <span className="px-2 py-0.2 rounded text-[9px] font-mono uppercase tracking-wider bg-background border border-divider text-accent font-bold">
+                                    <span className="text-[9px] font-mono uppercase tracking-wider text-accent font-bold">
                                       {product.brand.name}
                                     </span>
                                   )}
-                                  {product?.category?.name && (
-                                    <span className="text-[10px] font-mono text-muted">
-                                      {product.category.name}
-                                    </span>
-                                  )}
+                                  <span className="text-[10px] font-mono text-muted">
+                                    ₹{Number(item.unitPrice).toFixed(0)}/pc
+                                  </span>
                                 </div>
-                                <h4 className="font-serif font-bold text-xs sm:text-sm text-primary truncate">
+                                <h4 className="font-serif font-bold text-xs text-primary truncate">
                                   {product?.name || "Lock Model"}
                                 </h4>
-                                <span className="text-[11px] font-mono text-muted">
-                                  ₹{Number(item.unitPrice).toFixed(2)} per unit
-                                </span>
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between sm:justify-end gap-6 text-right bg-background/60 sm:bg-transparent p-2.5 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-divider/40">
-                              <div className="text-left sm:text-right">
-                                <span className="text-[10px] font-mono text-muted block">Quantity</span>
-                                <span className="font-mono text-xs sm:text-sm font-bold text-accent">
-                                  {item.quantity} Units
-                                </span>
-                              </div>
-
-                              <div className="text-right min-w-24 sm:min-w-28">
-                                <span className="text-[10px] font-mono text-muted block">Line Total</span>
-                                <span className="font-mono text-xs sm:text-sm font-bold text-primary">
-                                  ₹{(Number(item.unitPrice) * item.quantity).toLocaleString("en-IN", {
-                                    minimumFractionDigits: 2,
-                                  })}
-                                </span>
-                              </div>
+                            <div className="text-right shrink-0">
+                              <span className="text-[10px] font-mono text-muted block">
+                                {item.quantity} pcs
+                              </span>
+                              <span className="font-mono text-xs font-bold text-primary">
+                                ₹{(Number(item.unitPrice) * item.quantity).toLocaleString("en-IN", {
+                                  minimumFractionDigits: 2,
+                                })}
+                              </span>
                             </div>
                           </div>
                         );
@@ -542,36 +511,36 @@ export default function DistributorOrdersPage() {
                     </div>
 
                     {/* Bottom Actions Row */}
-                    <div className="pt-4 border-t border-divider flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="pt-3 border-t border-divider flex flex-col xs:flex-row items-center justify-between gap-2.5">
                       <button
                         type="button"
                         onClick={() => window.print()}
-                        className="w-full sm:w-auto px-4 py-2.5 bg-background border border-divider hover:border-accent rounded-full text-xs font-serif font-semibold text-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                        className="w-full xs:w-auto min-h-[40px] px-4 py-2 bg-background border border-divider hover:border-accent rounded-full text-xs font-serif font-semibold text-primary transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs touch-manipulation"
                       >
                         <svg className="w-3.5 h-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <polyline points="6 9 6 2 18 2 18 9" />
                           <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                           <rect x="6" y="14" width="12" height="8" />
                         </svg>
-                        <span>Print Order Slip</span>
+                        <span>Print Slip</span>
                       </button>
 
-                      <div className="flex flex-col sm:flex-row items-center gap-3">
+                      <div className="flex items-center gap-2 w-full xs:w-auto">
                         {reorderSuccessId === order.id && (
-                          <span className="text-xs text-emerald-500 font-mono text-center">
-                            ✓ Items loaded to Order Cart
+                          <span className="text-xs text-emerald-500 font-mono">
+                            ✓ Added to Cart
                           </span>
                         )}
                         <button
                           type="button"
                           onClick={() => handleReorder(order)}
-                          className="w-full sm:w-auto px-5 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full xs:w-auto min-h-[40px] px-5 py-2 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation"
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="23 4 23 10 17 10" />
                             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                           </svg>
-                          <span>Re-Order This Batch</span>
+                          <span>Re-Order Batch</span>
                         </button>
                       </div>
                     </div>

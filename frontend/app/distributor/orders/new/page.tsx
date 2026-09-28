@@ -43,50 +43,50 @@ export default function NewOrderPage() {
 
   if (placedOrder) {
     return (
-      <div className="bg-surface border border-accent/30 rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto my-8 shadow-xl">
-        <div className="w-16 h-16 rounded-full bg-accent/20 text-accent mx-auto flex items-center justify-center mb-6">
-          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <div className="bg-surface border border-accent/30 rounded-3xl p-6 sm:p-10 text-center max-w-xl mx-auto my-4 sm:my-8 shadow-lg">
+        <div className="w-14 h-14 rounded-full bg-accent/15 text-accent mx-auto flex items-center justify-center mb-4">
+          <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
 
-        <span className="font-mono text-xs uppercase tracking-widest text-accent font-bold block mb-1">
-          PURCHASE ORDER PLACED
+        <span className="font-mono text-[10px] uppercase tracking-wider text-accent font-bold block mb-1">
+          Purchase Order Placed
         </span>
-        <h2 className="font-serif text-3xl font-bold text-primary mb-2">
-          Order {placedOrder.orderNumber}
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-primary mb-2">
+          {placedOrder.orderNumber}
         </h2>
-        <p className="text-xs sm:text-sm text-muted max-w-md mx-auto mb-8 leading-relaxed">
-          Your wholesale order has been submitted directly to the Aligarh factory dispatch queue. An official commercial invoice and logistics tracking will be shared by your assigned representative.
+        <p className="text-xs sm:text-sm text-muted max-w-sm mx-auto mb-6 leading-relaxed">
+          Order submitted to factory dispatch queue. Your assigned sales executive will confirm freight details.
         </p>
 
-        <div className="bg-background border border-divider rounded-2xl p-6 mb-8 text-left space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted">Order Identifier</span>
+        <div className="bg-background border border-divider rounded-2xl p-4 mb-6 text-left space-y-2.5 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-muted">PO Number</span>
             <span className="font-mono font-bold text-primary">{placedOrder.orderNumber}</span>
           </div>
-          <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center justify-between">
             <span className="text-muted">Status</span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20">
               {placedOrder.status}
             </span>
           </div>
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted">Total Line Items</span>
-            <span className="font-mono font-bold text-primary">{placedOrder.items?.length || 0} Products</span>
+          <div className="flex items-center justify-between">
+            <span className="text-muted">Items</span>
+            <span className="font-mono font-bold text-primary">{placedOrder.items?.length || 0} Models</span>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/distributor/orders"
-            className="w-full sm:w-auto px-6 py-3 bg-accent text-background font-serif font-bold text-xs rounded-full hover:bg-accent-hover transition-colors shadow-md"
+            className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 bg-accent text-background font-serif font-bold text-xs rounded-full hover:bg-accent-hover transition-colors shadow-sm flex items-center justify-center touch-manipulation"
           >
-            View All Orders →
+            View Orders →
           </Link>
           <Link
             href="/#catalog"
-            className="w-full sm:w-auto px-6 py-3 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors"
+            className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors flex items-center justify-center touch-manipulation"
           >
             Continue Ordering
           </Link>
@@ -97,16 +97,16 @@ export default function NewOrderPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-surface border border-divider rounded-2xl p-12 text-center">
-        <h2 className="font-serif text-xl font-bold text-primary mb-2">
+      <div className="bg-surface border border-divider rounded-2xl p-8 sm:p-12 text-center max-w-lg mx-auto">
+        <h2 className="font-serif text-lg sm:text-xl font-bold text-primary mb-1">
           Your Order Cart is Empty
         </h2>
-        <p className="text-xs text-muted max-w-sm mx-auto mb-6">
-          Add hardware line items from the dealer catalog before proceeding to order checkout.
+        <p className="text-xs text-muted max-w-xs mx-auto mb-5">
+          Select lock products from the catalog to build your wholesale order batch.
         </p>
         <Link
           href="/#catalog"
-          className="px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs"
+          className="min-h-[42px] px-6 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-xs inline-flex items-center justify-center touch-manipulation"
         >
           Browse Hardware Catalog
         </Link>
@@ -115,54 +115,64 @@ export default function NewOrderPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="font-serif text-2xl font-bold text-primary">
-          Review & Confirm Wholesale Order
-        </h2>
-        <p className="text-xs text-muted">
-          Verify product quantities, minimum batch commitments, and dispatch notes
-        </p>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-divider">
+        <div>
+          <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary">
+            Review Wholesale Order
+          </h2>
+          <p className="text-xs text-muted">
+            Confirm item quantities and dispatch notes before placing PO.
+          </p>
+        </div>
+        <span className="font-mono text-xs font-bold text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
+          {itemCount} Units
+        </span>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-xs">
-          {error}
+        <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-xs flex items-center gap-2">
+          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Itemized Table */}
         <div className="bg-surface border border-divider rounded-2xl overflow-hidden shadow-xs">
-          <div className="p-4 border-b border-divider bg-background/50 flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-divider bg-background/50 flex items-center justify-between">
             <span className="font-mono text-xs font-bold uppercase tracking-wider text-muted">
-              Itemized Line Items ({items.length})
+              Line Items ({items.length})
             </span>
-            <span className="text-xs text-muted font-mono">{itemCount} Total Units</span>
+            <span className="text-xs text-muted font-mono">{itemCount} Total Pcs</span>
           </div>
 
           <div className="divide-y divide-divider">
             {items.map((item) => (
               <div
                 key={item.productId}
-                className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-background border border-divider rounded-xl flex items-center justify-center p-2 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-background border border-divider rounded-xl flex items-center justify-center p-1.5 shrink-0">
                     {item.image ? (
                       <Image
                         src={item.image}
                         alt={item.name}
-                        width={48}
-                        height={48}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                     ) : (
-                      <span className="text-xs font-mono text-muted">LOCK</span>
+                      <span className="text-[10px] font-mono text-muted">LOCK</span>
                     )}
                   </div>
-                  <div>
-                    <h4 className="font-serif font-bold text-sm text-primary">
+                  <div className="min-w-0">
+                    <h4 className="font-serif font-bold text-xs sm:text-sm text-primary truncate">
                       {item.name}
                     </h4>
                     {item.modelCode && (
@@ -171,12 +181,12 @@ export default function NewOrderPage() {
                       </span>
                     )}
                     <span className="text-xs font-mono text-accent font-semibold">
-                      ₹{item.unitPrice.toLocaleString("en-IN")} / unit
+                      ₹{item.unitPrice.toLocaleString("en-IN")} / pc
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:gap-6 justify-between sm:justify-end bg-background/50 sm:bg-transparent p-2.5 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-divider/40">
+                <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-5 bg-background/50 sm:bg-transparent p-2 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-divider/40">
                   <div className="flex items-center border border-divider rounded-xl overflow-hidden bg-background">
                     <button
                       type="button"
@@ -187,7 +197,7 @@ export default function NewOrderPage() {
                         )
                       }
                       disabled={item.quantity <= item.minOrderQty}
-                      className="w-8 h-8 flex items-center justify-center text-xs text-muted hover:text-primary transition-colors disabled:opacity-30 touch-manipulation"
+                      className="w-8 h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary transition-colors disabled:opacity-30 touch-manipulation cursor-pointer"
                     >
                       -
                     </button>
@@ -199,13 +209,13 @@ export default function NewOrderPage() {
                       onClick={() =>
                         updateQuantity(item.productId, item.quantity + 1)
                       }
-                      className="w-8 h-8 flex items-center justify-center text-xs text-muted hover:text-primary transition-colors touch-manipulation"
+                      className="w-8 h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary transition-colors touch-manipulation cursor-pointer"
                     >
                       +
                     </button>
                   </div>
 
-                  <div className="text-right min-w-[80px] sm:min-w-[90px]">
+                  <div className="text-right min-w-[75px] sm:min-w-[90px]">
                     <span className="font-mono text-xs sm:text-sm font-bold text-primary">
                       ₹{(item.unitPrice * item.quantity).toLocaleString("en-IN", {
                         minimumFractionDigits: 2,
@@ -216,7 +226,7 @@ export default function NewOrderPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.productId)}
-                    className="p-1.5 text-muted hover:text-red-500 transition-colors touch-manipulation"
+                    className="p-1.5 text-muted hover:text-rose-500 transition-colors touch-manipulation cursor-pointer"
                     title="Remove item"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -231,47 +241,44 @@ export default function NewOrderPage() {
         </div>
 
         {/* Dispatch Notes */}
-        <div className="bg-surface border border-divider rounded-2xl p-4 sm:p-6">
-          <label className="block text-xs font-serif font-bold text-primary uppercase tracking-wider mb-2">
-            Special Instructions / Transport Preference
+        <div className="bg-surface border border-divider rounded-2xl p-3.5 sm:p-5">
+          <label className="block text-xs font-serif font-bold text-primary mb-1.5">
+            Transport & Dispatch Instructions (Optional)
           </label>
           <textarea
-            rows={3}
+            rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="e.g. Please dispatch via SafeXpress Transport, Aligarh booking depot. Box labels require Sharma Hardware marking."
-            className="w-full bg-background border border-divider rounded-xl p-3.5 text-xs text-primary placeholder:text-muted focus:outline-hidden focus:border-accent"
+            placeholder="e.g. Booking via SafeXpress Transport, Aligarh depot. Box stencil required."
+            className="w-full bg-background border border-divider rounded-xl p-3 text-xs text-primary placeholder:text-muted/60 focus:outline-hidden focus:border-accent"
           />
         </div>
 
-        {/* Order Summary Card & Submit */}
-        <div className="bg-surface border border-divider rounded-2xl p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
+        {/* Order Summary & Submit Bar */}
+        <div className="bg-surface border border-divider rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs text-muted block mb-1">Estimated Purchase Order Total</span>
+            <span className="text-[11px] text-muted block">Order Total</span>
             <div className="flex items-baseline gap-2">
-              <span className="font-serif text-2xl sm:text-3xl font-bold text-accent">
+              <span className="font-serif text-xl sm:text-3xl font-bold text-accent">
                 ₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
               </span>
-              <span className="text-xs text-muted">({itemCount} total units)</span>
+              <span className="text-xs text-muted">({itemCount} pcs)</span>
             </div>
-            <p className="text-[11px] text-muted mt-1">
-              * Official B2B GST tax invoice generated upon factory order confirmation.
-            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <Link
               href="/#catalog"
-              className="w-full sm:w-auto px-5 py-3 border border-divider rounded-full font-serif font-medium text-xs text-primary hover:bg-background transition-colors text-center"
+              className="min-h-[44px] px-5 py-2.5 border border-divider rounded-full font-serif font-medium text-xs text-primary hover:bg-background transition-colors text-center flex items-center justify-center touch-manipulation"
             >
-              Add More Products
+              Add More Locks
             </Link>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-8 py-3 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-lg disabled:opacity-50 text-center cursor-pointer touch-manipulation"
+              className="min-h-[44px] px-8 py-2.5 bg-accent text-background rounded-full font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-md disabled:opacity-50 text-center cursor-pointer touch-manipulation flex items-center justify-center gap-1.5"
             >
-              {isSubmitting ? "Placing Purchase Order..." : "Confirm & Place Order →"}
+              {isSubmitting ? "Placing Order..." : "Confirm & Place Order →"}
             </button>
           </div>
         </div>
