@@ -12,7 +12,7 @@ import { setAdminToken, setAdminUser } from "@/lib/adminAuth";
  * ============================================================================
  * Admin / Factory Management Login Terminal
  * ============================================================================
- * Strictly isolated from customer & distributor public accounts.
+ * Strictly isolated from distributor public accounts.
  * Connects to POST /api/admin/auth/login.
  */
 export default function AdminLoginPage() {
@@ -245,7 +245,7 @@ export default function AdminLoginPage() {
         {/* Back Link */}
         <div className="mt-8 text-center text-xs text-gray-500">
           <Link href="/login" className="hover:text-white transition-colors">
-            ← Return to Public Distributor & Client Portal
+            ← Return to Distributor Portal & Catalog
           </Link>
         </div>
       </div>

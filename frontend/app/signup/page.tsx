@@ -1,36 +1,19 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import { signupUser } from "@/lib/api";
-import { setUserToken, setUser, setDistributorStatus } from "@/lib/userAuth";
 
 function SignupForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialRole = searchParams.get("role") === "distributor" ? "DISTRIBUTOR" : "CUSTOMER";
-
-  const [role, setRole] = useState<"CUSTOMER" | "DISTRIBUTOR">(initialRole);
-
-  useEffect(() => {
-    const r = searchParams.get("role");
-    if (r === "distributor") {
-      setRole("DISTRIBUTOR");
-    } else if (r === "customer") {
-      setRole("CUSTOMER");
-    }
-  }, [searchParams]);
-
-  // Common Fields
+  // Dealership & Contact Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Distributor-Only Fields
+  // Business Profile Fields
   const [companyName, setCompanyName] = useState("");
   const [gstNumber, setGstNumber] = useState("");
   const [businessAddress, setBusinessAddress] = useState("");
@@ -47,34 +30,23 @@ function SignupForm() {
     setError(null);
 
     try {
-      const payload: any = {
-        name,
+      const payload = {
+        name: name.trim(),
         email: email.trim(),
         phone: phone.trim() || undefined,
         password,
-        role,
+        role: "DISTRIBUTOR" as const,
+        companyName: companyName.trim(),
+        gstNumber: gstNumber.trim() || undefined,
+        businessAddress: businessAddress.trim(),
+        city: city.trim(),
+        state: state.trim(),
       };
 
-      if (role === "DISTRIBUTOR") {
-        payload.companyName = companyName.trim();
-        payload.gstNumber = gstNumber.trim() || undefined;
-        payload.businessAddress = businessAddress.trim();
-        payload.city = city.trim();
-        payload.state = state.trim();
-      }
-
-      const res = await signupUser(payload);
-
-      if (role === "DISTRIBUTOR") {
-        setIsSubmitted(true);
-      } else {
-        setUserToken(res.token);
-        setUser(res.user);
-        setDistributorStatus(res.status);
-        router.push("/account");
-      }
+      await signupUser(payload);
+      setIsSubmitted(true);
     } catch (err: any) {
-      setError(err.message || "Failed to create account. Please check your details.");
+      setError(err.message || "Failed to submit distributor application. Please check your details.");
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +88,7 @@ function SignupForm() {
               Nafi <span className="text-[#B8923F] font-normal italic">Lock Industries</span>
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted mt-1">
-              Account Registration & Dealership
+              B2B Distributor Application & Onboarding
             </span>
           </Link>
         </div>
@@ -176,117 +148,84 @@ function SignupForm() {
           </div>
         ) : (
           <div className="bg-white border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)]">
-          {/* Tab Switcher */}
-          <div className="flex rounded-xl bg-[#F5F3EF] p-1 border border-[#EBE7DF] mb-6">
-            <button
-              type="button"
-              onClick={() => setRole("CUSTOMER")}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
-                role === "CUSTOMER"
-                  ? "bg-white text-primary shadow-xs border border-black/5"
-                  : "text-muted hover:text-primary"
-              }`}
-            >
-              Create Customer Account
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole("DISTRIBUTOR")}
-              className={`flex-1 py-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
-                role === "DISTRIBUTOR"
-                  ? "bg-white text-[#A67C2E] shadow-xs border border-black/5"
-                  : "text-muted hover:text-[#A67C2E]"
-              }`}
-            >
-              Apply as Distributor (B2B)
-            </button>
-          </div>
-
-          {/* Description banner */}
-          <div
-            className={`p-3.5 rounded-xl text-xs mb-6 border ${
-              role === "CUSTOMER"
-                ? "bg-[#EEF4F8] text-[#1E4D6B] border-[#D6E3EC]"
-                : "bg-[#FAF6EE] text-[#7A5B20] border-[#E8DFCF]"
-            }`}
-          >
-            {role === "CUSTOMER" ? (
-              <span>
-                <strong>Customer Account:</strong> Instant activation. Save lock specifications, track personal product inquiries, and access architectural cut-sheets.
-              </span>
-            ) : (
-              <span>
-                <strong>Distributor Application:</strong> For authorized dealers & wholesale stockists. Requires admin review for B2B pricing, purchase orders, and ledgers.
-              </span>
-            )}
-          </div>
-
-          {error && (
-            <div className="mb-5 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 text-xs flex items-center gap-2">
-              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+            {/* Description banner */}
+            <div className="p-3.5 rounded-xl text-xs mb-6 border bg-[#FAF6EE] text-[#7A5B20] border-[#E8DFCF] flex items-center gap-2.5">
+              <svg className="w-5 h-5 shrink-0 text-[#A67C2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <span>{error}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name & Phone */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Rajesh Kumar"
-                  className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors font-mono"
-                />
-              </div>
+              <span>
+                <strong>Distributor Partner Application:</strong> For authorized dealers, lock merchants & wholesale stockists. Verified distributors unlock B2B pricing, minimum batch purchase orders, and factory ledgers.
+              </span>
             </div>
 
-            {/* Email & Password */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {error && (
+              <div className="mb-5 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 text-xs flex items-center gap-2">
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Full Name & Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Rajesh Kumar"
+                    className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
+                    Contact Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Email Address */}
               <div>
                 <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
-                  Email Address *
+                  Corporate Dealership Email *
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="rajesh@hardware.com"
+                  placeholder="distributor@hardwarecorp.com"
                   className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl px-3.5 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white transition-colors"
                 />
               </div>
 
+              {/* Password */}
               <div>
                 <label className="block text-xs font-bold text-primary tracking-wider uppercase mb-1">
-                  Password *
+                  Create Account Password *
                 </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     required
+                    minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
@@ -294,10 +233,8 @@ function SignupForm() {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-primary transition-colors cursor-pointer"
-                    title={showPassword ? "Hide password" : "Show password"}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted hover:text-primary transition-colors cursor-pointer"
                   >
                     {showPassword ? (
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -313,10 +250,8 @@ function SignupForm() {
                   </button>
                 </div>
               </div>
-            </div>
 
-            {/* Additional fields for DISTRIBUTOR */}
-            {role === "DISTRIBUTOR" && (
+              {/* Dealership Profile Details */}
               <div className="space-y-4 pt-4 border-t border-[#EBE7DF]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -391,45 +326,36 @@ function SignupForm() {
                   </div>
                 </div>
               </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full mt-4 py-3 bg-[#A67C2E] text-white font-sans font-bold text-sm rounded-xl hover:bg-[#8E6720] transition-all duration-200 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-            >
-              {isLoading ? (
-                <span>Submitting Registration...</span>
-              ) : role === "CUSTOMER" ? (
-                <>
-                  <span>Create Account</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </>
-              ) : (
-                <>
-                  <span>Submit Distributor Application</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </>
-              )}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full mt-4 py-3 bg-[#A67C2E] text-white font-sans font-bold text-sm rounded-xl hover:bg-[#8E6720] transition-all duration-200 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {isLoading ? (
+                  <span>Submitting Application...</span>
+                ) : (
+                  <>
+                    <span>Submit Distributor Application</span>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
 
-          {/* Switch to Login */}
-          <div className="mt-6 pt-6 border-t border-[#EBE7DF] text-center">
-            <p className="text-xs text-muted">
-              Already have an account?{" "}
-              <Link href="/login" className="text-[#A67C2E] font-semibold hover:underline">
-                Sign in to your portal →
-              </Link>
-            </p>
+            {/* Switch to Login */}
+            <div className="mt-6 pt-6 border-t border-[#EBE7DF] text-center">
+              <p className="text-xs text-muted">
+                Already have an authorized distributor account?{" "}
+                <Link href="/login" className="text-[#A67C2E] font-semibold hover:underline">
+                  Sign In to Distributor Portal →
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
         )}
       </div>
     </div>

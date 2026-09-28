@@ -424,101 +424,47 @@ function ProductDetailContent({ product }: { product: Product }) {
                 </div>
               </div>
             ) : (
-              /* Public / Customer / Guest Branch with Direct Ordering */
-              <div className="p-5 rounded-2xl bg-surface border border-divider shadow-xs space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-divider">
+              /* Public / Non-Approved Visitor Branch — Gated B2B Wholesale Notice */
+              <div className="p-6 rounded-2xl bg-surface border border-divider shadow-xs space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 mt-0.5">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </div>
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
-                      FACTORY DIRECT ORDER
-                    </span>
-                    <div className="flex items-baseline gap-1.5 mt-0.5">
-                      <span className="font-serif text-lg font-bold text-primary">
-                        Direct Wholesale & Retail
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted block">
-                      BATCH SIZING
-                    </span>
-                    <span className="font-mono text-xs font-bold text-accent mt-0.5 block">
-                      Flexible Batch
-                    </span>
+                    <h3 className="font-serif font-bold text-base text-primary">
+                      B2B Dealer Pricing & Bulk Ordering
+                    </h3>
+                    <p className="text-xs text-muted leading-relaxed mt-1">
+                      Direct factory wholesale pricing, minimum order quantities, and purchase orders are reserved for authorized Nafi Lock Industries distributors and hardware stockists.
+                    </p>
                   </div>
                 </div>
 
-                {/* Quantity Input + Add to Order */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  <div className="flex items-center border border-divider rounded-xl overflow-hidden bg-background shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                      disabled={quantity <= 1}
-                      className="px-3 py-3 text-sm text-muted hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                      aria-label="Decrease quantity"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      min={1}
-                      value={quantity}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        setQuantity(isNaN(val) ? 1 : Math.max(1, val));
-                      }}
-                      className="w-16 text-center text-sm font-mono font-bold bg-transparent text-primary focus:outline-hidden"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => prev + 1)}
-                      className="px-3 py-3 text-sm text-muted hover:text-primary transition-colors cursor-pointer"
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className={`flex-1 py-3 px-6 rounded-xl font-serif font-bold text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                      isAddedToCart
-                        ? "bg-emerald-600 text-white"
-                        : "bg-accent text-background hover:bg-accent-hover active:scale-[0.99]"
-                    }`}
+                <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent(`/products/${product.slug}`)}`}
+                    className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-accent text-white font-serif font-bold text-xs hover:bg-accent-hover text-center shadow-xs transition-colors"
                   >
-                    {isAddedToCart ? (
-                      <>
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        <span>Added to Order Cart</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M12 5v14M5 12h14" />
-                        </svg>
-                        <span>Add {quantity} to Order Cart</span>
-                      </>
-                    )}
-                  </button>
+                    Sign In to Distributor Portal →
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="w-full sm:w-auto py-3 px-5 rounded-xl border border-divider bg-background hover:bg-surface text-primary font-serif font-semibold text-xs text-center transition-colors"
+                  >
+                    Apply for Dealership
+                  </Link>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-muted pt-2 gap-2 border-t border-divider/60">
-                  <div className="flex items-center gap-1.5">
-                    <span>Authorized Wholesale Dealer?</span>
-                    <Link href={`/login?redirect=${encodeURIComponent(`/products/${product.slug}`)}`} className="text-accent font-semibold hover:underline">
-                      Sign In for B2B Margins →
-                    </Link>
-                  </div>
+                <div className="pt-3 border-t border-divider/60 flex flex-col sm:flex-row items-center justify-between text-xs text-muted gap-2">
+                  <span>Need custom metallurgy or factory pinning?</span>
                   <Link
                     href={`/contact?productId=${encodeURIComponent(product.id)}&brandId=${encodeURIComponent(product.brandId || "")}`}
-                    className="text-xs text-muted hover:text-primary underline"
+                    className="text-accent font-semibold hover:underline"
                   >
-                    Custom Pinning / Factory Quote
+                    Contact Factory Desk →
                   </Link>
                 </div>
               </div>

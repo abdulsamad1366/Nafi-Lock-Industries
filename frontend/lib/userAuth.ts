@@ -2,7 +2,7 @@
 
 /**
  * ============================================================================
- * Session & Authentication Helpers for Customers and Distributors
+ * Session & Authentication Helpers for Authorized Distributors
  * ============================================================================
  * Deliberately isolated from Admin authentication.
  * Stores token in localStorage and cookies for client/server hydration.
@@ -13,7 +13,7 @@ export interface AuthUser {
   name: string;
   email: string;
   phone?: string | null;
-  role: "CUSTOMER" | "DISTRIBUTOR";
+  role: "DISTRIBUTOR";
 }
 
 export type DistributorStatus = "PENDING" | "APPROVED" | "REJECTED";

@@ -43,7 +43,7 @@ export async function getDistributorMe(
 
 /**
  * POST /api/distributor/apply
- * Allows an existing CUSTOMER to submit an application to become a DISTRIBUTOR
+ * Legacy endpoint — distributor application is handled during signup
  */
 export async function applyDistributor(
   req: AuthenticatedUserRequest,
@@ -52,14 +52,6 @@ export async function applyDistributor(
 ) {
   try {
     const userId = req.user!.id;
-    const { companyName, gstNumber, businessAddress, city, state } = req.body;
-
-    if (!companyName || !businessAddress || !city || !state) {
-      return res.status(400).json({
-        error: "Company name, business address, city, and state are required",
-      });
-    }
-
     const existingProfile = await prisma.distributorProfile.findUnique({
       where: { userId },
     });
@@ -70,28 +62,8 @@ export async function applyDistributor(
       });
     }
 
-    const [updatedUser, profile] = await prisma.$transaction([
-      prisma.user.update({
-        where: { id: userId },
-        data: { role: "DISTRIBUTOR" },
-      }),
-      prisma.distributorProfile.create({
-        data: {
-          userId,
-          companyName,
-          gstNumber: gstNumber || null,
-          businessAddress,
-          city,
-          state,
-          status: "PENDING",
-        },
-      }),
-    ]);
-
-    res.status(201).json({
-      message: "Distributor application submitted successfully",
-      role: updatedUser.role,
-      profile,
+    return res.status(400).json({
+      error: "Distributor application is handled during registration at /signup.",
     });
   } catch (err) {
     next(err);

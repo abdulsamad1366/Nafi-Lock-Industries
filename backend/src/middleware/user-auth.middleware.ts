@@ -7,7 +7,7 @@ export const USER_JWT_SECRET =
 export interface UserAuthPayload {
   id: string;
   email: string;
-  role: "CUSTOMER" | "DISTRIBUTOR";
+  role: "DISTRIBUTOR";
 }
 
 export interface AuthenticatedUserRequest extends Request {

@@ -327,21 +327,7 @@ async function main() {
     },
   });
 
-  // --- Customer User ---
-  const customerPasswordHash = await bcrypt.hash("NafiCustomer2026!", 10);
-  await prisma.user.upsert({
-    where: { email: "customer@nafilock.com" },
-    update: { passwordHash: customerPasswordHash },
-    create: {
-      name: "Amit Patel",
-      email: "customer@nafilock.com",
-      passwordHash: customerPasswordHash,
-      phone: "+91 98200 54321",
-      role: "CUSTOMER",
-    },
-  });
-
-  console.log("✅ Seed complete: 3 brands, 5 categories, 11 sample products, and demo accounts (Admin, Distributor, Customer)");
+  console.log("✅ Seed complete: 3 brands, 5 categories, 11 sample products, and demo accounts (Admin, Distributor)");
 }
 
 main()

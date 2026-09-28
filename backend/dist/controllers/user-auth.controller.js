@@ -11,25 +11,20 @@ const db_1 = __importDefault(require("../config/db"));
 const user_auth_middleware_1 = require("../middleware/user-auth.middleware");
 /**
  * POST /api/auth/signup
- * Register a Customer or Distributor
+ * Register a Distributor Application
  */
 async function signup(req, res, next) {
     try {
-        const { name, email, password, phone, role = "CUSTOMER", 
+        const { name, email, password, phone, 
         // Distributor profile fields
         companyName, gstNumber, businessAddress, city, state, } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({ error: "Name, email, and password are required" });
         }
-        if (role !== "CUSTOMER" && role !== "DISTRIBUTOR") {
-            return res.status(400).json({ error: "Role must be CUSTOMER or DISTRIBUTOR" });
-        }
-        if (role === "DISTRIBUTOR") {
-            if (!companyName || !businessAddress || !city || !state) {
-                return res.status(400).json({
-                    error: "Company name, business address, city, and state are required for distributor registration",
-                });
-            }
+        if (!companyName || !businessAddress || !city || !state) {
+            return res.status(400).json({
+                error: "Company name, business address, city, and state are required for distributor registration",
+            });
         }
         // Check existing email
         const existing = await db_1.default.user.findUnique({
@@ -39,7 +34,7 @@ async function signup(req, res, next) {
             return res.status(409).json({ error: "An account with this email already exists" });
         }
         const passwordHash = await bcryptjs_1.default.hash(password, 10);
-        // Create user and distributor profile if applicable in a transaction
+        // Create distributor user and distributor profile in a transaction
         const result = await db_1.default.$transaction(async (tx) => {
             const user = await tx.user.create({
                 data: {
@@ -47,47 +42,24 @@ async function signup(req, res, next) {
                     email: email.toLowerCase(),
                     passwordHash,
                     phone: phone || null,
-                    role: role,
+                    role: "DISTRIBUTOR",
                 },
             });
-            let distributorProfile = null;
-            if (role === "DISTRIBUTOR") {
-                distributorProfile = await tx.distributorProfile.create({
-                    data: {
-                        userId: user.id,
-                        companyName,
-                        gstNumber: gstNumber || null,
-                        businessAddress,
-                        city,
-                        state,
-                        status: "PENDING",
-                    },
-                });
-            }
+            const distributorProfile = await tx.distributorProfile.create({
+                data: {
+                    userId: user.id,
+                    companyName,
+                    gstNumber: gstNumber || null,
+                    businessAddress,
+                    city,
+                    state,
+                    status: "PENDING",
+                },
+            });
             return { user, distributorProfile };
         });
-        if (role === "DISTRIBUTOR") {
-            return res.status(201).json({
-                token: null,
-                user: {
-                    id: result.user.id,
-                    name: result.user.name,
-                    email: result.user.email,
-                    phone: result.user.phone,
-                    role: result.user.role,
-                },
-                status: result.distributorProfile?.status || "PENDING",
-                message: "Application submitted — you'll be able to log in once it's reviewed.",
-            });
-        }
-        const payload = {
-            id: result.user.id,
-            email: result.user.email,
-            role: result.user.role,
-        };
-        const token = jsonwebtoken_1.default.sign(payload, user_auth_middleware_1.USER_JWT_SECRET, { expiresIn: "7d" });
         return res.status(201).json({
-            token,
+            token: null,
             user: {
                 id: result.user.id,
                 name: result.user.name,
@@ -95,7 +67,8 @@ async function signup(req, res, next) {
                 phone: result.user.phone,
                 role: result.user.role,
             },
-            status: null,
+            status: result.distributorProfile?.status || "PENDING",
+            message: "Application submitted — you'll be able to log in once it's reviewed.",
         });
     }
     catch (err) {
@@ -104,7 +77,7 @@ async function signup(req, res, next) {
 }
 /**
  * POST /api/auth/login
- * User & Distributor Login
+ * Distributor Login (Approved Only)
  */
 async function login(req, res, next) {
     try {
@@ -125,32 +98,32 @@ async function login(req, res, next) {
         if (!isMatch) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
-        // Distributor login gating: must have status === APPROVED
-        if (user.role === "DISTRIBUTOR") {
-            const status = user.distributorProfile?.status;
-            if (status !== "APPROVED") {
-                if (status === "PENDING") {
-                    return res.status(403).json({
-                        error: "Your distributor application is pending review.",
-                        status: "PENDING",
-                    });
-                }
-                if (status === "REJECTED") {
-                    return res.status(403).json({
-                        error: "Your distributor application was not approved.",
-                        status: "REJECTED",
-                    });
-                }
+        if (user.role !== "DISTRIBUTOR") {
+            return res.status(403).json({ error: "Access restricted to authorized distributors only." });
+        }
+        const status = user.distributorProfile?.status;
+        if (status !== "APPROVED") {
+            if (status === "PENDING") {
                 return res.status(403).json({
-                    error: "Your distributor application is not approved.",
-                    status: status || null,
+                    error: "Your distributor application is pending review.",
+                    status: "PENDING",
                 });
             }
+            if (status === "REJECTED") {
+                return res.status(403).json({
+                    error: "Your distributor application was not approved.",
+                    status: "REJECTED",
+                });
+            }
+            return res.status(403).json({
+                error: "Your distributor application is not approved.",
+                status: status || null,
+            });
         }
         const payload = {
             id: user.id,
             email: user.email,
-            role: user.role,
+            role: "DISTRIBUTOR",
         };
         const token = jsonwebtoken_1.default.sign(payload, user_auth_middleware_1.USER_JWT_SECRET, { expiresIn: "7d" });
         return res.json({

@@ -4,7 +4,7 @@
  * ============================================================================
  * Session & Authentication Helpers for Admin / Factory Management
  * ============================================================================
- * Strictly isolated from customer & distributor public auth.
+ * Strictly isolated from distributor public auth.
  */
 
 export interface AdminUserSession {

@@ -483,21 +483,11 @@ export default function Header() {
           {/* ── Direct Login / Distributor Portal CTA Capsule Button (Desktop only) ── */}
           <Link
             ref={ctaRef}
-            href={
-              currentUser?.role === "DISTRIBUTOR"
-                ? "/distributor"
-                : currentUser
-                ? "/account"
-                : "/login"
-            }
+            href={currentUser ? "/distributor" : "/login"}
             className="hidden lg:inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-accent text-white hover:bg-accent-hover shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] will-change-transform"
           >
             <span>
-              {currentUser?.role === "DISTRIBUTOR"
-                ? "Distributor Portal"
-                : currentUser
-                ? "My Account"
-                : "Login"}
+              {currentUser ? "Distributor Portal" : "Login"}
             </span>
             <svg
               className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"

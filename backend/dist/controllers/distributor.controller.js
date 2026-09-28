@@ -40,17 +40,11 @@ async function getDistributorMe(req, res, next) {
 }
 /**
  * POST /api/distributor/apply
- * Allows an existing CUSTOMER to submit an application to become a DISTRIBUTOR
+ * Legacy endpoint — distributor application is handled during signup
  */
 async function applyDistributor(req, res, next) {
     try {
         const userId = req.user.id;
-        const { companyName, gstNumber, businessAddress, city, state } = req.body;
-        if (!companyName || !businessAddress || !city || !state) {
-            return res.status(400).json({
-                error: "Company name, business address, city, and state are required",
-            });
-        }
         const existingProfile = await db_1.default.distributorProfile.findUnique({
             where: { userId },
         });
@@ -59,27 +53,8 @@ async function applyDistributor(req, res, next) {
                 error: `Distributor profile already exists with status: ${existingProfile.status}`,
             });
         }
-        const [updatedUser, profile] = await db_1.default.$transaction([
-            db_1.default.user.update({
-                where: { id: userId },
-                data: { role: "DISTRIBUTOR" },
-            }),
-            db_1.default.distributorProfile.create({
-                data: {
-                    userId,
-                    companyName,
-                    gstNumber: gstNumber || null,
-                    businessAddress,
-                    city,
-                    state,
-                    status: "PENDING",
-                },
-            }),
-        ]);
-        res.status(201).json({
-            message: "Distributor application submitted successfully",
-            role: updatedUser.role,
-            profile,
+        return res.status(400).json({
+            error: "Distributor application is handled during registration at /signup.",
         });
     }
     catch (err) {

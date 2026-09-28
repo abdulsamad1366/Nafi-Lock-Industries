@@ -8,7 +8,7 @@ import { requireAuth } from "../middleware/user-auth.middleware";
 
 const router = Router();
 
-// Gated by requireAuth (Customers and Distributors alike)
+// Gated by requireAuth (Distributors)
 router.post("/products/:id/like", requireAuth, likeProduct);
 router.delete("/products/:id/like", requireAuth, unlikeProduct);
 router.get("/users/me/liked-products", requireAuth, getLikedProducts);

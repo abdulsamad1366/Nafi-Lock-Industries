@@ -6,7 +6,7 @@ import { USER_JWT_SECRET, UserAuthPayload } from "../middleware/user-auth.middle
 
 /**
  * POST /api/auth/signup
- * Register a Customer or Distributor
+ * Register a Distributor Application
  */
 export async function signup(req: Request, res: Response, next: NextFunction) {
   try {
@@ -15,7 +15,6 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       email,
       password,
       phone,
-      role = "CUSTOMER",
       // Distributor profile fields
       companyName,
       gstNumber,
@@ -28,16 +27,10 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       return res.status(400).json({ error: "Name, email, and password are required" });
     }
 
-    if (role !== "CUSTOMER" && role !== "DISTRIBUTOR") {
-      return res.status(400).json({ error: "Role must be CUSTOMER or DISTRIBUTOR" });
-    }
-
-    if (role === "DISTRIBUTOR") {
-      if (!companyName || !businessAddress || !city || !state) {
-        return res.status(400).json({
-          error: "Company name, business address, city, and state are required for distributor registration",
-        });
-      }
+    if (!companyName || !businessAddress || !city || !state) {
+      return res.status(400).json({
+        error: "Company name, business address, city, and state are required for distributor registration",
+      });
     }
 
     // Check existing email
@@ -50,7 +43,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user and distributor profile if applicable in a transaction
+    // Create distributor user and distributor profile in a transaction
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
@@ -58,53 +51,27 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
           email: email.toLowerCase(),
           passwordHash,
           phone: phone || null,
-          role: role as "CUSTOMER" | "DISTRIBUTOR",
+          role: "DISTRIBUTOR",
         },
       });
 
-      let distributorProfile = null;
-      if (role === "DISTRIBUTOR") {
-        distributorProfile = await tx.distributorProfile.create({
-          data: {
-            userId: user.id,
-            companyName,
-            gstNumber: gstNumber || null,
-            businessAddress,
-            city,
-            state,
-            status: "PENDING",
-          },
-        });
-      }
+      const distributorProfile = await tx.distributorProfile.create({
+        data: {
+          userId: user.id,
+          companyName,
+          gstNumber: gstNumber || null,
+          businessAddress,
+          city,
+          state,
+          status: "PENDING",
+        },
+      });
 
       return { user, distributorProfile };
     });
 
-    if (role === "DISTRIBUTOR") {
-      return res.status(201).json({
-        token: null,
-        user: {
-          id: result.user.id,
-          name: result.user.name,
-          email: result.user.email,
-          phone: result.user.phone,
-          role: result.user.role,
-        },
-        status: result.distributorProfile?.status || "PENDING",
-        message: "Application submitted — you'll be able to log in once it's reviewed.",
-      });
-    }
-
-    const payload: UserAuthPayload = {
-      id: result.user.id,
-      email: result.user.email,
-      role: result.user.role as "CUSTOMER",
-    };
-
-    const token = jwt.sign(payload, USER_JWT_SECRET, { expiresIn: "7d" });
-
     return res.status(201).json({
-      token,
+      token: null,
       user: {
         id: result.user.id,
         name: result.user.name,
@@ -112,7 +79,8 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
         phone: result.user.phone,
         role: result.user.role,
       },
-      status: null,
+      status: result.distributorProfile?.status || "PENDING",
+      message: "Application submitted — you'll be able to log in once it's reviewed.",
     });
   } catch (err) {
     next(err);
@@ -121,7 +89,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
 
 /**
  * POST /api/auth/login
- * User & Distributor Login
+ * Distributor Login (Approved Only)
  */
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
@@ -147,33 +115,34 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Distributor login gating: must have status === APPROVED
-    if (user.role === "DISTRIBUTOR") {
-      const status = user.distributorProfile?.status;
-      if (status !== "APPROVED") {
-        if (status === "PENDING") {
-          return res.status(403).json({
-            error: "Your distributor application is pending review.",
-            status: "PENDING",
-          });
-        }
-        if (status === "REJECTED") {
-          return res.status(403).json({
-            error: "Your distributor application was not approved.",
-            status: "REJECTED",
-          });
-        }
+    if (user.role !== "DISTRIBUTOR") {
+      return res.status(403).json({ error: "Access restricted to authorized distributors only." });
+    }
+
+    const status = user.distributorProfile?.status;
+    if (status !== "APPROVED") {
+      if (status === "PENDING") {
         return res.status(403).json({
-          error: "Your distributor application is not approved.",
-          status: status || null,
+          error: "Your distributor application is pending review.",
+          status: "PENDING",
         });
       }
+      if (status === "REJECTED") {
+        return res.status(403).json({
+          error: "Your distributor application was not approved.",
+          status: "REJECTED",
+        });
+      }
+      return res.status(403).json({
+        error: "Your distributor application is not approved.",
+        status: status || null,
+      });
     }
 
     const payload: UserAuthPayload = {
       id: user.id,
       email: user.email,
-      role: user.role as "CUSTOMER" | "DISTRIBUTOR",
+      role: "DISTRIBUTOR",
     };
 
     const token = jwt.sign(payload, USER_JWT_SECRET, { expiresIn: "7d" });

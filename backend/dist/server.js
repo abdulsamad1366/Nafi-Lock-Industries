@@ -95,9 +95,9 @@ app.use("/api/brands", brands_routes_1.default);
 app.use("/api/products", products_routes_1.default);
 app.use("/api/categories", categories_routes_1.default);
 app.use("/api/inquiries", inquiries_routes_1.default);
-// Phase 2: Public User Auth (Customer & Distributor)
+// Phase 2: Public User Auth (Distributor)
 app.use("/api/auth", user_auth_routes_1.default);
-// Phase 2: Distributor & User Routes
+// Phase 2: Distributor Routes
 app.use("/api/distributor", distributor_routes_1.default);
 app.use("/api/orders", orders_routes_1.default);
 app.use("/api", ledger_routes_1.default);

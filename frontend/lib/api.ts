@@ -88,32 +88,33 @@ export async function submitInquiry(data: InquiryInput) {
   }, "user");
 }
 
-// ── Phase 2: Public User & Distributor Auth ──
+// ── Phase 2: Distributor Auth ──
 export async function signupUser(data: {
   name: string;
   email: string;
   password: string;
   phone?: string;
-  role: "CUSTOMER" | "DISTRIBUTOR";
-  companyName?: string;
+  role?: "DISTRIBUTOR";
+  companyName: string;
   gstNumber?: string;
-  businessAddress?: string;
-  city?: string;
-  state?: string;
+  businessAddress: string;
+  city: string;
+  state: string;
 }) {
   return fetchAPI<{
-    token: string;
+    token: string | null;
     user: {
       id: string;
       name: string;
       email: string;
       phone?: string | null;
-      role: "CUSTOMER" | "DISTRIBUTOR";
+      role: "DISTRIBUTOR";
     };
     status: "PENDING" | "APPROVED" | "REJECTED" | null;
+    message?: string;
   }>("/auth/signup", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, role: "DISTRIBUTOR" }),
   }, "none");
 }
 
@@ -125,7 +126,7 @@ export async function loginUser(data: { email: string; password: string }) {
       name: string;
       email: string;
       phone?: string | null;
-      role: "CUSTOMER" | "DISTRIBUTOR";
+      role: "DISTRIBUTOR";
     };
     status: "PENDING" | "APPROVED" | "REJECTED" | null;
   }>("/auth/login", {
@@ -319,7 +320,7 @@ export interface DistributorMeResponse {
   name: string;
   email: string;
   phone?: string | null;
-  role: "CUSTOMER" | "DISTRIBUTOR";
+  role: "DISTRIBUTOR";
   createdAt: string;
   distributorProfile?: DistributorProfileData | null;
 }

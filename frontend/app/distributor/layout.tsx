@@ -54,7 +54,8 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
 
     const currentUser = getUser();
     if (currentUser?.role !== "DISTRIBUTOR") {
-      router.push("/account");
+      clearUserSession();
+      router.push("/login?redirect=/distributor");
       return;
     }
 

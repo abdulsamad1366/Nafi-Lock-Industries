@@ -101,10 +101,10 @@ app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/inquiries", inquiriesRouter);
 
-// Phase 2: Public User Auth (Customer & Distributor)
+// Phase 2: Public User Auth (Distributor)
 app.use("/api/auth", userAuthRouter);
 
-// Phase 2: Distributor & User Routes
+// Phase 2: Distributor Routes
 app.use("/api/distributor", distributorRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api", ledgerRouter);

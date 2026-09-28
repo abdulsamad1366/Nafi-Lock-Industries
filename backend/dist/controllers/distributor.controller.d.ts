@@ -7,7 +7,7 @@ import { AuthenticatedUserRequest } from "../middleware/user-auth.middleware";
 export declare function getDistributorMe(req: AuthenticatedUserRequest, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined>;
 /**
  * POST /api/distributor/apply
- * Allows an existing CUSTOMER to submit an application to become a DISTRIBUTOR
+ * Legacy endpoint — distributor application is handled during signup
  */
 export declare function applyDistributor(req: AuthenticatedUserRequest, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined>;
 //# sourceMappingURL=distributor.controller.d.ts.map

@@ -10,7 +10,6 @@ import { setUserToken, setUser, setDistributorStatus } from "@/lib/userAuth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [selectedPersona, setSelectedPersona] = useState<"DISTRIBUTOR" | "CUSTOMER">("DISTRIBUTOR");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,12 +28,7 @@ export default function LoginPage() {
       setUserToken(res.token);
       setUser(res.user);
       setDistributorStatus(res.status);
-
-      if (res.user.role === "DISTRIBUTOR") {
-        router.push("/distributor");
-      } else {
-        router.push("/account");
-      }
+      router.push("/distributor");
     } catch (err: any) {
       setError(
         err.message || "Failed to sign in. Please verify your credentials or check your connection."
@@ -44,15 +38,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickFill = (role: "DISTRIBUTOR" | "CUSTOMER") => {
-    setSelectedPersona(role);
-    if (role === "DISTRIBUTOR") {
-      setEmail("distributor@nafilock.com");
-      setPassword("NafiDistributor2026!");
-    } else {
-      setEmail("customer@nafilock.com");
-      setPassword("NafiCustomer2026!");
-    }
+  const handleQuickFill = () => {
+    setEmail("distributor@nafilock.com");
+    setPassword("NafiDistributor2026!");
   };
 
   return (
@@ -124,7 +112,7 @@ export default function LoginPage() {
                 </h1>
 
                 <p className="text-xs sm:text-[13px] text-gray-300 leading-relaxed font-normal">
-                  Welcome to the official digital gateway for authorized dealers, institutional architects, and verified clients across India.
+                  Welcome to the official digital gateway for authorized dealers, institutional architects, and wholesale trade partners across India.
                 </p>
               </div>
 
@@ -197,13 +185,13 @@ export default function LoginPage() {
           <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white">
             <div>
               {/* Header Title Row */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="font-serif text-2xl sm:text-[28px] font-bold text-primary tracking-tight leading-tight">
-                    Portal Sign In
+                    Distributor Portal Sign In
                   </h2>
                   <p className="text-xs text-muted mt-1">
-                    Enter your authorized credentials to access your account.
+                    Enter your authorized dealership credentials to access B2B pricing, purchase orders, and ledgers.
                   </p>
                 </div>
 
@@ -214,63 +202,6 @@ export default function LoginPage() {
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                 </div>
-              </div>
-
-              {/* Persona Tab Switcher */}
-              <div className="bg-[#F5F3EF] p-1 rounded-xl flex items-center gap-1 mb-5 border border-[#EBE7DF]">
-                <button
-                  type="button"
-                  onClick={() => setSelectedPersona("DISTRIBUTOR")}
-                  className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                    selectedPersona === "DISTRIBUTOR"
-                      ? "bg-white text-primary shadow-xs border border-black/5"
-                      : "text-muted hover:text-primary"
-                  }`}
-                >
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      selectedPersona === "DISTRIBUTOR" ? "bg-[#B8923F]" : "bg-gray-300"
-                    }`}
-                  />
-                  <span>Distributor / B2B Dealer</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedPersona("CUSTOMER")}
-                  className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                    selectedPersona === "CUSTOMER"
-                      ? "bg-white text-primary shadow-xs border border-black/5"
-                      : "text-muted hover:text-primary"
-                  }`}
-                >
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      selectedPersona === "CUSTOMER" ? "bg-[#2A6F97]" : "bg-gray-300"
-                    }`}
-                  />
-                  <span>Client / Customer</span>
-                </button>
-              </div>
-
-              {/* Contextual Guidance Pill */}
-              <div
-                className={`mb-5 p-3 rounded-xl text-xs flex items-center gap-2.5 transition-colors border ${
-                  selectedPersona === "DISTRIBUTOR"
-                    ? "bg-[#FAF6EE] text-[#7A5B20] border-[#E8DFCF]"
-                    : "bg-[#EEF4F8] text-[#1E4D6B] border-[#D6E3EC]"
-                }`}
-              >
-                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <span>
-                  {selectedPersona === "DISTRIBUTOR"
-                    ? "Distributor login automatically directs you to dealer pricing, orders, and ledger requests."
-                    : "Customer login directs you to saved lock specifications, inquiries, and customer profile."}
-                </span>
               </div>
 
               {/* Error Alert */}
@@ -320,7 +251,7 @@ export default function LoginPage() {
                 {/* Email Input */}
                 <div>
                   <label className="block text-[11px] font-bold text-primary tracking-wider uppercase mb-1.5">
-                    {selectedPersona === "DISTRIBUTOR" ? "Corporate Dealership Email" : "Registered Email Address"}
+                    Corporate Dealership Email
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted">
@@ -334,11 +265,7 @@ export default function LoginPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder={
-                        selectedPersona === "DISTRIBUTOR"
-                          ? "distributor@hardwarecorp.com"
-                          : "client@estatedesign.com"
-                      }
+                      placeholder="distributor@hardwarecorp.com"
                       className="w-full bg-[#FAF9F7] border border-[#E0DBD1] rounded-xl pl-10 pr-4 py-2.5 text-sm text-primary placeholder:text-muted/50 focus:outline-hidden focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
                     />
                   </div>
@@ -425,7 +352,7 @@ export default function LoginPage() {
                     </>
                   ) : (
                     <>
-                      <span>Sign In to {selectedPersona === "DISTRIBUTOR" ? "Distributor Portal" : "Client Account"}</span>
+                      <span>Sign In to Distributor Portal</span>
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
@@ -443,17 +370,10 @@ export default function LoginPage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleQuickFill("DISTRIBUTOR")}
+                    onClick={handleQuickFill}
                     className="text-[10px] font-semibold text-[#A67C2E] bg-[#FAF6EE] border border-[#E8DFCF] px-2.5 py-1 rounded-md hover:bg-[#A67C2E] hover:text-white transition-colors cursor-pointer"
                   >
                     Distributor Demo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickFill("CUSTOMER")}
-                    className="text-[10px] font-semibold text-[#2A6F97] bg-[#EEF4F8] border border-[#D6E3EC] px-2.5 py-1 rounded-md hover:bg-[#2A6F97] hover:text-white transition-colors cursor-pointer"
-                  >
-                    Customer Demo
                   </button>
                 </div>
               </div>
@@ -463,12 +383,12 @@ export default function LoginPage() {
             <div className="mt-6 pt-5 border-t border-[#EBE7DF]">
               <div className="text-center mb-3">
                 <p className="text-xs text-muted">
-                  Don't have an account or dealership yet?{" "}
+                  Don't have an authorized dealership yet?{" "}
                   <Link
-                    href={`/signup?role=${selectedPersona.toLowerCase()}`}
+                    href="/signup"
                     className="text-[#A67C2E] font-bold hover:underline"
                   >
-                    Apply for Dealership or Create Account →
+                    Apply for Distributorship →
                   </Link>
                 </p>
               </div>
