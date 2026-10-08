@@ -103,17 +103,18 @@ export default function DistributorOrdersPage() {
     });
   }, [orders, statusFilter, searchQuery]);
 
-  // Aggregate stats
-  const activeOrdersCount = orders.filter((o) =>
+  // Aggregate stats (active orders in consignment pipeline; resets to 0 once delivered)
+  const activeOrders = orders.filter((o) =>
     ["PLACED", "CONFIRMED", "PROCESSING", "SHIPPED"].includes(o.status)
-  ).length;
+  );
+  const activeOrdersCount = activeOrders.length;
 
-  const totalVolumeUnits = orders.reduce(
+  const totalVolumeUnits = activeOrders.reduce(
     (sum, o) => sum + o.items.reduce((iSum, i) => iSum + i.quantity, 0),
     0
   );
 
-  const totalProcurementValue = orders.reduce(
+  const totalProcurementValue = activeOrders.reduce(
     (sum, o) =>
       sum + o.items.reduce((iSum, i) => iSum + Number(i.unitPrice) * i.quantity, 0),
     0
