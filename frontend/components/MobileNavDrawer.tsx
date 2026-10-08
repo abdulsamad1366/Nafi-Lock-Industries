@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthUser, clearUserSession } from "@/lib/userAuth";
+import { useOrderCart } from "@/components/OrderCartProvider";
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -54,6 +55,7 @@ export default function MobileNavDrawer({
 }: MobileNavDrawerProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { openDrawer, itemCount } = useOrderCart();
   const [mounted, setMounted] = useState(false);
 
   // Accordion state for expandable menu items ("brands" or "distributor")
@@ -383,16 +385,25 @@ export default function MobileNavDrawer({
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </Link>
-                  <Link
-                    href="/distributor/ledger"
-                    onClick={onClose}
-                    className="group flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-150 hover:translate-x-1"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      openDrawer();
+                    }}
+                    className="w-full group flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-serif text-gray-600 hover:text-[#9A7228] hover:bg-amber-50/60 active:scale-[0.98] transition-all duration-150 hover:translate-x-1 cursor-pointer text-left"
                   >
-                    <span>Account Ledger & Invoices</span>
-                    <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </Link>
+                    <span>Order Cart</span>
+                    {itemCount > 0 ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#9A7228] text-white">
+                        {itemCount}
+                      </span>
+                    ) : (
+                      <svg className="w-3.5 h-3.5 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    )}
+                  </button>
                   <Link
                     href="/distributor/liked"
                     onClick={onClose}

@@ -21,6 +21,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/distributor/ledger",
+        destination: "/distributor",
+        permanent: false,
+      },
+      {
+        source: "/distributor/cart",
+        destination: "/distributor/orders/new",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

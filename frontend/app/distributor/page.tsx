@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { getDistributorProfile, DistributorMeResponse } from "@/lib/api";
 import { clearUserSession } from "@/lib/userAuth";
 import SalesRepCard from "@/components/SalesRepCard";
+import { useOrderCart } from "@/components/OrderCartProvider";
 
 export default function DistributorOverviewAndProfilePage() {
   const router = useRouter();
+  const { openDrawer, itemCount } = useOrderCart();
   const [data, setData] = useState<DistributorMeResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -76,16 +78,27 @@ export default function DistributorOverviewAndProfilePage() {
               </Link>
               <Link
                 href="/distributor/orders"
-                className="flex-1 sm:flex-none min-h-[42px] px-4 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors flex items-center justify-center touch-manipulation text-center"
+                className="flex-1 sm:flex-none min-h-[42px] px-5 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors flex items-center justify-center touch-manipulation text-center"
               >
                 My Orders
               </Link>
-              <Link
-                href="/distributor/ledger"
-                className="flex-1 sm:flex-none min-h-[42px] px-4 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors flex items-center justify-center touch-manipulation text-center"
+              <button
+                type="button"
+                onClick={openDrawer}
+                className="flex-1 sm:flex-none min-h-[42px] px-5 py-2.5 bg-background border border-divider rounded-full font-serif font-medium text-xs text-primary hover:border-accent transition-colors flex items-center justify-center gap-1.5 touch-manipulation text-center cursor-pointer"
               >
-                Ledger
-              </Link>
+                <svg className="w-4 h-4 text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <span>Order Cart</span>
+                {itemCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-accent text-background">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
             </div>
           ) : (
             <div className="p-3 bg-background/80 border border-amber-500/30 rounded-xl text-xs text-muted flex items-start gap-2.5">

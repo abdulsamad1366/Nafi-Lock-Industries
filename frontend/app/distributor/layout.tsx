@@ -103,7 +103,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   const navLinks = [
     { href: "/distributor", label: "Company Profile", icon: "user" },
     { href: "/distributor/orders", label: "My Orders", icon: "box" },
-    { href: "/distributor/ledger", label: "Account Ledger", icon: "file" },
+    { href: "/distributor/orders/new", label: "Order Cart", icon: "cart" },
     { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
     { href: "/distributor/liked", label: "Liked Locks", icon: "heart" },
   ];
@@ -169,7 +169,8 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
                 const isActive =
                   pathname === item.href ||
                   (item.href === "/distributor" && pathname === "/distributor/profile") ||
-                  (item.href === "/distributor/orders" && pathname?.startsWith("/distributor/orders")) ||
+                  (item.href === "/distributor/orders" && pathname === "/distributor/orders") ||
+                  (item.href === "/distributor/orders/new" && pathname === "/distributor/orders/new") ||
                   (item.href === "/distributor/downloads" && pathname?.startsWith("/distributor/downloads"));
                 return (
                   <Link
@@ -189,12 +190,11 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
                           <line x1="12" y1="22.08" x2="12" y2="12" />
                         </svg>
                       )}
-                      {item.icon === "file" && (
+                      {item.icon === "cart" && (
                         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                          <line x1="16" y1="13" x2="8" y2="13" />
-                          <line x1="16" y1="17" x2="8" y2="17" />
+                          <circle cx="9" cy="21" r="1" />
+                          <circle cx="20" cy="21" r="1" />
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                         </svg>
                       )}
                       {item.icon === "download" && (
@@ -216,6 +216,17 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
                         </svg>
                       )}
                       <span>{item.label}</span>
+                      {item.icon === "cart" && itemCount > 0 && (
+                        <span
+                          className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                            isActive
+                              ? "bg-background text-primary"
+                              : "bg-accent/20 text-accent"
+                          }`}
+                        >
+                          {itemCount}
+                        </span>
+                      )}
                     </div>
 
                     {isActive && (
@@ -266,21 +277,28 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
             <span>Orders</span>
           </Link>
 
-          {/* 3. Ledger */}
-          <Link
-            href="/distributor/ledger"
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
-              pathname === "/distributor/ledger" ? "text-accent font-bold" : "text-muted hover:text-primary"
+          {/* 3. Cart */}
+          <button
+            type="button"
+            onClick={openDrawer}
+            className={`relative flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation cursor-pointer ${
+              pathname === "/distributor/orders/new" ? "text-accent font-bold" : "text-muted hover:text-primary"
             }`}
           >
-            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-            <span>Ledger</span>
-          </Link>
+            <div className="relative">
+              <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              {itemCount > 0 && (
+                <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-accent text-background font-mono text-[9px] font-bold flex items-center justify-center shadow-xs">
+                  {itemCount}
+                </span>
+              )}
+            </div>
+            <span>Cart</span>
+          </button>
 
           {/* 4. Downloads */}
           <Link
