@@ -247,9 +247,8 @@ export default function Header() {
     window.location.href = "/login";
   };
 
-  // Do not render the global public navigation header on auth and distributor screens
+  // Do not render the global public navigation header on standalone auth screens
   if (
-    pathname?.startsWith("/distributor") ||
     pathname === "/login" ||
     pathname === "/admin/login" ||
     pathname === "/signup"
