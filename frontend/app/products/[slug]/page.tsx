@@ -190,11 +190,11 @@ function ProductDetailContent({ product }: { product: Product }) {
       </div>
 
       {/* ── Main Amazon/Flipkart 2-Column Product Showcase ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-6">
-        <div className="bg-white rounded-2xl border border-black/[0.08] shadow-sm p-4 sm:p-6 lg:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            {/* ── Left Column: Media Gallery & Dual Flipkart Action Buttons (Col 5) ── */}
-            <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-4">
+      <div className="max-w-7xl xl:max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-6">
+        <div className="bg-white rounded-2xl border border-black/[0.08] shadow-sm p-4 sm:p-6 lg:p-7">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-10 items-start">
+            {/* ── Left Column: Media Gallery & Dual Flipkart Action Buttons (Col 6) ── */}
+            <div className="lg:col-span-6 lg:sticky lg:top-24 space-y-4">
               <ProductGallery
                 images={product.images}
                 productName={product.name}
@@ -207,8 +207,8 @@ function ProductDetailContent({ product }: { product: Product }) {
               />
             </div>
 
-            {/* ── Right Column: Title, Ratings, Pricing, Offers & Specs (Col 7) ── */}
-            <div className="lg:col-span-7 space-y-5" ref={buyBoxRef}>
+            {/* ── Right Column: Title, Ratings, Pricing, Offers & Specs (Col 6) ── */}
+            <div className="lg:col-span-6 space-y-5" ref={buyBoxRef}>
               <div>
                 {/* Store Link & Heart Button */}
                 <div className="flex items-center justify-between pb-1">

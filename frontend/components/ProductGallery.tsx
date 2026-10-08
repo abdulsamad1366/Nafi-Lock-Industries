@@ -143,7 +143,7 @@ export default function ProductGallery({
       <div className="flex flex-col-reverse md:flex-row gap-3 sm:gap-4 items-start">
         {/* Vertical Thumbnail Strip (Flipkart / Amazon left rail) */}
         {galleryImages.length > 1 && (
-          <div className="flex flex-row md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto scrollbar-none w-full md:w-20 shrink-0 py-1 md:py-0">
+          <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto scrollbar-none w-full md:w-20 shrink-0 py-1 md:py-0">
             {galleryImages.map((img, idx) => {
               const isSelected = idx === selectedIndex;
               const label = VIEW_LABELS[idx] || `View ${idx + 1}`;
@@ -154,7 +154,7 @@ export default function ProductGallery({
                   type="button"
                   onMouseEnter={() => handleSelectImage(idx)}
                   onClick={() => handleSelectImage(idx)}
-                  className={`group/thumb relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-xl bg-white border transition-all duration-150 cursor-pointer p-1.5 flex flex-col items-center justify-center shrink-0 ${
+                  className={`group/thumb relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white border transition-all duration-150 cursor-pointer p-1 flex flex-col items-center justify-center shrink-0 ${
                     isSelected
                       ? "border-[#2874F0] ring-2 ring-[#2874F0]/30 shadow-xs scale-102"
                       : "border-black/[0.10] hover:border-black/30 hover:opacity-100 opacity-75"
@@ -167,7 +167,7 @@ export default function ProductGallery({
                       alt={`${productName} thumb ${idx + 1}`}
                       fill
                       sizes="80px"
-                      className="object-contain p-1 group-hover/thumb:scale-105 transition-transform duration-200"
+                      className="object-contain p-0.5 group-hover/thumb:scale-105 transition-transform duration-200"
                     />
                   </div>
                 </button>
@@ -176,129 +176,132 @@ export default function ProductGallery({
           </div>
         )}
 
-        {/* Main Stage with Amazon/Flipkart Hover Lens Zoom */}
-        <div className="relative flex-1 w-full aspect-square rounded-2xl bg-white border border-black/[0.08] shadow-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 group">
-          {/* Flipkart Assured / 100% Solid Badge Top-Left */}
-          <div className="absolute top-3.5 left-3.5 z-20 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md shadow-2xs">
-              <svg className="w-3 h-3 text-emerald-600 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm-2 16l-4-4 1.41-1.41L10 15.17l6.59-6.59L18 10l-8 8z" />
-              </svg>
-              <span>Nafi Assured</span>
-            </span>
-          </div>
+        {/* Right Sub-Column: Main Stage & Flipkart Dual Action Buttons */}
+        <div className="flex-1 min-w-0 w-full space-y-3">
+          {/* Main Stage with Amazon/Flipkart Hover Lens Zoom */}
+          <div className="relative w-full aspect-square rounded-xl sm:rounded-2xl bg-white border border-black/[0.08] shadow-xs overflow-hidden flex items-center justify-center p-1 sm:p-2 group">
+            {/* Flipkart Assured / 100% Solid Badge Top-Left */}
+            <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50/90 backdrop-blur-xs border border-emerald-200/80 px-2 py-0.5 rounded-md shadow-2xs">
+                <svg className="w-3 h-3 text-emerald-600 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm-2 16l-4-4 1.41-1.41L10 15.17l6.59-6.59L18 10l-8 8z" />
+                </svg>
+                <span>Nafi Assured</span>
+              </span>
+            </div>
 
-          {/* Fullscreen Expand Button Top-Right */}
-          <button
-            type="button"
-            onClick={() => setIsLightboxOpen(true)}
-            className="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white active:scale-95 text-stone-700 hover:text-black border border-black/[0.1] flex items-center justify-center shadow-xs transition-all cursor-pointer"
-            title="Inspect high-res craftsmanship (Click to Zoom)"
-            aria-label="Inspect high resolution lock"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-            </svg>
-          </button>
-
-          {/* Centered Image Stage with Amazon-Style Lens Zoom */}
-          <div
-            ref={imgContainerRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => setIsLightboxOpen(true)}
-            className="relative w-full h-full flex items-center justify-center cursor-crosshair overflow-hidden"
-          >
-            <div
-              className={`relative w-full h-full transition-all duration-200 ease-out flex items-center justify-center ${
-                isTransitioning ? "opacity-40 scale-95" : "opacity-100 scale-100"
-              }`}
-              style={{
-                transformOrigin: zoomPos ? `${zoomPos.x}% ${zoomPos.y}%` : "center",
-                transform: zoomPos ? "scale(2.2)" : "scale(1)",
-                transition: zoomPos ? "none" : "transform 0.3s ease-out",
-              }}
+            {/* Fullscreen Expand Button Top-Right */}
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(true)}
+              className="absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white active:scale-95 text-stone-700 hover:text-black border border-black/[0.1] flex items-center justify-center shadow-xs transition-all cursor-pointer"
+              title="Inspect high-res craftsmanship (Click to Zoom)"
+              aria-label="Inspect high resolution lock"
             >
-              <Image
-                src={activeImage}
-                alt={`${productName} - ${currentLabel}`}
-                fill
-                priority={selectedIndex === 0}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain p-2 sm:p-4"
-              />
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+            </button>
+
+            {/* Centered Image Stage with Amazon-Style Lens Zoom */}
+            <div
+              ref={imgContainerRef}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => setIsLightboxOpen(true)}
+              className="relative w-full h-full flex items-center justify-center cursor-crosshair overflow-hidden rounded-lg sm:rounded-xl"
+            >
+              <div
+                className={`relative w-full h-full transition-all duration-200 ease-out flex items-center justify-center ${
+                  isTransitioning ? "opacity-40 scale-95" : "opacity-100 scale-100"
+                }`}
+                style={{
+                  transformOrigin: zoomPos ? `${zoomPos.x}% ${zoomPos.y}%` : "center",
+                  transform: zoomPos ? "scale(2.2)" : "scale(1)",
+                  transition: zoomPos ? "none" : "transform 0.3s ease-out",
+                }}
+              >
+                <Image
+                  src={activeImage}
+                  alt={`${productName} - ${currentLabel}`}
+                  fill
+                  priority={selectedIndex === 0}
+                  sizes="(max-width: 768px) 100vw, 55vw"
+                  className="object-contain p-0.5 sm:p-1"
+                />
+              </div>
+            </div>
+
+            {/* Floating Navigation Chevrons */}
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrev();
+                  }}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md border border-black/[0.08] flex items-center justify-center transition-all cursor-pointer md:opacity-0 md:group-hover:opacity-100"
+                  aria-label="Previous view"
+                >
+                  <svg className="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext();
+                  }}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md border border-black/[0.08] flex items-center justify-center transition-all cursor-pointer md:opacity-0 md:group-hover:opacity-100"
+                  aria-label="Next view"
+                >
+                  <svg className="w-4 h-4 translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </>
+            )}
+
+            {/* Amazon-style "Roll over image to zoom in" caption */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none opacity-80 group-hover:opacity-0 transition-opacity">
+              <span className="text-[10px] font-mono text-stone-500 bg-white/90 px-2.5 py-0.5 rounded-full shadow-2xs border border-black/[0.06]">
+                Roll over image to zoom in
+              </span>
             </div>
           </div>
 
-          {/* Floating Navigation Chevrons */}
-          {galleryImages.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrev();
-                }}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md border border-black/[0.08] flex items-center justify-center transition-all cursor-pointer md:opacity-0 md:group-hover:opacity-100"
-                aria-label="Previous view"
-              >
-                <svg className="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
+          {/* ── Flipkart-Style Dual Action Buttons Directly Under Main Stage (Desktop & Tablet) ── */}
+          <div className="hidden sm:grid grid-cols-2 gap-2.5 pt-0.5">
+            <button
+              type="button"
+              onClick={onAddToCart}
+              className={`py-3.5 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98] ${
+                isAddedToCart
+                  ? "bg-emerald-600 text-white border border-emerald-600"
+                  : "bg-[#FF9F00] hover:bg-[#F39700] text-white border border-[#FF9F00] hover:shadow-md"
+              }`}
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.86-7.01L19.42 4h-.01l-1.1 2-2.76 5H8.53l-.13-.27L6.16 6l-.95-2-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.13 0-.25-.11-.25-.25z" />
+              </svg>
+              <span>{isAddedToCart ? "Added to Cart" : "Add to Cart"}</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNext();
-                }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md border border-black/[0.08] flex items-center justify-center transition-all cursor-pointer md:opacity-0 md:group-hover:opacity-100"
-                aria-label="Next view"
-              >
-                <svg className="w-4 h-4 translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            </>
-          )}
-
-          {/* Amazon-style "Roll over image to zoom in" caption */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none opacity-80 group-hover:opacity-0 transition-opacity">
-            <span className="text-[10.5px] font-mono text-stone-500 bg-white/90 px-2.5 py-0.5 rounded-full shadow-2xs border border-black/[0.06]">
-              Roll over image to zoom in
-            </span>
+            <button
+              type="button"
+              onClick={onBuyNow}
+              className="py-3.5 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98] bg-[#FB641B] hover:bg-[#E85D19] text-white border border-[#FB641B] hover:shadow-md"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M7 2v11h3v9l7-12h-4l3-8z" />
+              </svg>
+              <span>{isDistributor ? "Buy Now" : "Apply to Buy"}</span>
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* ── Flipkart-Style Dual Action Buttons Directly Under Gallery (Desktop & Tablet) ── */}
-      <div className="hidden sm:grid grid-cols-2 gap-3 pt-1">
-        <button
-          type="button"
-          onClick={onAddToCart}
-          className={`py-3.5 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98] ${
-            isAddedToCart
-              ? "bg-emerald-600 text-white border border-emerald-600"
-              : "bg-[#FF9F00] hover:bg-[#F39700] text-white border border-[#FF9F00] hover:shadow-md"
-          }`}
-        >
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-            <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.86-7.01L19.42 4h-.01l-1.1 2-2.76 5H8.53l-.13-.27L6.16 6l-.95-2-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.13 0-.25-.11-.25-.25z" />
-          </svg>
-          <span>{isAddedToCart ? "Added to Cart" : "Add to Cart"}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onBuyNow}
-          className="py-3.5 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98] bg-[#FB641B] hover:bg-[#E85D19] text-white border border-[#FB641B] hover:shadow-md"
-        >
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-            <path d="M7 2v11h3v9l7-12h-4l3-8z" />
-          </svg>
-          <span>{isDistributor ? "Buy Now" : "Apply to Buy"}</span>
-        </button>
       </div>
 
       {/* ── High-Resolution Lightbox Modal ── */}
