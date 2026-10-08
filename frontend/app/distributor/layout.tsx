@@ -109,36 +109,36 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background pt-2 sm:pt-6 pb-24 lg:pb-16">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        {/* ── Desktop Top Header Console ── */}
-        <div className="hidden lg:block sticky top-20 sm:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 mb-5 sm:mb-8 shadow-xs transition-all">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5 min-w-0">
+        {/* ── Top Header Console (Mobile & Desktop) ── */}
+        <div className="sticky top-16 sm:top-20 lg:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-5 mb-4 sm:mb-6 lg:mb-8 shadow-xs transition-all">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
               {/* Company Initials Monogram Badge */}
-              <div className="w-11 h-11 rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-lg shrink-0 shadow-2xs">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-base sm:text-lg shrink-0 shadow-2xs">
                 {(profileData?.distributorProfile?.companyName || user?.name || "D").charAt(0).toUpperCase()}
               </div>
 
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
                     Distributor Portal
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-500 font-semibold">
+                  <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-mono text-emerald-500 font-semibold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     Verified Active
                   </span>
                 </div>
-                <h1 className="font-serif text-xl sm:text-2xl font-bold text-primary mt-0.5 truncate">
+                <h1 className="font-serif text-base sm:text-xl lg:text-2xl font-bold text-primary mt-0.5 truncate">
                   {profileData?.distributorProfile?.companyName || user?.name}
                 </h1>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setEditProfileOpen(true)}
-                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-2 shrink-0 touch-manipulation"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-1.5 sm:gap-2 shrink-0 touch-manipulation"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
