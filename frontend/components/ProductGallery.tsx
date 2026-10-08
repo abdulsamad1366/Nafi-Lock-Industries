@@ -81,11 +81,6 @@ export default function ProductGallery({
             className="object-contain p-4 group-hover:scale-105 transition-transform duration-500 ease-out"
           />
         </div>
-
-        {/* Quality Seal Pill */}
-        <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-background/80 backdrop-blur-xs border border-divider text-[10px] font-mono uppercase tracking-wider text-muted font-semibold">
-          Authentic Nafi Casting
-        </div>
       </div>
 
       {/* Thumbnails Row (if multiple images) */}

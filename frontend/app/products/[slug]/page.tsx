@@ -1,139 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getProductBySlug, getLikedProducts, likeProduct, unlikeProduct, Product } from "@/lib/api";
-import { isUserLoggedIn } from "@/lib/userAuth";
+import { getUser, isUserLoggedIn } from "@/lib/userAuth";
 import ThemeProvider from "@/components/ThemeProvider";
 import ProductGallery, { getCategoryPlaceholder } from "@/components/ProductGallery";
 import ProductSpecTable from "@/components/ProductSpecTable";
-import ProductGrid, { CatalogProduct } from "@/components/ProductGrid";
+import ProductGrid from "@/components/ProductGrid";
 import { useOrderCart } from "@/components/OrderCartProvider";
-
-// Local catalog fallback for offline / development resilience
-const LOCAL_CATALOG_FALLBACK: Record<string, Partial<Product>> = {
-  "s-nafi-classic-padlock-50": {
-    id: "p-snafi-01",
-    slug: "s-nafi-classic-padlock-50",
-    name: "S-Nafi Classic Solid Brass Padlock",
-    brand: { id: "b-snafi", slug: "s-nafi", name: "S-Nafi", tagline: "Premium brass craftsmanship", description: "", logoUrl: null, heroImageUrl: null, themeKey: "nafi", order: 1, isActive: true },
-    brandId: "b-snafi",
-    category: { id: "c-padlocks", slug: "padlocks", name: "Padlocks" },
-    categoryId: "c-padlocks",
-    description: "Hand-finished 50mm solid brass body with hardened stainless steel shackle and single-bolt precision tumblers. Built to withstand environmental weathering and maximum physical forced entry.",
-    material: "100% Solid Forged Brass",
-    size: "50mm Body / 8mm Shackle",
-    finish: "Mirror Polish Brass",
-    numberOfKeys: 3,
-    lockingMechanism: "Single Bolt Precision Tumbler",
-    warranty: "Lifetime Heritage Warranty",
-    images: ["/products/s-nafi-classic-50.jpg", "/placeholders/padlock.svg"],
-    dealerPrice: 420,
-    minOrderQty: 24,
-    isActive: true,
-  },
-  "s-nafi-classic-padlock-65": {
-    id: "p-snafi-02",
-    slug: "s-nafi-classic-padlock-65",
-    name: "S-Nafi Dual-Action Padlock 65",
-    brand: { id: "b-snafi", slug: "s-nafi", name: "S-Nafi", tagline: "Premium brass craftsmanship", description: "", logoUrl: null, heroImageUrl: null, themeKey: "nafi", order: 1, isActive: true },
-    brandId: "b-snafi",
-    category: { id: "c-padlocks", slug: "padlocks", name: "Padlocks" },
-    categoryId: "c-padlocks",
-    description: "Heavy 65mm brass padlock with double-bolt deadlocking action and dual ball-bearing locking lugs for estate gates and industrial facilities.",
-    material: "Solid Brass & Hardened Steel",
-    size: "65mm Body / 11mm Shackle",
-    finish: "Dual Chrome & Brass Polish",
-    numberOfKeys: 3,
-    lockingMechanism: "Double Ball-Bearing Bolt",
-    warranty: "10-Year Mechanical Warranty",
-    images: ["/products/s-nafi-classic-65.jpg", "/placeholders/padlock.svg"],
-    dealerPrice: 580,
-    minOrderQty: 20,
-    isActive: true,
-  },
-  "s-nafi-mortise-lock-set": {
-    id: "p-snafi-03",
-    slug: "s-nafi-mortise-lock-set",
-    name: "S-Nafi Architectural Mortise Set",
-    brand: { id: "b-snafi", slug: "s-nafi", name: "S-Nafi", tagline: "Premium brass craftsmanship", description: "", logoUrl: null, heroImageUrl: null, themeKey: "nafi", order: 1, isActive: true },
-    brandId: "b-snafi",
-    category: { id: "c-mortise", slug: "door-locks-mortise", name: "Door Locks (Mortise)" },
-    categoryId: "c-mortise",
-    description: "Premium architectural stainless steel & brass mortise chassis with dual-action throw deadbolt and silent operation latch.",
-    material: "Solid Brass Forend & Stainless Steel",
-    size: "Standard 85mm Center",
-    finish: "Satin Nickel & Brushed Brass",
-    numberOfKeys: 3,
-    lockingMechanism: "Dual-Throw Deadbolt Mechanism",
-    warranty: "5-Year Factory Warranty",
-    images: ["/products/s-nafi-mortise-set.jpg", "/placeholders/mortise-lock.svg"],
-    dealerPrice: 720,
-    minOrderQty: 10,
-    isActive: true,
-  },
-  "greek-heritage-padlock-40": {
-    id: "p-greek-01",
-    slug: "greek-heritage-padlock-40",
-    name: "Greek Classical Iron Padlock 40",
-    brand: { id: "b-greek", slug: "greek", name: "Greek", tagline: "Classical strength, modern security", description: "", logoUrl: null, heroImageUrl: null, themeKey: "greek", order: 2, isActive: true },
-    brandId: "b-greek",
-    category: { id: "c-padlocks", slug: "padlocks", name: "Padlocks" },
-    categoryId: "c-padlocks",
-    description: "Classical cast iron padlock body with baked black enamel coat and anti-drill warding plate for rugged perimeter durability.",
-    material: "Cast Iron Body & Steel Shackle",
-    size: "40mm Body / 7mm Shackle",
-    finish: "Matte Black Weatherproof Coat",
-    numberOfKeys: 2,
-    lockingMechanism: "Single Bolt Steel Tumbler",
-    warranty: "2-Year Manufacturer Warranty",
-    images: ["/products/greek-heritage-40.jpg", "/placeholders/greek-padlock.svg"],
-    dealerPrice: 280,
-    minOrderQty: 30,
-    isActive: true,
-  },
-  "raksham-guard-padlock-50": {
-    id: "p-raksham-01",
-    slug: "raksham-guard-padlock-50",
-    name: "Raksham Fortress Guard Padlock 50",
-    brand: { id: "b-raksham", slug: "raksham", name: "Raksham", tagline: "Guardian-grade protection", description: "", logoUrl: null, heroImageUrl: null, themeKey: "raksham", order: 3, isActive: true },
-    brandId: "b-raksham",
-    category: { id: "c-padlocks", slug: "padlocks", name: "Padlocks" },
-    categoryId: "c-padlocks",
-    description: "Case-hardened steel armored body with integrated red anti-drill shield and hardened boron alloy steel shackle.",
-    material: "Case-Hardened Carbon Steel",
-    size: "50mm Body / 9.5mm Shackle",
-    finish: "Corrosion-Resistant Black Phosphate",
-    numberOfKeys: 3,
-    lockingMechanism: "Double Ball-Bearing Deadbolt",
-    warranty: "10-Year Armor Warranty",
-    images: ["/products/raksham-guard-50.jpg", "/placeholders/raksham-padlock.svg"],
-    dealerPrice: 490,
-    minOrderQty: 20,
-    isActive: true,
-  },
-  "raksham-guard-padlock-65": {
-    id: "p-raksham-02",
-    slug: "raksham-guard-padlock-65",
-    name: "Raksham Fortress Guard Padlock 65",
-    brand: { id: "b-raksham", slug: "raksham", name: "Raksham", tagline: "Guardian-grade protection", description: "", logoUrl: null, heroImageUrl: null, themeKey: "raksham", order: 3, isActive: true },
-    brandId: "b-raksham",
-    category: { id: "c-padlocks", slug: "padlocks", name: "Padlocks" },
-    categoryId: "c-padlocks",
-    description: "Heavy industrial defense padlock featuring 12mm boron alloy shackle, reinforced armor casing, and anti-grinder shield.",
-    material: "Hardened Boron Steel & Armored Casing",
-    size: "65mm Body / 12mm Shackle",
-    finish: "Gunmetal Protective Coat",
-    numberOfKeys: 3,
-    lockingMechanism: "Dual Deadlocking Steel Balls",
-    warranty: "10-Year Armor Warranty",
-    images: ["/products/raksham-guard-65.jpg", "/placeholders/raksham-padlock.svg"],
-    dealerPrice: 660,
-    minOrderQty: 15,
-    isActive: true,
-  },
-};
 
 function ProductDetailContent({ product }: { product: Product }) {
   const router = useRouter();
@@ -146,9 +22,12 @@ function ProductDetailContent({ product }: { product: Product }) {
     cart = null;
   }
 
-  // Distributor status check: dealerPrice present in response means approved distributor
-  const isApprovedDistributor =
-    product.dealerPrice !== undefined && product.dealerPrice !== null;
+  // Distributor status check: dealerPrice present in response AND logged in distributor
+  // (Doc 11 Section 5.2)
+  const user = getUser();
+  const isApprovedDistributor = Boolean(
+    user && user.role === "DISTRIBUTOR" && product.dealerPrice !== undefined && product.dealerPrice !== null
+  );
 
   // Quantity input state defaulting to minOrderQty or 1
   const minQty = product.minOrderQty || 1;
@@ -219,35 +98,28 @@ function ProductDetailContent({ product }: { product: Product }) {
   const categoryName = product.category?.name || "Architectural Hardware";
 
   return (
-    <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* ── 1. Breadcrumb: Home / [Brand name] / [Product name] ── */}
-      <nav aria-label="Breadcrumb" className="mb-8">
-        <ol className="flex items-center gap-2 text-xs text-muted font-sans flex-wrap">
-          <li>
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true" className="text-divider">/</li>
-          <li>
-            <Link
-              href={`/brands/${brandSlug}`}
-              className="hover:text-accent font-semibold transition-colors"
-            >
-              {brandName}
-            </Link>
-          </li>
-          <li aria-hidden="true" className="text-divider">/</li>
-          <li aria-current="page" className="text-primary font-medium truncate max-w-xs sm:max-w-md">
-            {product.name}
-          </li>
-        </ol>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
+      {/* ── 1. Breadcrumbs ── */}
+      <nav aria-label="Breadcrumb" className="text-xs font-mono text-muted flex items-center gap-2">
+        <Link href="/" className="hover:text-accent transition-colors">
+          Home
+        </Link>
+        <span>/</span>
+        <Link href="/products" className="hover:text-accent transition-colors">
+          Products
+        </Link>
+        <span>/</span>
+        <Link href={`/brands/${brandSlug}`} className="hover:text-accent transition-colors">
+          {brandName}
+        </Link>
+        <span>/</span>
+        <span className="text-primary font-semibold truncate max-w-xs">{product.name}</span>
       </nav>
 
-      {/* ── Main Two-Column Showcase Area ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mb-20 items-start">
-        {/* Left Column: Product Gallery */}
-        <div className="lg:col-span-6 lg:sticky lg:top-28">
+      {/* ── 2. Main Two-Column Architectural Showcase ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        {/* Left Column: Media Gallery */}
+        <div className="lg:col-span-6 lg:sticky lg:top-24">
           <ProductGallery
             images={product.images}
             productName={product.name}
@@ -256,46 +128,41 @@ function ProductDetailContent({ product }: { product: Product }) {
           />
         </div>
 
-        {/* Right Column: Title, Specs, Description & Action Area */}
-        <div className="lg:col-span-6 space-y-6">
-          {/* ── 3. Title Block ── */}
-          <div className="border-b border-divider pb-6">
+        {/* Right Column: Specifications & Commercial Terms */}
+        <div className="lg:col-span-6 space-y-8">
+          <div>
+            {/* Top Identity Row: Brand Pill + Wishlist Action */}
             <div className="flex items-center justify-between gap-4 mb-3">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                {/* Brand Badge */}
+              <div className="flex items-center gap-2">
                 <Link
                   href={`/brands/${brandSlug}`}
-                  className="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider font-bold bg-accent text-background hover:bg-accent-hover transition-colors shadow-2xs"
+                  className="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider font-bold bg-accent/15 text-accent border border-accent/25 hover:bg-accent/25 transition-colors"
                 >
                   {brandName}
                 </Link>
-
-                {/* Category Name */}
-                <span className="text-xs font-mono uppercase tracking-wider text-muted px-2.5 py-1 rounded-md bg-surface border border-divider">
+                <span className="text-xs font-mono text-muted uppercase tracking-wider">
                   {categoryName}
                 </span>
               </div>
 
-              {/* Like / Heart Icon Toggle (Any logged-in user) */}
+              {/* Heart Button */}
               <button
                 type="button"
                 onClick={handleToggleLike}
                 disabled={isLikeLoading}
-                aria-label={isLiked ? "Remove from saved locks" : "Save this lock"}
-                title={isLiked ? "Saved to your list" : "Bookmark lock"}
-                className={`p-2.5 rounded-full border transition-all duration-200 cursor-pointer shadow-xs ${
+                className={`p-2.5 rounded-full border transition-all cursor-pointer shadow-2xs ${
                   isLiked
-                    ? "bg-red-50 border-red-200 text-red-500 scale-105"
-                    : "bg-surface border-divider text-muted hover:text-red-500 hover:border-red-200 hover:scale-105"
+                    ? "bg-red-500/10 border-red-500/30 text-red-500"
+                    : "bg-surface border-divider text-muted hover:text-red-500 hover:border-red-500/30"
                 }`}
+                title={isLiked ? "Saved to your distributor registry" : "Save this lock model"}
+                aria-label={isLiked ? "Saved" : "Save Lock"}
               >
                 <svg
-                  className={`w-5 h-5 transition-colors ${isLiked ? "fill-current" : "fill-none"}`}
+                  className={`w-5 h-5 ${isLiked ? "fill-current" : "fill-none"}`}
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
                 >
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
@@ -308,7 +175,7 @@ function ProductDetailContent({ product }: { product: Product }) {
             </h1>
           </div>
 
-          {/* ── 5. Description Paragraph ── */}
+          {/* ── 3. Description Paragraph ── */}
           {product.description && (
             <div className="prose prose-sm text-muted">
               <p className="leading-relaxed text-sm sm:text-base text-muted/90">
@@ -325,11 +192,11 @@ function ProductDetailContent({ product }: { product: Product }) {
               finish={product.finish}
               numberOfKeys={product.numberOfKeys}
               lockingMechanism={product.lockingMechanism}
-              warranty={product.warranty}
+              warranty={product.warranty || "1 year"}
             />
           </div>
 
-          {/* ── 6. Action Area (Role-Dependent) ── */}
+          {/* ── 5. Action Area (Role-Dependent) ── */}
           <div className="pt-4 border-t border-divider">
             {isApprovedDistributor ? (
               /* Approved Distributor Branch */
@@ -418,7 +285,7 @@ function ProductDetailContent({ product }: { product: Product }) {
 
                 <div className="flex items-center justify-between text-[11px] text-muted font-mono pt-1">
                   <span>Batch Total: ₹{(quantity * Number(product.dealerPrice || 0)).toLocaleString("en-IN")}</span>
-                  <Link href="/#catalog" className="text-accent hover:underline">
+                  <Link href="/products" className="text-accent hover:underline">
                     Browse More Locks →
                   </Link>
                 </div>
@@ -435,7 +302,7 @@ function ProductDetailContent({ product }: { product: Product }) {
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-base text-primary">
-                      B2B Dealer Pricing & Bulk Ordering
+                      B2B Dealer Pricing &amp; Bulk Ordering
                     </h3>
                     <p className="text-xs text-muted leading-relaxed mt-1">
                       Direct factory wholesale pricing, minimum order quantities, and purchase orders are reserved for authorized Nafi Lock Industries distributors and hardware stockists.
@@ -448,23 +315,13 @@ function ProductDetailContent({ product }: { product: Product }) {
                     href={`/login?redirect=${encodeURIComponent(`/products/${product.slug}`)}`}
                     className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-accent text-white font-serif font-bold text-xs hover:bg-accent-hover text-center shadow-xs transition-colors"
                   >
-                    Sign In to Distributor Portal →
+                    Distributor Sign In →
                   </Link>
                   <Link
                     href="/signup"
-                    className="w-full sm:w-auto py-3 px-5 rounded-xl border border-divider bg-background hover:bg-surface text-primary font-serif font-semibold text-xs text-center transition-colors"
+                    className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-background border border-divider hover:bg-surface text-primary font-serif font-bold text-xs text-center transition-colors shadow-2xs"
                   >
                     Apply for Dealership
-                  </Link>
-                </div>
-
-                <div className="pt-3 border-t border-divider/60 flex flex-col sm:flex-row items-center justify-between text-xs text-muted gap-2">
-                  <span>Need custom metallurgy or factory pinning?</span>
-                  <Link
-                    href={`/contact?productId=${encodeURIComponent(product.id)}&brandId=${encodeURIComponent(product.brandId || "")}`}
-                    className="text-accent font-semibold hover:underline"
-                  >
-                    Contact Factory Desk →
                   </Link>
                 </div>
               </div>
@@ -473,7 +330,7 @@ function ProductDetailContent({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* ── 7. Related Products: Reusing ProductGrid ── */}
+      {/* ── 6. Related Products: Live API ProductGrid ── */}
       <section className="pt-12 border-t border-divider">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -511,40 +368,33 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isNotFound, setIsNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadProduct = useCallback(() => {
     if (!slug) return;
     setIsLoading(true);
-    setIsNotFound(false);
+    setError(null);
 
     getProductBySlug(slug)
       .then((data) => {
         if (!data || data.isActive === false) {
-          // Check local fallback before 404
-          const fallback = LOCAL_CATALOG_FALLBACK[slug];
-          if (fallback && fallback.isActive !== false) {
-            setProduct(fallback as Product);
-          } else {
-            setIsNotFound(true);
-          }
+          setProduct(null);
         } else {
           setProduct(data);
         }
       })
       .catch((err) => {
-        console.warn(`Product API lookup failed for ${slug}, checking catalog fallback:`, err);
-        const fallback = LOCAL_CATALOG_FALLBACK[slug];
-        if (fallback && fallback.isActive !== false) {
-          setProduct(fallback as Product);
-        } else {
-          setIsNotFound(true);
-        }
+        console.warn(`Product API lookup failed for ${slug}:`, err);
+        setError(err?.message || "Failed to load product specifications.");
       })
       .finally(() => {
         setIsLoading(false);
       });
   }, [slug]);
+
+  useEffect(() => {
+    loadProduct();
+  }, [loadProduct]);
 
   if (isLoading) {
     return (
@@ -559,8 +409,46 @@ export default function ProductDetailPage() {
     );
   }
 
+  // Error state with retry button (Doc 11 Section 5.2)
+  if (error && !product) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center px-4 py-20 bg-background text-center">
+        <div className="max-w-md w-full bg-surface border border-red-100 rounded-3xl p-8 sm:p-10 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <h1 className="font-serif text-2xl font-bold text-primary mb-2">
+            Failed to Load Product
+          </h1>
+          <p className="text-xs sm:text-sm text-muted leading-relaxed mb-6">
+            {error}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={loadProduct}
+              className="w-full sm:w-auto px-6 py-2.5 bg-accent text-background font-serif font-bold text-xs rounded-xl hover:bg-accent-hover transition-colors shadow-xs cursor-pointer"
+            >
+              Retry Connection
+            </button>
+            <Link
+              href="/products"
+              className="w-full sm:w-auto px-6 py-2.5 bg-background border border-divider text-primary font-serif font-semibold text-xs rounded-xl hover:bg-surface transition-colors"
+            >
+              Back to Catalog
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Proper 404 screen if the slug does not resolve to an active product
-  if (isNotFound || !product) {
+  if (!product) {
     return (
       <div className="min-h-[75vh] flex items-center justify-center px-4 py-20 bg-background text-center">
         <div className="max-w-md w-full bg-surface border border-divider rounded-3xl p-8 sm:p-10 shadow-sm">
@@ -586,7 +474,7 @@ export default function ProductDetailPage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/#catalog"
+              href="/products"
               className="w-full sm:w-auto px-6 py-2.5 bg-accent text-background font-serif font-bold text-xs rounded-xl hover:bg-accent-hover transition-colors shadow-xs"
             >
               Browse Full Catalog
