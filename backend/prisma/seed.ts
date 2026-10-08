@@ -96,7 +96,12 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Single bolt",
         warranty: "1 year",
-        images: ["/placeholders/padlock.svg"],
+        images: [
+          "/products/s-nafi-classic-50.jpg",
+          "/products/greek-heritage-40.jpg",
+          "/products/s-nafi-mortise-set.jpg",
+          "/placeholders/padlock.svg"
+        ],
         dealerPrice: 420,
         minOrderQty: 24,
       },
@@ -112,7 +117,12 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Double bolt",
         warranty: "1 year",
-        images: ["/placeholders/padlock.svg"],
+        images: [
+          "/products/s-nafi-classic-65.jpg",
+          "/products/greek-heritage-40.jpg",
+          "/products/s-nafi-mortise-set.jpg",
+          "/placeholders/padlock.svg"
+        ],
         dealerPrice: 580,
         minOrderQty: 20,
       },
@@ -128,7 +138,11 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Double bolt",
         warranty: "1 year",
-        images: ["/placeholders/mortise-lock.svg"],
+        images: [
+          "/products/s-nafi-mortise-set.jpg",
+          "/products/s-nafi-classic-50.jpg",
+          "/placeholders/mortise-lock.svg"
+        ],
         dealerPrice: 720,
         minOrderQty: 10,
       },
@@ -144,7 +158,11 @@ async function main() {
         numberOfKeys: 2,
         lockingMechanism: "Single bolt",
         warranty: "1 year",
-        images: ["/placeholders/cylindrical-lock.svg"],
+        images: [
+          "/products/s-nafi-cylindrical-knob.jpg",
+          "/products/snafi-cabinet-cam-lock.jpg",
+          "/placeholders/cylindrical-lock.svg"
+        ],
         dealerPrice: 480,
         minOrderQty: 15,
       },
@@ -167,7 +185,11 @@ async function main() {
         numberOfKeys: 2,
         lockingMechanism: "Single bolt",
         warranty: "1 year",
-        images: ["/placeholders/greek-padlock.svg"],
+        images: [
+          "/products/greek-heritage-40.jpg",
+          "/products/s-nafi-classic-50.jpg",
+          "/placeholders/greek-padlock.svg"
+        ],
         dealerPrice: 280,
         minOrderQty: 30,
       },
@@ -183,7 +205,11 @@ async function main() {
         numberOfKeys: 2,
         lockingMechanism: "Single bolt",
         warranty: "1 year",
-        images: ["/placeholders/greek-padlock.svg"],
+        images: [
+          "/products/greek-heritage-40.jpg",
+          "/products/s-nafi-classic-65.jpg",
+          "/placeholders/greek-padlock.svg"
+        ],
         dealerPrice: 380,
         minOrderQty: 25,
       },
@@ -199,7 +225,11 @@ async function main() {
         numberOfKeys: 2,
         lockingMechanism: "Single bolt",
         warranty: "1 year",
-        images: ["/placeholders/cabinet-lock.svg"],
+        images: [
+          "/products/greek-cabinet-lock.jpg",
+          "/products/greek-cylinder-lock.jpg",
+          "/placeholders/cabinet-lock.svg"
+        ],
         dealerPrice: 210,
         minOrderQty: 40,
       },
@@ -222,7 +252,12 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Double bolt",
         warranty: "1 year",
-        images: ["/placeholders/raksham-padlock.svg"],
+        images: [
+          "/products/raksham-guard-50.jpg",
+          "/products/raksham-shackle-lock.jpg",
+          "/products/raksham-guard-65.jpg",
+          "/placeholders/raksham-padlock.svg"
+        ],
         dealerPrice: 490,
         minOrderQty: 20,
       },
@@ -238,7 +273,12 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Double bolt",
         warranty: "1 year",
-        images: ["/placeholders/raksham-padlock.svg"],
+        images: [
+          "/products/raksham-guard-65.jpg",
+          "/products/raksham-shackle-lock.jpg",
+          "/products/raksham-guard-50.jpg",
+          "/placeholders/raksham-padlock.svg"
+        ],
         dealerPrice: 660,
         minOrderQty: 15,
       },
@@ -254,7 +294,11 @@ async function main() {
         numberOfKeys: 0,
         lockingMechanism: "N/A",
         warranty: "1 year",
-        images: ["/placeholders/hasp-staple.svg"],
+        images: [
+          "/products/raksham-hasp-staple.jpg",
+          "/products/raksham-shackle-lock.jpg",
+          "/placeholders/hasp-staple.svg"
+        ],
         dealerPrice: 310,
         minOrderQty: 25,
       },
@@ -270,7 +314,11 @@ async function main() {
         numberOfKeys: 3,
         lockingMechanism: "Double bolt",
         warranty: "1 year",
-        images: ["/placeholders/raksham-padlock.svg"],
+        images: [
+          "/products/raksham-cylindrical-knob.jpg",
+          "/products/s-nafi-mortise-set.jpg",
+          "/placeholders/mortise-lock.svg"
+        ],
         dealerPrice: 850,
         minOrderQty: 10,
       },
