@@ -14,29 +14,7 @@ import {
 } from "@/lib/userAuth";
 import { getDistributorProfile, DistributorMeResponse } from "@/lib/api";
 import { useOrderCart } from "@/components/OrderCartProvider";
-
-function CartBadgeButton() {
-  const { openDrawer, itemCount, subtotal } = useOrderCart();
-  return (
-    <button
-      onClick={openDrawer}
-      className="inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-accent text-background font-serif font-bold text-xs hover:bg-accent-hover transition-colors shadow-sm cursor-pointer shrink-0"
-    >
-      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="9" cy="21" r="1" />
-        <circle cx="20" cy="21" r="1" />
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-      </svg>
-      <span className="hidden sm:inline">Order Cart ({itemCount})</span>
-      <span className="sm:hidden font-mono font-bold">Cart ({itemCount})</span>
-      {subtotal > 0 && (
-        <span className="font-mono font-normal opacity-90 pl-1 border-l border-background/30 hidden xs:inline">
-          ₹{subtotal.toLocaleString("en-IN")}
-        </span>
-      )}
-    </button>
-  );
-}
+import EditProfileModal from "@/components/EditProfileModal";
 
 function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -45,6 +23,7 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, setUserState] = useState<AuthUser | null>(null);
   const [profileData, setProfileData] = useState<DistributorMeResponse | null>(null);
   const [isChecking, setIsChecking] = useState(true);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
 
   useEffect(() => {
     if (!isUserLoggedIn()) {
@@ -79,6 +58,25 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
         clearUserSession();
         router.push("/login");
       });
+
+    // Listen for cross-component profile updates
+    const handleProfileUpdateEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<DistributorMeResponse>;
+      if (customEvent.detail) {
+        setProfileData(customEvent.detail);
+        setUserState({
+          id: customEvent.detail.id,
+          name: customEvent.detail.name,
+          email: customEvent.detail.email,
+          phone: customEvent.detail.phone,
+          role: "DISTRIBUTOR",
+        });
+      }
+    };
+    window.addEventListener("nafi:profile-updated", handleProfileUpdateEvent);
+    return () => {
+      window.removeEventListener("nafi:profile-updated", handleProfileUpdateEvent);
+    };
   }, [router]);
 
   const handleLogout = () => {
@@ -137,17 +135,16 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              <CartBadgeButton />
               <button
-                onClick={handleLogout}
-                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-background border border-divider text-muted hover:text-rose-500 hover:border-rose-500/30 transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5 shrink-0 touch-manipulation"
+                type="button"
+                onClick={() => setEditProfileOpen(true)}
+                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-2 shrink-0 touch-manipulation"
               >
-                <span>Sign Out</span>
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
+                <span>Edit Profile</span>
               </button>
             </div>
           </div>
@@ -331,6 +328,35 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           </Link>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={editProfileOpen}
+        onClose={() => setEditProfileOpen(false)}
+        initialData={{
+          name: profileData?.name || user?.name || "",
+          email: profileData?.email || user?.email || "",
+          phone: profileData?.phone || user?.phone || "",
+          companyName: profileData?.distributorProfile?.companyName || "",
+          gstNumber: profileData?.distributorProfile?.gstNumber || "",
+          businessAddress: profileData?.distributorProfile?.businessAddress || "",
+          city: profileData?.distributorProfile?.city || "",
+          state: profileData?.distributorProfile?.state || "",
+        }}
+        onSuccess={(updated) => {
+          setProfileData(updated);
+          setUserState({
+            id: updated.id,
+            name: updated.name,
+            email: updated.email,
+            phone: updated.phone,
+            role: "DISTRIBUTOR",
+          });
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("nafi:profile-updated", { detail: updated }));
+          }
+        }}
+      />
     </div>
   );
 }

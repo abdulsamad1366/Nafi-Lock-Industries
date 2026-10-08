@@ -69,3 +69,89 @@ export async function applyDistributor(
     next(err);
   }
 }
+
+/**
+ * PUT /api/distributor/profile
+ * Allows approved/registered distributor to update their business profile & contact info
+ */
+export async function updateDistributorProfile(
+  req: AuthenticatedUserRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const userId = req.user!.id;
+    const { name, phone, companyName, gstNumber, businessAddress, city, state } = req.body;
+
+    // 1. Update User contact fields if provided
+    const userUpdateData: { name?: string; phone?: string | null } = {};
+    if (typeof name === "string" && name.trim()) {
+      userUpdateData.name = name.trim();
+    }
+    if (phone !== undefined) {
+      userUpdateData.phone = typeof phone === "string" && phone.trim() ? phone.trim() : null;
+    }
+
+    if (Object.keys(userUpdateData).length > 0) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: userUpdateData,
+      });
+    }
+
+    // 2. Update DistributorProfile fields if provided
+    const profileUpdateData: {
+      companyName?: string;
+      gstNumber?: string | null;
+      businessAddress?: string;
+      city?: string;
+      state?: string;
+    } = {};
+
+    if (typeof companyName === "string" && companyName.trim()) {
+      profileUpdateData.companyName = companyName.trim();
+    }
+    if (gstNumber !== undefined) {
+      profileUpdateData.gstNumber =
+        typeof gstNumber === "string" && gstNumber.trim() ? gstNumber.trim().toUpperCase() : null;
+    }
+    if (typeof businessAddress === "string" && businessAddress.trim()) {
+      profileUpdateData.businessAddress = businessAddress.trim();
+    }
+    if (typeof city === "string" && city.trim()) {
+      profileUpdateData.city = city.trim();
+    }
+    if (typeof state === "string" && state.trim()) {
+      profileUpdateData.state = state.trim();
+    }
+
+    if (Object.keys(profileUpdateData).length > 0) {
+      await prisma.distributorProfile.update({
+        where: { userId },
+        data: profileUpdateData,
+      });
+    }
+
+    // 3. Return full updated user object
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+        distributorProfile: {
+          include: {
+            assignedRep: true,
+          },
+        },
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (err) {
+    next(err);
+  }
+}

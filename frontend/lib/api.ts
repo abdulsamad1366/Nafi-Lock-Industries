@@ -154,6 +154,21 @@ export async function getDistributorProfile() {
   return fetchAPI<DistributorMeResponse>("/distributor/me", undefined, "user");
 }
 
+export async function updateDistributorProfile(data: {
+  name?: string;
+  phone?: string;
+  companyName?: string;
+  gstNumber?: string;
+  businessAddress?: string;
+  city?: string;
+  state?: string;
+}) {
+  return fetchAPI<DistributorMeResponse>("/distributor/profile", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }, "user");
+}
+
 export async function applyForDistributor(data: {
   companyName: string;
   gstNumber?: string;
