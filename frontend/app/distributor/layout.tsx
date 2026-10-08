@@ -97,9 +97,10 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Navigation Links for approved distributors (Catalog is browsed on main web)
+  // Navigation Links for approved distributors
   const navLinks = [
     { href: "/distributor", label: "Company Profile", icon: "user" },
+    { href: "/distributor/catalog", label: "Wholesale Catalog", icon: "grid" },
     { href: "/distributor/orders", label: "My Orders", icon: "box" },
     { href: "/distributor/orders/new", label: "Order Cart", icon: "cart" },
     { href: "/distributor/downloads", label: "Catalog Downloads", icon: "download" },
@@ -223,6 +224,14 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
                     }`}
                   >
                     <div className="flex items-center gap-3">
+                      {item.icon === "grid" && (
+                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="7" height="7" rx="1" />
+                          <rect x="14" y="3" width="7" height="7" rx="1" />
+                          <rect x="14" y="14" width="7" height="7" rx="1" />
+                          <rect x="3" y="14" width="7" height="7" rx="1" />
+                        </svg>
+                      )}
                       {item.icon === "box" && (
                         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />

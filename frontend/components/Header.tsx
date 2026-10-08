@@ -332,7 +332,21 @@ export default function Header() {
               </Link>
             </li>
 
-            {/* 2. Brand ▾ (Dropdown: S-Nafi, Raksham, Greek) */}
+            {/* 2. Products */}
+            <li>
+              <Link
+                href="/products"
+                className={`relative flex items-center px-3.5 py-1.5 rounded-full tracking-wide transition-all duration-200 ${
+                  pathname === "/products"
+                    ? "text-accent font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-accent after:rounded-full"
+                    : "text-muted hover:text-primary hover:bg-black/[0.03] font-medium"
+                }`}
+              >
+                <span>Products</span>
+              </Link>
+            </li>
+
+            {/* 3. Brand ▾ (Dropdown: S-Nafi, Raksham, Greek) */}
             <li
               ref={brandsDropdownRef}
               className="relative group/brand"

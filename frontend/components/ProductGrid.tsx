@@ -4,7 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useOrderCart } from "./OrderCartProvider";
-import { getProducts, Product } from "@/lib/api";
+import { getProducts, Product, likeProduct, unlikeProduct } from "@/lib/api";
+import { isUserLoggedIn } from "@/lib/userAuth";
 
 /**
  * ============================================================================
@@ -40,10 +41,10 @@ export interface CatalogProduct {
 
 /**
  * ============================================================================
- * Complete Hardware Product Catalog Dataset (Exact Match to User Reference)
+ * Complete Hardware Product Catalog Dataset
  * ============================================================================
  */
-const CATALOG_PRODUCTS: CatalogProduct[] = [
+export const CATALOG_PRODUCTS: CatalogProduct[] = [
   // ── Card 1: S-Nafi Classic Solid Brass Padlock (SN-PB-50) ──
   {
     id: "p-snafi-01",
@@ -343,10 +344,10 @@ const CATALOG_PRODUCTS: CatalogProduct[] = [
 ];
 
 /**
- * Category filter pills matching the exact order from reference photo
+ * Category filter pills configuration
  */
 const CATEGORIES = [
-  { id: "all", label: "All Products", showCount: true },
+  { id: "all", label: "All Locks" },
   { id: "padlocks", label: "Padlocks" },
   { id: "mortise", label: "Mortise Locks" },
   { id: "cylindrical", label: "Knob / Cylindrical" },
@@ -355,113 +356,14 @@ const CATEGORIES = [
 ];
 
 /**
- * Brand filter options (inside Filter dialog/tune button)
+ * Brand filter options with metadata styling
  */
-const BRAND_OPTIONS = [
-  { id: "all", label: "All Brands" },
-  { id: "s-nafi", label: "S-Nafi (Artisanal Brass)" },
-  { id: "greek", label: "Greek (Mortise & Cylinders)" },
-  { id: "raksham", label: "Raksham (Fortress Armor)" },
+const BRAND_TABS = [
+  { id: "all", label: "All Brands", dotColor: "bg-[#A98048]", tag: "Master Catalog" },
+  { id: "s-nafi", label: "S-Nafi", dotColor: "bg-[#C49B55]", tag: "Solid Brass Artisanal" },
+  { id: "greek", label: "Greek", dotColor: "bg-[#2563EB]", tag: "Euro Precision & Mortise" },
+  { id: "raksham", label: "Raksham", dotColor: "bg-[#DC2626]", tag: "Case-Hardened Armor" },
 ];
-
-/**
- * ============================================================================
- * Icon Renderer Helper
- * ============================================================================
- */
-function SpecIcon({ type }: { type: ProductSpecItem["icon"] }) {
-  switch (type) {
-    case "lock":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-      );
-    case "link":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-        </svg>
-      );
-    case "sparkles":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M12 2l2.4 5.2L20 9.6l-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-2.4z" />
-        </svg>
-      );
-    case "gear":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      );
-    case "shield":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        </svg>
-      );
-    case "key":
-      return (
-        <svg
-          className="w-3.5 h-3.5 text-[#64748B] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="7.5" cy="15.5" r="4.5" />
-          <path d="m21 3-9.5 9.5" />
-          <path d="m15.5 7.5 3 3" />
-        </svg>
-      );
-  }
-}
 
 export interface ProductGridProps {
   brandFilter?: string;
@@ -469,11 +371,16 @@ export interface ProductGridProps {
   excludeSlug?: string;
   limit?: number;
   hideFilters?: boolean;
+  showHeader?: boolean;
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  isDistributorContext?: boolean;
 }
 
 /**
  * ============================================================================
- * Component: ProductGrid
+ * Component: ProductGrid (Luxury Architectural Hardware Catalog)
  * ============================================================================
  */
 export default function ProductGrid({
@@ -482,13 +389,17 @@ export default function ProductGrid({
   excludeSlug,
   limit,
   hideFilters = false,
+  showHeader,
+  title,
+  subtitle,
+  badge,
+  isDistributorContext = false,
 }: ProductGridProps = {}) {
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryFilter || "all");
   const [selectedBrand, setSelectedBrand] = useState<string>(brandFilter || "all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<"featured" | "security" | "name-asc" | "model">("featured");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [cartItems, setCartItems] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeModalProduct, setActiveModalProduct] = useState<CatalogProduct | null>(null);
   const [liveProducts, setLiveProducts] = useState<Product[]>([]);
@@ -500,6 +411,19 @@ export default function ProductGrid({
     cart = null;
   }
 
+  // Hydrate favorites from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("nafi_liked_product_ids");
+      if (saved) {
+        setFavorites(new Set(JSON.parse(saved)));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Fetch live API products if available
   useEffect(() => {
     getProducts()
       .then((data) => {
@@ -518,9 +442,43 @@ export default function ProductGrid({
     return map;
   }, [liveProducts]);
 
-  // Toggle favorite
-  const toggleFavorite = (id: string, e: React.MouseEvent) => {
+  // Dynamic counts per brand
+  const brandCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: CATALOG_PRODUCTS.length,
+      "s-nafi": 0,
+      greek: 0,
+      raksham: 0,
+    };
+    CATALOG_PRODUCTS.forEach((p) => {
+      if (counts[p.brandSlug] !== undefined) {
+        counts[p.brandSlug]++;
+      }
+    });
+    return counts;
+  }, []);
+
+  // Dynamic counts per category based on active brand
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: 0 };
+    CATEGORIES.forEach((c) => (counts[c.id] = 0));
+
+    CATALOG_PRODUCTS.forEach((p) => {
+      const activeB = brandFilter || selectedBrand;
+      if (activeB === "all" || p.brandSlug === activeB) {
+        counts.all = (counts.all || 0) + 1;
+        counts[p.categorySlug] = (counts[p.categorySlug] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [selectedBrand, brandFilter]);
+
+  // Toggle favorite with persistence & API sync
+  const toggleFavorite = async (product: CatalogProduct, e: React.MouseEvent) => {
     e.stopPropagation();
+    const id = product.id;
+    const isNowFav = !favorites.has(id);
+
     setFavorites((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -528,8 +486,35 @@ export default function ProductGrid({
       } else {
         next.add(id);
       }
+      try {
+        localStorage.setItem("nafi_liked_product_ids", JSON.stringify(Array.from(next)));
+      } catch {
+        // ignore
+      }
       return next;
     });
+
+    if (isNowFav) {
+      setToastMessage(`Saved ${product.name} to wishlist`);
+    } else {
+      setToastMessage(`Removed ${product.name} from wishlist`);
+    }
+    setTimeout(() => setToastMessage(null), 2500);
+
+    // Sync with API if user is logged in
+    if (isUserLoggedIn()) {
+      const live = liveProductMap.get(product.slug);
+      const apiId = live?.id || product.id;
+      try {
+        if (isNowFav) {
+          await likeProduct(apiId);
+        } else {
+          await unlikeProduct(apiId);
+        }
+      } catch (err) {
+        console.warn("Could not sync like to API", err);
+      }
+    }
   };
 
   // Add to order cart
@@ -550,37 +535,26 @@ export default function ProductGrid({
         quantity: minQty,
       });
       setToastMessage(`✓ Added "${product.name}" to Order Cart`);
-      setTimeout(() => {
-        setToastMessage(null);
-      }, 3500);
+      setTimeout(() => setToastMessage(null), 3000);
     } else {
-      setCartItems((prev) => [...prev, product.id]);
-      setToastMessage(`✓ Added "${product.name}" to quotation list`);
-      setTimeout(() => {
-        setToastMessage(null);
-      }, 3500);
+      setToastMessage(`✓ Saved "${product.name}" to purchase inquiry`);
+      setTimeout(() => setToastMessage(null), 3000);
     }
   };
 
-  // Filter products dynamically
+  // Filter and sort products
   const filteredProducts = useMemo(() => {
     let items = CATALOG_PRODUCTS.filter((product) => {
-      // 1. Exclude current product if specified
       if (excludeSlug && product.slug === excludeSlug) {
         return false;
       }
 
-      // 2. Category matching
       const targetCat = categoryFilter || selectedCategory;
-      const matchesCategory =
-        targetCat === "all" || product.categorySlug === targetCat;
+      const matchesCategory = targetCat === "all" || product.categorySlug === targetCat;
 
-      // 3. Brand matching
       const targetBrand = brandFilter || selectedBrand;
-      const matchesBrand =
-        targetBrand === "all" || product.brandSlug === targetBrand;
+      const matchesBrand = targetBrand === "all" || product.brandSlug === targetBrand;
 
-      // 4. Search query matching
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
@@ -589,174 +563,279 @@ export default function ProductGrid({
         product.category.toLowerCase().includes(q) ||
         product.material.toLowerCase().includes(q) ||
         product.size.toLowerCase().includes(q) ||
-        product.finish.toLowerCase().includes(q);
+        product.finish.toLowerCase().includes(q) ||
+        product.brand.toLowerCase().includes(q);
 
       return matchesCategory && matchesBrand && matchesSearch;
     });
+
+    // Sorting
+    if (sortBy === "security") {
+      const rank = (p: CatalogProduct) => {
+        if (p.securityRating.includes("Grade 6")) return 6;
+        if (p.securityRating.includes("Grade 5") || p.securityRating.includes("EN 1303")) return 5;
+        if (p.securityRating.includes("Grade 1")) return 4;
+        if (p.securityRating.includes("Grade A")) return 3;
+        return 1;
+      };
+      items.sort((a, b) => rank(b) - rank(a));
+    } else if (sortBy === "name-asc") {
+      items.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "model") {
+      items.sort((a, b) => a.modelCode.localeCompare(b.modelCode));
+    }
 
     if (limit && limit > 0) {
       items = items.slice(0, limit);
     }
 
     return items;
-  }, [selectedCategory, selectedBrand, searchQuery, brandFilter, categoryFilter, excludeSlug, limit]);
+  }, [selectedCategory, selectedBrand, searchQuery, sortBy, brandFilter, categoryFilter, excludeSlug, limit]);
+
+  const activeFiltersCount =
+    (selectedBrand !== "all" && !brandFilter ? 1 : 0) +
+    (selectedCategory !== "all" && !categoryFilter ? 1 : 0) +
+    (searchQuery.trim().length > 0 ? 1 : 0);
+
+  const shouldShowHeader = showHeader ?? !hideFilters;
 
   return (
     <div id="catalog" className="max-w-7xl mx-auto select-none">
       {/* ====================================================================
-          1. TOP FILTER BAR (Exact match to reference photo)
+          1. ELEGANT SECTION HEADER (Shown by default on catalog & listing pages)
           ==================================================================== */}
-      {!hideFilters && (
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-        {/* Left: Category Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`text-xs sm:text-[13px] font-medium px-4 py-2 rounded-full whitespace-nowrap transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                  isSelected
-                    ? "bg-[#A98048] text-white shadow-xs"
-                    : "bg-white text-[#4A5568] border border-[#E2E8F0] hover:border-[#CBD5E1] hover:text-[#1A202C]"
-                }`}
-              >
-                <span>{cat.label}</span>
-                {cat.showCount && (
-                  <span
-                    className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                      isSelected ? "bg-white/25 text-white" : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {CATALOG_PRODUCTS.length}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right: Search Input & Filter Button */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Search Box */}
-          <div className="relative w-full sm:w-72">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products, model, size..."
-              className="w-full text-xs sm:text-[13px] py-2 pl-9 pr-8 bg-white border border-[#E2E8F0] rounded-xl text-gray-800 placeholder:text-[#94A3B8] focus:outline-none focus:border-[#A98048] shadow-2xs transition-colors"
-            />
-            {/* Search Icon */}
-            <svg
-              className="absolute left-3 top-2.5 w-4 h-4 text-[#94A3B8] pointer-events-none"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-
-            {/* Clear Button */}
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-2.5 text-xs text-gray-400 hover:text-gray-700 cursor-pointer"
-                title="Clear search"
-              >
-                ✕
-              </button>
-            )}
+      {shouldShowHeader && (
+        <div className="mb-10 sm:mb-14 text-center">
+          {/* Eyebrow badge with golden micro-lines */}
+          <div className="inline-flex items-center gap-3 mb-3">
+            <span className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-[#A98048]" />
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-[#A98048] font-bold">
+              {badge || "ALIGARH FOUNDRY CRAFTSMANSHIP • EST. 1995"}
+            </span>
+            <span className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-[#A98048]" />
           </div>
 
-          {/* Filter / Tune Button with Popover */}
-          <div className="relative">
-            <button
-              onClick={() => setShowFilterMenu(!showFilterMenu)}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center transition-colors cursor-pointer shadow-2xs ${
-                showFilterMenu || selectedBrand !== "all"
-                  ? "bg-[#A98048] text-white border-[#A98048]"
-                  : "bg-white text-[#4A5568] border-[#E2E8F0] hover:bg-gray-50"
-              }`}
-              title="Filter by Brand & metallurgy"
-            >
-              {/* Sliders / Tune Icon */}
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="4" y1="21" x2="4" y2="14" />
-                <line x1="4" y1="10" x2="4" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="12" />
-                <line x1="12" y1="8" x2="12" y2="3" />
-                <line x1="20" y1="21" x2="20" y2="16" />
-                <line x1="20" y1="12" x2="20" y2="3" />
-                <line x1="1" y1="14" x2="7" y2="14" />
-                <line x1="9" y1="8" x2="15" y2="8" />
-                <line x1="17" y1="16" x2="23" y2="16" />
-              </svg>
-            </button>
+          {/* Heading */}
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight mb-3">
+            {title || "Architectural Lock Systems"}
+          </h2>
 
-            {/* Filter Dropdown Popover */}
-            {showFilterMenu && (
-              <div className="absolute right-0 top-12 z-40 w-64 bg-white rounded-xl shadow-xl border border-[#E2E8F0] p-4 text-xs">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
-                  <span className="font-semibold text-gray-800">Filter by Brand</span>
-                  {selectedBrand !== "all" && (
-                    <button
-                      onClick={() => setSelectedBrand("all")}
-                      className="text-[11px] text-[#A98048] hover:underline cursor-pointer"
-                    >
-                      Reset
-                    </button>
-                  )}
-                </div>
-                <div className="space-y-1.5">
-                  {BRAND_OPTIONS.map((brand) => (
-                    <button
-                      key={brand.id}
-                      onClick={() => {
-                        setSelectedBrand(brand.id);
-                        setShowFilterMenu(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between cursor-pointer ${
-                        selectedBrand === brand.id
-                          ? "bg-[#FAF7F2] font-semibold text-[#A98048]"
-                          : "text-gray-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span>{brand.label}</span>
-                      {selectedBrand === brand.id && (
-                        <span className="text-[#A98048]">✓</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* Subtitle */}
+          <p className="text-xs sm:text-sm text-[#78716C] max-w-2xl mx-auto leading-relaxed">
+            {subtitle ||
+              "Precision-forged solid brass padlocks, commercial mortise sets, and armored lock systems built for generations of security."}
+          </p>
+
+          {/* Stats Bar */}
+          <div className="flex items-center justify-center gap-4 mt-5 text-[11px] font-mono text-[#78716C]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <strong className="text-[#1C1917] font-semibold">{filteredProducts.length}</strong> Models Available
+            </span>
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A98048]" />
+              Direct Foundry Dispatch
+            </span>
           </div>
         </div>
-      </div>
       )}
 
       {/* ====================================================================
-          2. 3-COLUMN PRODUCT CARDS GRID (Exact match to reference photo)
+          2. DUAL-TIER FILTERING SYSTEM (Brand Switcher + Categories + Search)
+          ==================================================================== */}
+      {!hideFilters && (
+        <div className="space-y-4 mb-8 sm:mb-10">
+          {/* ── Tier 1: Flagship Brand Switcher Tabs ── */}
+          {!brandFilter && (
+            <div className="bg-[#F6F5F1] p-1.5 sm:p-2 rounded-2xl sm:rounded-full border border-[#E6E3DB] flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none shadow-xs">
+              {BRAND_TABS.map((tab) => {
+                const isSelected = selectedBrand === tab.id;
+                const count = brandCounts[tab.id] ?? 0;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setSelectedBrand(tab.id)}
+                    className={`flex-1 min-w-[140px] sm:min-w-0 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl sm:rounded-full text-xs font-serif font-bold transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                      isSelected
+                        ? "bg-[#1C1917] text-white shadow-md scale-[1.01]"
+                        : "text-[#57534E] hover:text-[#1C1917] hover:bg-white/60"
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${tab.dotColor}`} />
+                    <span className="truncate">{tab.label}</span>
+                    <span
+                      className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${
+                        isSelected ? "bg-white/20 text-white" : "bg-black/5 text-[#78716C]"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── Tier 2: Category Pills + Search Box + Sort ── */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+              {CATEGORIES.map((cat) => {
+                const isSelected = selectedCategory === cat.id;
+                const count = categoryCounts[cat.id] ?? 0;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`text-xs font-medium px-3.5 py-2 rounded-xl whitespace-nowrap transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0 ${
+                      isSelected
+                        ? "bg-[#A98048] text-white font-semibold shadow-xs"
+                        : "bg-white text-[#57534E] border border-[#E7E5E0] hover:border-[#C49B55] hover:text-[#1C1917]"
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span
+                      className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
+                        isSelected ? "bg-white/25 text-white" : "bg-[#F5F4F0] text-[#78716C]"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right: Search Input + Sort Dropdown */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Search Box */}
+              <div className="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search model, brass, size..."
+                  className="w-full text-xs py-2 pl-9 pr-8 bg-white border border-[#E7E5E0] rounded-xl text-gray-800 placeholder:text-[#A8A29E] focus:outline-none focus:border-[#A98048] focus:ring-1 focus:ring-[#A98048]/30 shadow-2xs transition-all"
+                />
+                <svg
+                  className="absolute left-3 top-2.5 w-4 h-4 text-[#A8A29E] pointer-events-none"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-2.5 text-xs text-gray-400 hover:text-gray-700 cursor-pointer"
+                    title="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Sort Dropdown */}
+              <div className="relative shrink-0">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  aria-label="Sort product catalog"
+                  className="text-xs py-2 pl-3 pr-8 bg-white border border-[#E7E5E0] rounded-xl text-[#44403C] font-medium appearance-none focus:outline-none focus:border-[#A98048] shadow-2xs cursor-pointer"
+                >
+                  <option value="featured">Featured First</option>
+                  <option value="security">Security Rating</option>
+                  <option value="name-asc">Name (A – Z)</option>
+                  <option value="model">Model Code</option>
+                </select>
+                <svg
+                  className="absolute right-2.5 top-3 w-3 h-3 text-[#78716C] pointer-events-none"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filter Chips Row */}
+          {activeFiltersCount > 0 && (
+            <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#ECEAE4] text-xs">
+              <span className="text-[11px] font-mono text-[#78716C] uppercase tracking-wider">Active:</span>
+
+              {selectedBrand !== "all" && !brandFilter && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0] text-[#1C1917]">
+                  <span>Brand: {BRAND_TABS.find((t) => t.id === selectedBrand)?.label}</span>
+                  <button
+                    onClick={() => setSelectedBrand("all")}
+                    className="text-[#78716C] hover:text-red-500 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {selectedCategory !== "all" && !categoryFilter && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0] text-[#1C1917]">
+                  <span>Category: {CATEGORIES.find((c) => c.id === selectedCategory)?.label}</span>
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className="text-[#78716C] hover:text-red-500 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0] text-[#1C1917]">
+                  <span>Query: &ldquo;{searchQuery}&rdquo;</span>
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-[#78716C] hover:text-red-500 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              <button
+                onClick={() => {
+                  setSelectedBrand("all");
+                  setSelectedCategory("all");
+                  setSearchQuery("");
+                }}
+                className="text-[11px] font-semibold text-[#A98048] hover:underline ml-1 cursor-pointer"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ====================================================================
+          3. LUXURY PRODUCT CARDS GRID
           ==================================================================== */}
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-[#E2E8F0] rounded-2xl p-8">
-          <p className="font-serif text-lg text-gray-900 mb-2">No matching lock systems found</p>
-          <p className="text-xs text-gray-500 max-w-sm mx-auto mb-4">
-            Try adjusting your category selection, clearing the search query, or resetting filters.
+        <div className="text-center py-20 bg-white border border-[#E7E5E0] rounded-3xl p-8 shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#FAF8F5] border border-[#E7E5E0] text-[#A98048] flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+          <p className="font-serif text-xl font-bold text-[#1C1917] mb-2">No matching lock systems found</p>
+          <p className="text-xs text-[#78716C] max-w-sm mx-auto mb-5 leading-relaxed">
+            We couldn&apos;t find any products matching your active criteria. Try clearing search keywords or resetting filters.
           </p>
           <button
             onClick={() => {
@@ -764,47 +843,61 @@ export default function ProductGrid({
               setSelectedBrand("all");
               setSearchQuery("");
             }}
-            className="text-xs font-semibold px-5 py-2.5 bg-[#0F172A] text-white rounded-lg hover:bg-black transition-colors cursor-pointer"
+            className="text-xs font-serif font-bold px-5 py-2.5 bg-[#1C1917] text-white rounded-xl hover:bg-[#A98048] transition-colors cursor-pointer shadow-xs"
           >
             Reset All Filters
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
           {filteredProducts.map((product) => {
             const isFav = favorites.has(product.id);
+            const live = liveProductMap.get(product.slug);
+            const isDistributor = isDistributorContext || live?.dealerPrice !== undefined;
+
+            // Brand style tokens
+            const brandBadgeClass =
+              product.brandSlug === "s-nafi"
+                ? "bg-[#FAF7F0] text-[#9A7228] border-[#9A7228]/25"
+                : product.brandSlug === "greek"
+                ? "bg-[#F0F5FA] text-[#1E4E79] border-[#1E4E79]/25"
+                : "bg-[#FAF0F0] text-[#8A2518] border-[#8A2518]/25";
 
             return (
               <article
                 key={product.id}
-                className="bg-white border border-[#EBEBEB] rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 group"
+                className="bg-white rounded-2xl sm:rounded-3xl border border-[#E7E5E0] hover:border-[#C49B55]/70 transition-all duration-300 hover:shadow-[0_22px_45px_-15px_rgba(169,128,72,0.18)] flex flex-col justify-between overflow-hidden group"
               >
                 <div>
-                  {/* ── Top Visual Stage: Product Image with Floating Badges ── */}
-                  <div className="relative aspect-[4/5] w-full bg-[#F5F5F3] overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover object-center w-full h-full group-hover:scale-103 transition-transform duration-500 ease-out"
-                    />
-
-                    {/* Top-Left Floating Brand Pill */}
-                    <div className="absolute top-2 left-2 sm:top-3.5 sm:left-3.5 z-10">
-                      <span className="text-[8.5px] sm:text-[10.5px] font-sans font-bold tracking-widest uppercase px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#2D2A26] border border-black/5 shadow-2xs">
-                        {product.brand.toUpperCase()}
+                  {/* ── Top Visual Stage: Product Photography ── */}
+                  <div className="relative aspect-[4/3] sm:aspect-square bg-gradient-to-b from-[#FBFBFA] via-[#F4F3EE] to-[#EAE8E1] p-4 sm:p-6 flex items-center justify-center overflow-hidden border-b border-[#ECEAE4]">
+                    {/* Floating Brand Badge */}
+                    <div className="absolute top-3 left-3 z-10">
+                      <span
+                        className={`text-[9.5px] sm:text-[10px] font-mono font-bold tracking-widest uppercase px-2.5 py-1 rounded-full border shadow-2xs backdrop-blur-xs ${brandBadgeClass}`}
+                      >
+                        {product.brand}
                       </span>
                     </div>
 
-                    {/* Top-Right Circular Heart / Wishlist Button */}
+                    {/* Floating Security Badge */}
+                    <div className="absolute bottom-3 left-3 z-10">
+                      <span className="text-[9px] sm:text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-[#1C1917]/80 backdrop-blur-md text-white/95 border border-white/10 flex items-center gap-1.5 shadow-2xs">
+                        <svg className="w-3 h-3 text-[#C49B55]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <span>{product.securityRating.split(" ")[0]} {product.securityRating.split(" ")[1] || ""}</span>
+                      </span>
+                    </div>
+
+                    {/* Top-Right Heart / Wishlist Button */}
                     <button
-                      onClick={(e) => toggleFavorite(product.id, e)}
+                      onClick={(e) => toggleFavorite(product, e)}
                       aria-label="Add to wishlist"
-                      className="absolute top-2 right-2 sm:top-3.5 sm:right-3.5 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/95 backdrop-blur-xs border border-black/5 flex items-center justify-center text-gray-500 hover:text-red-500 hover:scale-105 transition-all shadow-2xs cursor-pointer"
+                      className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md border border-[#E7E5E0] flex items-center justify-center text-gray-500 hover:text-red-500 hover:scale-105 transition-all shadow-2xs cursor-pointer"
                     >
                       <svg
-                        className={`w-3 h-3 sm:w-4 sm:h-4 transition-colors ${
+                        className={`w-3.5 h-3.5 transition-colors ${
                           isFav ? "text-red-500 fill-red-500" : "text-gray-500 fill-none"
                         }`}
                         viewBox="0 0 24 24"
@@ -816,79 +909,121 @@ export default function ProductGrid({
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                       </svg>
                     </button>
+
+                    {/* Quick Specs trigger overlay on hover */}
+                    <button
+                      type="button"
+                      onClick={() => setActiveModalProduct(product)}
+                      className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-[#1C1917] text-[10.5px] font-serif font-bold shadow-md border border-[#E7E5E0] hover:bg-[#1C1917] hover:text-white flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
+                      </svg>
+                      <span>Quick Specs</span>
+                    </button>
+
+                    {/* Centered Product Image */}
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
+                      />
+                    </div>
                   </div>
 
-                  {/* ── Card Content: Title & Category Only (Description Removed) ── */}
-                  <div className="p-3 sm:p-5 pb-3">
+                  {/* ── Card Content ── */}
+                  <div className="p-4 sm:p-5">
                     {/* Category Label + Model Code Row */}
-                    <div className="flex items-center justify-between text-[9.5px] sm:text-[11px] mb-1 sm:mb-1.5">
-                      <span className="font-sans font-semibold tracking-wider uppercase text-[#64748B] truncate mr-1">
+                    <div className="flex items-center justify-between text-[10px] sm:text-[11px] mb-1.5">
+                      <span className="font-mono font-semibold tracking-wider uppercase text-[#78716C] truncate mr-2">
                         {product.category}
                       </span>
-                      <span className="font-mono font-medium tracking-wider text-[#94A3B8] shrink-0">
+                      <span className="font-mono font-bold text-[#A98048] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#EFECE6] shrink-0">
                         {product.modelCode}
                       </span>
                     </div>
 
-                    {/* Product Title (Bold Serif, Up to 2 Lines) */}
-                    <h3 className="font-serif text-[13.5px] sm:text-[18px] font-bold text-[#111827] leading-snug line-clamp-2 min-h-[38px] sm:min-h-[48px]">
-                      {product.name}
+                    {/* Product Title */}
+                    <h3 className="font-serif text-[16px] sm:text-[18px] font-bold text-[#1C1917] group-hover:text-[#A98048] transition-colors leading-snug line-clamp-2 min-h-[44px] sm:min-h-[48px] mb-2">
+                      <Link href={`/products/${product.slug}`}>
+                        {product.name}
+                      </Link>
                     </h3>
 
-                    {/* Live Pricing & Wholesale MOQ block */}
-                    {liveProductMap.get(product.slug)?.dealerPrice ? (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F1F5F9] text-xs font-mono">
-                        <div>
-                          <span className="text-[9px] uppercase tracking-wider text-muted block">Dealer Price</span>
-                          <span className="font-bold text-accent">
-                            ₹{Number(liveProductMap.get(product.slug)?.dealerPrice).toLocaleString("en-IN")}
+                    {/* Metallurgy & Mechanism summary line */}
+                    <p className="text-[11.5px] text-[#78716C] line-clamp-1 mb-3">
+                      {product.material} · {product.lockingMechanism}
+                    </p>
+
+                    {/* 3 Micro-Specs Engineering Pills */}
+                    <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[#F2EFE9] text-center mb-3">
+                      {product.specs.map((sp, idx) => (
+                        <div key={idx} className="bg-[#FAF9F6] border border-[#EFECE6] rounded-lg py-1 px-1">
+                          <span className="text-[9px] font-mono text-[#A8A29E] uppercase block leading-none mb-0.5">
+                            {sp.label}
+                          </span>
+                          <span className="text-[10.5px] font-mono font-bold text-[#292524] truncate block">
+                            {sp.value}
                           </span>
                         </div>
-                        <span className="text-[10px] text-muted">
-                          MOQ: {liveProductMap.get(product.slug)?.minOrderQty || 1} pcs
-                        </span>
+                      ))}
+                    </div>
+
+                    {/* Pricing / Direct Factory Strip */}
+                    {live?.dealerPrice || isDistributor ? (
+                      <div className="flex items-center justify-between pt-2.5 border-t border-[#F2EFE9]">
+                        <div>
+                          <span className="text-[9px] font-mono uppercase tracking-wider text-[#78716C] block leading-none mb-0.5">
+                            DEALER PRICE
+                          </span>
+                          <span className="font-serif text-base sm:text-lg font-bold text-[#A98048]">
+                            ₹{Number(live?.dealerPrice || 450).toLocaleString("en-IN")}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[9px] font-mono uppercase tracking-wider text-[#78716C] block leading-none mb-0.5">
+                            MIN. BATCH
+                          </span>
+                          <span className="font-mono text-xs font-semibold text-[#1C1917]">
+                            {live?.minOrderQty || 1} pcs
+                          </span>
+                        </div>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F1F5F9] text-[10px] font-mono text-muted">
-                        <span>Factory Wholesale</span>
-                        <span className="text-accent font-semibold">Tier-1 Direct</span>
+                      <div className="flex items-center justify-between pt-2.5 border-t border-[#F2EFE9] text-[11px] font-mono">
+                        <span className="text-[#78716C]">Tier-1 Margins</span>
+                        <span className="text-[#A98048] font-bold">Factory Wholesale</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* ── Bottom Action Row: View Details & Add to Cart ── */}
-                <div className="p-3 sm:p-6 pt-0 grid grid-cols-2 gap-1.5 sm:gap-3">
+                {/* ── Bottom Action Row: View Details & Add to Order ── */}
+                <div className="p-4 sm:p-5 pt-0 grid grid-cols-2 gap-2 sm:gap-2.5">
                   {/* View Details Button */}
                   <Link
                     href={`/products/${product.slug}`}
-                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border border-[#E2E8F0] bg-white text-[#1E293B] text-[10.5px] sm:text-[13px] font-semibold hover:bg-gray-50 transition-colors text-center cursor-pointer shadow-2xs flex items-center justify-center"
+                    className="w-full py-2.5 px-3 rounded-xl border border-[#E7E5E0] bg-white hover:bg-[#FAF8F5] hover:border-[#A98048]/60 text-[#1C1917] text-xs font-serif font-bold transition-all text-center cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
                   >
-                    <span className="hidden sm:inline">View Details</span>
-                    <span className="sm:hidden">Details</span>
+                    <span>View Specs</span>
+                    <span className="text-[#A98048] transition-transform group-hover:translate-x-0.5">→</span>
                   </Link>
 
-                  {/* Add to Cart Button */}
+                  {/* Add to Order Button */}
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="w-full py-1.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white text-[10.5px] sm:text-[13px] font-semibold transition-colors flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer shadow-2xs"
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#1C1917] hover:bg-[#A98048] text-white text-xs font-serif font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
                   >
-                    {/* Shopping Cart Icon */}
-                    <svg
-                      className="w-3 h-3 sm:w-4 sm:h-4 shrink-0"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="9" cy="21" r="1" />
                       <circle cx="20" cy="21" r="1" />
                       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                     </svg>
-                    <span className="hidden sm:inline">Add to Cart</span>
-                    <span className="sm:hidden">Add</span>
+                    <span>Add to Cart</span>
                   </button>
                 </div>
               </article>
@@ -898,32 +1033,26 @@ export default function ProductGrid({
       )}
 
       {/* ====================================================================
-          3. FLOATING CART PILL (When items in cart)
+          4. FLOATING ORDER CART DRAWER TRIGGER
           ==================================================================== */}
       {cart && cart.itemCount > 0 && (
         <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
           <button
             type="button"
             onClick={cart.openDrawer}
-            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#0F172A] text-white shadow-xl hover:bg-black transition-all hover:scale-105 border border-white/10 cursor-pointer"
+            className="flex items-center gap-3 px-5 py-3 rounded-full bg-[#1C1917] text-white shadow-2xl hover:bg-[#A98048] transition-all hover:scale-105 border border-white/10 cursor-pointer"
           >
             <div className="relative">
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="9" cy="21" r="1" />
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
-              <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[#A98048] text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute -top-2.5 -right-2.5 w-4 h-4 rounded-full bg-[#A98048] text-[9px] font-bold flex items-center justify-center text-white">
                 {cart.itemCount}
               </span>
             </div>
-            <span className="text-xs font-semibold">View Order Cart</span>
+            <span className="text-xs font-serif font-bold">Review Order Cart</span>
             <span className="text-xs">→</span>
           </button>
         </div>
@@ -931,36 +1060,37 @@ export default function ProductGrid({
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-[#0F172A] text-white text-xs font-medium px-4 py-2.5 rounded-lg shadow-xl border border-white/10 animate-fade-in flex items-center gap-2">
+        <div className="fixed top-20 right-6 z-50 bg-[#1C1917]/95 backdrop-blur-md text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl border border-white/10 animate-fade-in flex items-center gap-2.5">
+          <span className="w-2 h-2 rounded-full bg-[#C49B55]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* ====================================================================
-          4. QUICK SPECS SLIDE-OVER / MODAL DIALOG
+          5. QUICK SPECS SLIDE-OVER / MODAL DIALOG
           ==================================================================== */}
       {activeModalProduct && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setActiveModalProduct(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-divider"
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E7E5E0]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm z-10">
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-[#F7F5F0] text-[#8C7A5B] font-bold border border-black/5">
+            <div className="p-5 sm:p-6 border-b border-[#ECEAE4] flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm z-10">
+              <div className="flex items-center gap-2.5">
+                <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#FAF8F5] text-[#A98048] font-bold border border-[#EFECE6]">
                   {activeModalProduct.modelCode}
                 </span>
-                <span className="text-xs font-semibold text-muted">
+                <span className="text-xs font-serif font-semibold text-[#78716C]">
                   {activeModalProduct.brand} • {activeModalProduct.category}
                 </span>
               </div>
               <button
                 onClick={() => setActiveModalProduct(null)}
-                className="w-8 h-8 rounded-full bg-[#F7F5F0] hover:bg-[#EFECE3] flex items-center justify-center text-primary transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#FAF8F5] hover:bg-[#EFECE6] flex items-center justify-center text-[#1C1917] transition-colors cursor-pointer text-sm font-bold"
                 title="Close"
               >
                 ✕
@@ -968,25 +1098,25 @@ export default function ProductGrid({
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-6">
+            <div className="p-5 sm:p-6 space-y-6">
               {/* Product Visual & Identity */}
               <div className="flex flex-col sm:flex-row gap-5 items-center">
-                <div className="relative w-full sm:w-44 aspect-square rounded-xl overflow-hidden bg-[#F7F5F0] border border-divider shrink-0">
+                <div className="relative w-full sm:w-48 aspect-square rounded-2xl overflow-hidden bg-gradient-to-b from-[#FAF9F6] to-[#EAE8E1] border border-[#E7E5E0] shrink-0 p-4 flex items-center justify-center">
                   <Image
                     src={activeModalProduct.image}
                     alt={activeModalProduct.name}
                     fill
-                    className="object-cover"
+                    className="object-contain p-2"
                   />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl font-bold text-primary mb-2">
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917] mb-2 leading-snug">
                     {activeModalProduct.name}
                   </h3>
-                  <p className="text-xs text-muted leading-relaxed mb-3">
+                  <p className="text-xs text-[#78716C] leading-relaxed mb-3">
                     {activeModalProduct.description}
                   </p>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#A98048]/10 text-[#A98048] text-[11px] font-semibold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E7E5E0] text-[11px] font-mono text-[#A98048] font-semibold">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#A98048]" />
                     <span>{activeModalProduct.securityRating}</span>
                   </div>
@@ -995,64 +1125,59 @@ export default function ProductGrid({
 
               {/* Comprehensive Engineering Specification Table */}
               <div>
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-[#8C7A5B] mb-3">
+                <h4 className="text-xs uppercase tracking-wider font-mono font-bold text-[#A98048] mb-3">
                   Technical & Metallurgical Specifications
                 </h4>
-                <div className="divide-y divide-divider border border-divider rounded-xl overflow-hidden text-xs">
+                <div className="divide-y divide-[#ECEAE4] border border-[#ECEAE4] rounded-2xl overflow-hidden text-xs">
                   <div className="grid grid-cols-2 p-3 bg-[#FAF9F5]">
-                    <span className="text-muted font-medium">Core Material</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.material}</span>
+                    <span className="text-[#78716C] font-medium">Core Material</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.material}</span>
                   </div>
                   <div className="grid grid-cols-2 p-3">
-                    <span className="text-muted font-medium">Dimension / Size</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.size}</span>
+                    <span className="text-[#78716C] font-medium">Dimension / Size</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.size}</span>
                   </div>
                   <div className="grid grid-cols-2 p-3 bg-[#FAF9F5]">
-                    <span className="text-muted font-medium">Surface Finish</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.finish}</span>
+                    <span className="text-[#78716C] font-medium">Surface Finish</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.finish}</span>
                   </div>
                   <div className="grid grid-cols-2 p-3">
-                    <span className="text-muted font-medium">Locking Mechanism</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.lockingMechanism}</span>
+                    <span className="text-[#78716C] font-medium">Locking Mechanism</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.lockingMechanism}</span>
                   </div>
                   <div className="grid grid-cols-2 p-3 bg-[#FAF9F5]">
-                    <span className="text-muted font-medium">Number of Precision Keys</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.numberOfKeys} High-Security Keys</span>
+                    <span className="text-[#78716C] font-medium">Number of Keys</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.numberOfKeys} High-Security Keys</span>
                   </div>
                   <div className="grid grid-cols-2 p-3">
-                    <span className="text-muted font-medium">Factory Warranty</span>
-                    <span className="font-semibold text-primary">{activeModalProduct.warranty}</span>
+                    <span className="text-[#78716C] font-medium">Factory Warranty</span>
+                    <span className="font-semibold text-[#1C1917]">{activeModalProduct.warranty}</span>
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons in Modal */}
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                 <button
                   onClick={() => {
                     handleAddToCart(activeModalProduct);
                     setActiveModalProduct(null);
                   }}
-                  className="flex-1 py-3 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-semibold text-center transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:flex-1 py-3 rounded-xl bg-[#1C1917] hover:bg-[#A98048] text-white text-xs font-serif font-bold text-center transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="9" cy="21" r="1" />
                     <circle cx="20" cy="21" r="1" />
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                   </svg>
-                  <span>Add to Quote Cart</span>
+                  <span>Add to Order Cart</span>
                 </button>
                 <Link
-                  href={`/contact?product=${encodeURIComponent(activeModalProduct.name)}`}
-                  className="flex-1 py-3 rounded-lg border border-[#E2E8F0] hover:bg-gray-50 text-gray-800 text-xs font-semibold text-center transition-colors"
+                  href={`/products/${activeModalProduct.slug}`}
+                  onClick={() => setActiveModalProduct(null)}
+                  className="w-full sm:flex-1 py-3 rounded-xl border border-[#E7E5E0] hover:bg-[#FAF8F5] hover:border-[#A98048] text-[#1C1917] text-xs font-serif font-bold text-center transition-colors"
                 >
-                  Direct Factory Inquiry →
+                  Full Specification Page →
                 </Link>
               </div>
             </div>

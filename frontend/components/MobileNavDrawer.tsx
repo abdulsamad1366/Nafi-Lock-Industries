@@ -209,7 +209,39 @@ export default function MobileNavDrawer({
             </Link>
           </div>
 
-          {/* 2. OUR BRANDS (Expandable Accordion: S-Nafi, Raksham, Greek) */}
+          {/* 2. PRODUCTS CATALOG */}
+          <div
+            className={`transition-all duration-300 ease-out will-change-[transform,opacity] ${
+              isOpen ? "translate-x-0 opacity-100 delay-[60ms]" : "translate-x-6 opacity-0 delay-0"
+            }`}
+          >
+            <Link
+              href="/products"
+              onClick={onClose}
+              className={`group flex items-center justify-between p-2.5 rounded-2xl transition-all duration-200 active:scale-[0.98] ${
+                pathname === "/products"
+                  ? "bg-amber-50 text-[#9A7228] font-bold"
+                  : "text-gray-900 hover:bg-amber-50/50 hover:translate-x-1"
+              }`}
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                  </svg>
+                </div>
+                <span className="font-serif text-sm font-semibold">Products Catalog</span>
+              </div>
+              <svg className="w-4 h-4 text-[#9A7228] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          </div>
+
+          {/* 3. OUR BRANDS (Expandable Accordion: S-Nafi, Raksham, Greek) */}
           <div
             className={`transition-all duration-300 ease-out will-change-[transform,opacity] ${
               isOpen ? "translate-x-0 opacity-100 delay-[90ms]" : "translate-x-6 opacity-0 delay-0"
