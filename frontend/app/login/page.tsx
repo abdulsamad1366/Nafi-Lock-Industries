@@ -75,7 +75,7 @@ function LoginForm() {
         {/* Heritage watermark text on the bottom-left of hero */}
         <div className="absolute bottom-6 left-8 z-10 text-white/80">
           <p className="font-serif italic text-base text-[#D4AF37]">
-            Foundry Artistry & Precision Security
+            Foundry Artistry & The Real Security
           </p>
           <p className="font-mono text-[10px] tracking-widest uppercase text-white/60 mt-0.5">
             Since 1995 · Aligarh Foundry Works
@@ -109,23 +109,25 @@ function LoginForm() {
 
             {/* Main Form Body */}
             <div className="p-6 sm:p-8 xl:p-10 pb-5 sm:pb-6">
-              {/* Brand Logo & Editorial Headline (Top-Center) */}
+              {/* Brand Logo & Editorial Headline (Logo & Tradename in Series) */}
               <div className="text-center pt-1 mb-5 sm:mb-6">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2.5 sm:p-3 mx-auto flex items-center justify-center shadow-2xs mb-2.5 sm:mb-3">
-                  <Image
-                    src="/logos/nafi-logo.svg"
-                    alt="Nafi Lock Industries"
-                    width={44}
-                    height={44}
-                    className="object-contain w-9 h-9 sm:w-11 sm:h-11"
-                  />
+                <div className="inline-flex items-center justify-center gap-3 sm:gap-3.5">
+                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Image
+                      src="/logos/nafi-logo.svg"
+                      alt="Nafi Lock Industries"
+                      width={32}
+                      height={32}
+                      className="object-contain w-7 h-7 sm:w-8 sm:h-8"
+                    />
+                  </div>
+                  <h1 className="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-gray-900 tracking-tight leading-none">
+                    Nafi Lock Industries
+                  </h1>
                 </div>
 
-                <h1 className="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-gray-900 tracking-tight leading-none">
-                  Nafi Lock Industries
-                </h1>
-                <p className="text-xs sm:text-sm lg:text-[15px] text-gray-500 font-medium tracking-tight mt-1.5 sm:mt-2">
-                  Precision <span className="font-bold text-gray-700">Security</span>, Engineered <span className="font-bold text-[#B8923F]">Since 1995!</span>
+                <p className="text-xs sm:text-sm lg:text-[15px] text-[#B8923F] font-serif italic font-semibold tracking-wider mt-1.5 sm:mt-2">
+                  The Real Security
                 </p>
               </div>
 

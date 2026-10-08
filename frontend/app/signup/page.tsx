@@ -7,17 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signupUser } from "@/lib/api";
 
 function SignupForm() {
-  // Wizard Step (1: Contact & Credentials, 2: Firm & Business Profile)
-  const [step, setStep] = useState<1 | 2>(1);
-
-  // Step 1: Dealership & Contact Fields
+  // Dealership & Contact Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Step 2: Business Profile Fields
+  // Business Profile Fields
   const [companyName, setCompanyName] = useState("");
   const [gstNumber, setGstNumber] = useState("");
   const [businessAddress, setBusinessAddress] = useState("");
@@ -28,44 +25,41 @@ function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Handle Quick Demo Fill
-  const handleQuickDemoFill = () => {
-    setName("Vikram Sharma");
-    setEmail(`dealer.${Date.now().toString().slice(-4)}@hardwaretrading.com`);
-    setPhone("+91 98765 43210");
-    setPassword("DemoPassword123!");
-    setCompanyName("Sharma Hardware & Mill Stores");
-    setGstNumber("09AAACH7409R1ZZ");
-    setBusinessAddress("Shop 14, Main Hardware Bazaar");
-    setCity("Aligarh");
-    setState("Uttar Pradesh");
-    setError(null);
-  };
-
-  const handleNextStep = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!name.trim()) {
-      setError("Please provide your full contact name.");
-      return;
-    }
-    if (!email.trim() || !email.includes("@")) {
-      setError("Please provide a valid corporate dealership email.");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must contain at least 6 characters.");
-      return;
-    }
-
-    setStep(2);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    if (!name.trim()) {
+      setError("Please provide your full contact name.");
+      setIsLoading(false);
+      return;
+    }
+    if (!email.trim() || !email.includes("@")) {
+      setError("Please provide a valid corporate dealership email.");
+      setIsLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must contain at least 6 characters.");
+      setIsLoading(false);
+      return;
+    }
+    if (!companyName.trim()) {
+      setError("Please enter your firm or company name.");
+      setIsLoading(false);
+      return;
+    }
+    if (!businessAddress.trim()) {
+      setError("Please enter your registered business address.");
+      setIsLoading(false);
+      return;
+    }
+    if (!city.trim() || !state.trim()) {
+      setError("Please specify both city and state.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const payload = {
@@ -91,7 +85,7 @@ function SignupForm() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden flex bg-[#0F1117] select-none text-gray-900">
+    <div className="fixed inset-0 z-50 overflow-hidden flex bg-[#0F1117] select-none text-gray-900">
       {/* ====================================================================
           LEFT HERO PANEL: Strategic Partnership Handshake Visual
           ==================================================================== */}
@@ -125,27 +119,18 @@ function SignupForm() {
       {/* ====================================================================
           RIGHT PANEL: Floating White Form Card on Dark Canvas
           ==================================================================== */}
-      <div className="w-full lg:w-[48%] xl:w-[46%] h-full flex flex-col justify-between items-center py-4 sm:py-6 px-4 sm:px-8 relative overflow-y-auto lg:overflow-hidden bg-[#0F1117]">
+      <div className="w-full lg:w-[48%] xl:w-[46%] h-full flex flex-col justify-between items-center py-3 sm:py-5 px-4 sm:px-8 relative overflow-y-auto lg:overflow-hidden bg-[#0F1117]">
         {/* Ambient background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[620px] bg-[#B8923F]/15 rounded-full blur-[160px] pointer-events-none -z-10" />
 
-        <div className="w-full max-w-[500px] sm:max-w-[540px] md:max-w-[580px] lg:max-w-[570px] xl:max-w-[620px] my-auto">
+        <div className="w-full max-w-[500px] sm:max-w-[540px] md:max-w-[580px] lg:max-w-[580px] xl:max-w-[620px] my-auto">
           {/* Main Floating White Card with Framer Motion Entrance */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full bg-white rounded-[32px] sm:rounded-[40px] shadow-2xl relative border border-white/20 overflow-hidden flex flex-col"
+            className="w-full bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl relative border border-white/20 overflow-hidden flex flex-col"
           >
-            {/* Circular Close Button (Top-Right) */}
-            <Link
-              href="/"
-              className="absolute top-5 right-5 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#B8923F] hover:bg-[#9B772E] text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer touch-manipulation z-20"
-              title="Close to Store"
-            >
-              ✕
-            </Link>
-
             {isSubmitted ? (
               /* Success / Confirmation State */
               <div className="p-7 sm:p-10 text-center">
@@ -162,7 +147,7 @@ function SignupForm() {
                 </div>
 
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                  Distributor Application Submitted
+                  Application Submitted
                 </h2>
 
                 <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto leading-relaxed mb-5">
@@ -187,71 +172,53 @@ function SignupForm() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                   <Link
                     href="/login"
-                    className="w-full sm:w-auto px-7 py-3.5 bg-[#B8923F] hover:bg-[#9B772E] text-white font-serif font-bold text-sm rounded-xl transition-all shadow-sm"
+                    className="w-full sm:w-auto px-7 py-3 bg-[#B8923F] hover:bg-[#9B772E] text-white font-serif font-bold text-sm rounded-xl transition-all shadow-sm"
                   >
                     Go to Sign In
                   </Link>
                   <Link
                     href="/"
-                    className="w-full sm:w-auto px-7 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm rounded-xl transition-all"
+                    className="w-full sm:w-auto px-7 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm rounded-xl transition-all"
                   >
                     Return to Store
                   </Link>
                 </div>
               </div>
             ) : (
-              /* Application Form Body */
-              <div className="p-6 sm:p-8 xl:p-10 pb-5 sm:pb-6">
-                {/* Brand Logo & Editorial Headline (Top-Center) */}
-                <div className="text-center pt-1 mb-4 sm:mb-5">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 mx-auto flex items-center justify-center shadow-2xs mb-2">
-                    <Image
-                      src="/logos/nafi-logo.svg"
-                      alt="Nafi Lock Industries"
-                      width={38}
-                      height={38}
-                      className="object-contain w-8 h-8 sm:w-9 sm:h-9"
-                    />
+              /* Unified Single-Screen Application Form */
+              <div className="p-6 sm:p-8 xl:p-9 pb-5 sm:pb-6">
+                {/* Form Heading Bar with Enlarged Heading */}
+                <div className="flex items-center justify-between pb-3.5 sm:pb-4 mb-4 sm:mb-5 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
+                      <Image
+                        src="/logos/nafi-logo.svg"
+                        alt="Nafi Logo"
+                        width={30}
+                        height={30}
+                        className="object-contain w-7 h-7 sm:w-8 sm:h-8"
+                      />
+                    </div>
+                    <div>
+                      <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight leading-none">
+                        Nafi Lock Industries
+                      </h1>
+                      <p className="text-xs sm:text-sm text-[#B8923F] font-serif italic font-semibold tracking-wide mt-1">
+                        The Real Security <span className="text-gray-400 not-italic font-sans font-normal">· Distributor Application</span>
+                      </p>
+                    </div>
                   </div>
 
-                  <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight leading-none">
-                    Distributor Application
-                  </h1>
-                  <p className="text-xs sm:text-sm text-gray-500 font-medium tracking-tight mt-1">
-                    Direct Factory Wholesale · <span className="font-bold text-[#B8923F]">Authorized Partnership</span>
-                  </p>
+                  <Link
+                    href="/"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-[#B8923F] hover:text-white text-gray-600 flex items-center justify-center font-bold text-xs sm:text-sm transition-colors shadow-2xs"
+                    title="Close to Store"
+                  >
+                    ✕
+                  </Link>
                 </div>
 
-                {/* Step Indicator Tabs */}
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                      step === 1
-                        ? "bg-[#B8923F] text-white shadow-2xs"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    1. Dealer Credentials
-                  </button>
-                  <span className="text-gray-300">→</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (name && email && password.length >= 6) setStep(2);
-                    }}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                      step === 2
-                        ? "bg-[#B8923F] text-white shadow-2xs"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    2. Business Profile
-                  </button>
-                </div>
-
-                {/* Status / Alert Messages */}
+                {/* Error Banner */}
                 <AnimatePresence>
                   {error && (
                     <motion.div
@@ -260,7 +227,7 @@ function SignupForm() {
                       exit={{ opacity: 0, height: 0 }}
                       className="mb-3.5 overflow-hidden"
                     >
-                      <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm flex items-start gap-2.5 shadow-2xs">
+                      <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2 shadow-2xs">
                         <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="12" cy="12" r="10" />
                           <line x1="12" y1="8" x2="12" y2="12" />
@@ -272,58 +239,55 @@ function SignupForm() {
                   )}
                 </AnimatePresence>
 
-                {/* Form Steps */}
-                {step === 1 ? (
-                  /* STEP 1: Dealer Contact & Credentials */
-                  <form onSubmit={handleNextStep} className="space-y-3 sm:space-y-3.5">
-                    {/* Full Name & Phone */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder="Rajesh Kumar"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          Contact Phone
-                        </label>
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email */}
+                {/* Unified Form - All Fields on Single Screen */}
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
+                  {/* Row 1: Full Name & Contact Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                     <div>
-                      <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                        Corporate Dealership Email *
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Rajesh Kumar"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        Contact Phone
+                      </label>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Corporate Email & Password */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                    <div>
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        Dealership Email *
                       </label>
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="distributor@dealership.com"
-                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
+                        placeholder="dealer@hardwarecorp.com"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
                       />
                     </div>
-
-                    {/* Password */}
                     <div>
-                      <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                        Create Account Password *
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        Password (Min 6) *
                       </label>
                       <div className="relative">
                         <input
@@ -333,20 +297,20 @@ function SignupForm() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="••••••••••••"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl pl-4 pr-11 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all font-mono"
+                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl pl-4 pr-10 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all font-mono"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
                         >
                           {showPassword ? (
-                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                               <line x1="1" y1="1" x2="23" y2="23" />
                             </svg>
                           ) : (
-                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                               <circle cx="12" cy="12" r="3" />
                             </svg>
@@ -354,126 +318,97 @@ function SignupForm() {
                         </button>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Action Buttons: Continue to Firm Details + Quick Demo Fill */}
-                    <div className="grid grid-cols-2 gap-2.5 pt-2">
-                      <button
-                        type="submit"
-                        className="w-full py-3 sm:py-3.5 bg-[#B8923F] hover:bg-[#9B772E] text-white font-serif font-bold text-sm sm:text-base rounded-xl sm:rounded-2xl transition-all shadow-xs flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer touch-manipulation"
-                      >
-                        <span>Next: Firm Info →</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleQuickDemoFill}
-                        className="w-full py-3 sm:py-3.5 bg-[#23272F] hover:bg-[#1A1D23] text-white font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition-all shadow-xs flex items-center justify-center gap-1 active:scale-[0.98] cursor-pointer touch-manipulation"
-                      >
-                        <span>Demo Autofill</span>
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  /* STEP 2: Business Firm & Location */
-                  <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
-                    {/* Company Name & GST */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          Firm / Store Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={companyName}
-                          onChange={(e) => setCompanyName(e.target.value)}
-                          placeholder="Sharma Hardware Co."
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          GST Number (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          value={gstNumber}
-                          onChange={(e) => setGstNumber(e.target.value)}
-                          placeholder="09AAAAA0000A1Z5"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all font-mono uppercase"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Business Address */}
+                  {/* Row 3: Company Name & GST Number */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                     <div>
-                      <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                        Registered Business Address *
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        Firm / Store Name *
                       </label>
                       <input
                         type="text"
                         required
-                        value={businessAddress}
-                        onChange={(e) => setBusinessAddress(e.target.value)}
-                        placeholder="Shop No. 12, Main Hardware Market"
-                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="Sharma Hardware & Trading Co."
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
                       />
                     </div>
-
-                    {/* City & State */}
-                    <div className="grid grid-cols-2 gap-2.5">
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          City *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Aligarh"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          State *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={state}
-                          onChange={(e) => setState(e.target.value)}
-                          placeholder="Uttar Pradesh"
-                          className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-2 focus:ring-[#B8923F]/20 transition-all"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        GST Number (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={gstNumber}
+                        onChange={(e) => setGstNumber(e.target.value)}
+                        placeholder="09AAAAA0000A1Z5"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all font-mono uppercase"
+                      />
                     </div>
+                  </div>
 
-                    {/* Back + Submit Application Buttons */}
-                    <div className="grid grid-cols-3 gap-2.5 pt-2">
-                      <button
-                        type="button"
-                        onClick={() => setStep(1)}
-                        className="col-span-1 py-3 sm:py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition-all cursor-pointer"
-                      >
-                        ← Back
-                      </button>
+                  {/* Row 4: Business Address */}
+                  <div>
+                    <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                      Registered Business Address *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={businessAddress}
+                      onChange={(e) => setBusinessAddress(e.target.value)}
+                      placeholder="Shop No. 12, Main Hardware Market"
+                      className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
+                    />
+                  </div>
 
-                      <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="col-span-2 py-3 sm:py-3.5 bg-[#B8923F] hover:bg-[#9B772E] text-white font-serif font-bold text-sm sm:text-base rounded-xl sm:rounded-2xl transition-all shadow-xs flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 cursor-pointer touch-manipulation"
-                      >
-                        {isLoading ? (
-                          <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                        ) : (
-                          <span>Submit Application</span>
-                        )}
-                      </button>
+                  {/* Row 5: City & State */}
+                  <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
+                    <div>
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="Aligarh"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
+                      />
                     </div>
-                  </form>
-                )}
+                    <div>
+                      <label className="block text-[11px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                        State *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        placeholder="Uttar Pradesh"
+                        className="w-full bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl sm:rounded-2xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#B8923F] focus:bg-white focus:ring-1 focus:ring-[#B8923F] transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit Action Button: Full Width */}
+                  <div className="pt-2 sm:pt-2.5">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full py-3 sm:py-3.5 bg-[#B8923F] hover:bg-[#9B772E] text-white font-serif font-bold text-sm sm:text-base rounded-xl sm:rounded-2xl transition-all shadow-xs flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 cursor-pointer touch-manipulation"
+                    >
+                      {isLoading ? (
+                        <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      ) : (
+                        <span>Submit Distributor Application</span>
+                      )}
+                    </button>
+                  </div>
+                </form>
 
                 {/* Legal Disclaimers */}
                 <p className="text-[11px] sm:text-xs text-gray-500 text-center mt-3 leading-snug">
@@ -489,8 +424,8 @@ function SignupForm() {
               </div>
             )}
 
-            {/* Bottom Featured Outlined Pill Tray (Matching Login design) */}
-            <div className="bg-[#F5F6F9] border-t border-[#EAECEF] px-6 sm:px-8 xl:px-10 py-4 sm:py-5">
+            {/* Bottom Featured Outlined Pill Tray */}
+            <div className="bg-[#F5F6F9] border-t border-[#EAECEF] px-6 sm:px-8 py-3.5 sm:py-4">
               <Link
                 href="/login"
                 className="w-full py-3 sm:py-3.5 rounded-full border-2 border-[#B8923F] text-[#B8923F] hover:bg-[#B8923F] hover:text-white font-serif font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-[0.99] touch-manipulation text-center"
@@ -502,7 +437,7 @@ function SignupForm() {
         </div>
 
         {/* Minimal Copyright Under the Card on Dark Canvas */}
-        <p className="text-xs text-gray-500 text-center select-none py-1">
+        <p className="text-[11px] text-gray-500 text-center select-none py-1">
           Nafi Lock Industries all rights reserved ©
         </p>
       </div>
