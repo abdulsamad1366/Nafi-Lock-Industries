@@ -109,36 +109,79 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background pt-2 sm:pt-6 pb-24 lg:pb-16">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        {/* ── Top Header Console (Mobile & Desktop) ── */}
-        <div className="sticky top-16 sm:top-20 lg:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-5 mb-4 sm:mb-6 lg:mb-8 shadow-xs transition-all">
-          <div className="flex items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-              {/* Company Initials Monogram Badge */}
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-base sm:text-lg shrink-0 shadow-2xs">
+        {/* ── Top Header Console (Mobile & Desktop Optimized) ── */}
+        <div className="relative sm:sticky sm:top-20 lg:top-24 z-30 bg-surface/95 backdrop-blur-md border border-divider rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 mb-3.5 sm:mb-8 shadow-xs transition-all">
+          {/* Mobile Layout (<sm): 2 clean rows so company name is never truncated */}
+          <div className="sm:hidden space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-base shrink-0 shadow-2xs">
+                  {(profileData?.distributorProfile?.companyName || user?.name || "D").charAt(0).toUpperCase()}
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
+                    Distributor Portal
+                  </span>
+                  <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-600 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Verified Active
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setEditProfileOpen(true)}
+                className="px-3 py-1.5 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-1.5 shrink-0 touch-manipulation active:scale-95"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                <span>Edit Profile</span>
+              </button>
+            </div>
+
+            <div className="pt-0.5">
+              <h1 className="font-serif text-lg font-bold text-primary leading-tight">
+                {profileData?.distributorProfile?.companyName || user?.name}
+              </h1>
+              {profileData?.distributorProfile?.city && (
+                <p className="text-[11px] text-muted mt-0.5">
+                  {profileData.distributorProfile.city}, {profileData.distributorProfile.state}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop & Tablet Layout (>=sm) */}
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-11 h-11 rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center font-serif font-bold text-lg shrink-0 shadow-2xs">
                 {(profileData?.distributorProfile?.companyName || user?.name || "D").charAt(0).toUpperCase()}
               </div>
 
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider font-bold bg-accent text-background">
                     Distributor Portal
                   </span>
-                  <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-mono text-emerald-500 font-semibold">
+                  <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-500 font-semibold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     Verified Active
                   </span>
                 </div>
-                <h1 className="font-serif text-base sm:text-xl lg:text-2xl font-bold text-primary mt-0.5 truncate">
+                <h1 className="font-serif text-xl lg:text-2xl font-bold text-primary mt-0.5 truncate">
                   {profileData?.distributorProfile?.companyName || user?.name}
                 </h1>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setEditProfileOpen(true)}
-                className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-1.5 sm:gap-2 shrink-0 touch-manipulation"
+                className="px-4 py-2 text-xs font-serif font-semibold rounded-full bg-accent text-background hover:bg-accent-hover transition-all cursor-pointer shadow-xs flex items-center gap-2 shrink-0 touch-manipulation active:scale-95"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -241,18 +284,18 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Persistent Mobile Bottom App Bar (Ergonomic Touch Targets) ── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-lg border-t border-divider px-2 py-1.5 shadow-2xl safe-area-pb">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-lg border-t border-divider px-2 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-2xl safe-area-pb">
         <div className="flex items-center justify-around max-w-lg mx-auto">
           {/* 1. Profile */}
           <Link
             href="/distributor"
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
+            className={`flex flex-col items-center justify-center min-w-[58px] py-1.5 px-2 rounded-2xl text-[10px] font-serif transition-all touch-manipulation ${
               pathname === "/distributor" || pathname === "/distributor/profile"
-                ? "text-accent font-bold"
-                : "text-muted hover:text-primary"
+                ? "bg-accent/15 text-accent font-bold scale-[1.02]"
+                : "text-muted hover:text-primary active:scale-95"
             }`}
           >
-            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={pathname === "/distributor" || pathname === "/distributor/profile" ? "2.5" : "2"}>
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
@@ -262,11 +305,13 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           {/* 2. Orders */}
           <Link
             href="/distributor/orders"
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
-              pathname?.startsWith("/distributor/orders") ? "text-accent font-bold" : "text-muted hover:text-primary"
+            className={`flex flex-col items-center justify-center min-w-[58px] py-1.5 px-2 rounded-2xl text-[10px] font-serif transition-all touch-manipulation ${
+              pathname?.startsWith("/distributor/orders") && pathname !== "/distributor/orders/new"
+                ? "bg-accent/15 text-accent font-bold scale-[1.02]"
+                : "text-muted hover:text-primary active:scale-95"
             }`}
           >
-            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={pathname?.startsWith("/distributor/orders") && pathname !== "/distributor/orders/new" ? "2.5" : "2"}>
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
               <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
               <line x1="12" y1="22.08" x2="12" y2="12" />
@@ -278,12 +323,14 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={openDrawer}
-            className={`relative flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation cursor-pointer ${
-              pathname === "/distributor/orders/new" ? "text-accent font-bold" : "text-muted hover:text-primary"
+            className={`relative flex flex-col items-center justify-center min-w-[58px] py-1.5 px-2 rounded-2xl text-[10px] font-serif transition-all touch-manipulation cursor-pointer ${
+              pathname === "/distributor/orders/new"
+                ? "bg-accent/15 text-accent font-bold scale-[1.02]"
+                : "text-muted hover:text-primary active:scale-95"
             }`}
           >
             <div className="relative">
-              <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={pathname === "/distributor/orders/new" ? "2.5" : "2"}>
                 <circle cx="9" cy="21" r="1" />
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -300,13 +347,13 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           {/* 4. Downloads */}
           <Link
             href="/distributor/downloads"
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
+            className={`flex flex-col items-center justify-center min-w-[58px] py-1.5 px-2 rounded-2xl text-[10px] font-serif transition-all touch-manipulation ${
               pathname?.startsWith("/distributor/downloads")
-                ? "text-accent font-bold"
-                : "text-muted hover:text-primary"
+                ? "bg-accent/15 text-accent font-bold scale-[1.02]"
+                : "text-muted hover:text-primary active:scale-95"
             }`}
           >
-            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={pathname?.startsWith("/distributor/downloads") ? "2.5" : "2"}>
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
@@ -317,11 +364,13 @@ function DistributorLayoutInner({ children }: { children: React.ReactNode }) {
           {/* 5. Liked */}
           <Link
             href="/distributor/liked"
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-[10px] font-serif transition-colors touch-manipulation ${
-              pathname === "/distributor/liked" ? "text-accent font-bold" : "text-muted hover:text-primary"
+            className={`flex flex-col items-center justify-center min-w-[58px] py-1.5 px-2 rounded-2xl text-[10px] font-serif transition-all touch-manipulation ${
+              pathname === "/distributor/liked"
+                ? "bg-accent/15 text-accent font-bold scale-[1.02]"
+                : "text-muted hover:text-primary active:scale-95"
             }`}
           >
-            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={pathname === "/distributor/liked" ? "2.5" : "2"}>
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             <span>Liked</span>
