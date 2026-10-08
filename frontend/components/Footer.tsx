@@ -19,11 +19,12 @@ import { usePathname } from "next/navigation";
 export default function Footer() {
   const pathname = usePathname();
 
-  // Do not render the global public footer on distributor portal and login screens
+  // Do not render the global public footer on distributor portal and auth screens
   if (
     pathname?.startsWith("/distributor") ||
     pathname === "/login" ||
-    pathname === "/admin/login"
+    pathname === "/admin/login" ||
+    pathname === "/signup"
   ) {
     return null;
   }
