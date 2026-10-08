@@ -129,8 +129,17 @@ function SignupForm() {
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl relative border border-white/20 overflow-hidden flex flex-col"
+            className="w-full bg-white rounded-[32px] sm:rounded-[40px] shadow-2xl relative border border-white/20 overflow-hidden flex flex-col"
           >
+            {/* Circular Close Button (Top-Right, matching /login format) */}
+            <Link
+              href="/"
+              className="absolute top-5 right-5 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#B8923F] hover:bg-[#9B772E] text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer touch-manipulation z-20"
+              title="Close to Store"
+            >
+              ✕
+            </Link>
+
             {isSubmitted ? (
               /* Success / Confirmation State */
               <div className="p-7 sm:p-10 text-center">
@@ -187,35 +196,26 @@ function SignupForm() {
             ) : (
               /* Unified Single-Screen Application Form */
               <div className="p-6 sm:p-8 xl:p-9 pb-5 sm:pb-6">
-                {/* Form Heading Bar with Enlarged Heading */}
-                <div className="flex items-center justify-between pb-3.5 sm:pb-4 mb-4 sm:mb-5 border-b border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
+                {/* Brand Logo & Editorial Headline (Exact match to /login format) */}
+                <div className="text-center pt-1 mb-4 sm:mb-5">
+                  <div className="inline-flex items-center justify-center gap-3 sm:gap-3.5">
+                    <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
                       <Image
                         src="/logos/nafi-logo.svg"
-                        alt="Nafi Logo"
-                        width={30}
-                        height={30}
+                        alt="Nafi Lock Industries"
+                        width={32}
+                        height={32}
                         className="object-contain w-7 h-7 sm:w-8 sm:h-8"
                       />
                     </div>
-                    <div>
-                      <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight leading-none">
-                        Nafi Lock Industries
-                      </h1>
-                      <p className="text-xs sm:text-sm text-[#B8923F] font-serif italic font-semibold tracking-wide mt-1">
-                        The Real Security <span className="text-gray-400 not-italic font-sans font-normal">· Distributor Application</span>
-                      </p>
-                    </div>
+                    <h1 className="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-gray-900 tracking-tight leading-none">
+                      Nafi Lock Industries
+                    </h1>
                   </div>
 
-                  <Link
-                    href="/"
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-[#B8923F] hover:text-white text-gray-600 flex items-center justify-center font-bold text-xs sm:text-sm transition-colors shadow-2xs"
-                    title="Close to Store"
-                  >
-                    ✕
-                  </Link>
+                  <p className="text-xs sm:text-sm lg:text-[15px] text-[#B8923F] font-serif italic font-semibold tracking-wider mt-1.5">
+                    The Real Security
+                  </p>
                 </div>
 
                 {/* Error Banner */}
