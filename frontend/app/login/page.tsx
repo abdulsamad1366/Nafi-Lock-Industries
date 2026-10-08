@@ -109,26 +109,27 @@ function LoginForm() {
 
             {/* Main Form Body */}
             <div className="p-6 sm:p-8 xl:p-10 pb-5 sm:pb-6">
-              {/* Brand Logo & Editorial Headline (Logo & Tradename in Series) */}
-              <div className="text-center pt-1 mb-5 sm:mb-6">
-                <div className="inline-flex items-center justify-center gap-3 sm:gap-3.5">
-                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
+              {/* Brand Logo & Editorial Headline (Left Aligned) */}
+              <div className="pt-1 mb-5 sm:mb-6 text-left">
+                <div className="flex items-center justify-start gap-3.5 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#B8923F]/15 border border-[#B8923F]/30 p-2 sm:p-2.5 flex items-center justify-center shrink-0 shadow-2xs">
                     <Image
                       src="/logos/nafi-logo.svg"
                       alt="Nafi Lock Industries"
-                      width={32}
-                      height={32}
-                      className="object-contain w-7 h-7 sm:w-8 sm:h-8"
+                      width={36}
+                      height={36}
+                      className="object-contain w-8 h-8 sm:w-9 sm:h-9"
                     />
                   </div>
-                  <h1 className="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-gray-900 tracking-tight leading-none">
-                    Nafi Lock Industries
-                  </h1>
+                  <div className="text-left flex flex-col justify-center">
+                    <h1 className="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-gray-900 tracking-tight leading-none">
+                      Nafi Lock Industries
+                    </h1>
+                    <p className="text-xs sm:text-sm lg:text-[15px] text-[#B8923F] font-serif italic font-semibold tracking-wide mt-1">
+                      The Real Security
+                    </p>
+                  </div>
                 </div>
-
-                <p className="text-xs sm:text-sm lg:text-[15px] text-[#B8923F] font-serif italic font-semibold tracking-wider mt-1.5 sm:mt-2">
-                  The Real Security
-                </p>
               </div>
 
               {/* Status / Alert Messages */}
