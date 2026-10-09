@@ -22,7 +22,6 @@ export default function AdminProductsPage() {
   const [lockingMechanism, setLockingMechanism] = useState("Double Ball-Bearing");
   const [warranty, setWarranty] = useState("5 Years");
   const [dealerPrice, setDealerPrice] = useState<number | "">("");
-  const [minOrderQty, setMinOrderQty] = useState<number | "">("");
   const [isSaving, setIsSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -89,7 +88,7 @@ export default function AdminProductsPage() {
         lockingMechanism,
         warranty,
         dealerPrice: dealerPrice !== "" ? Number(dealerPrice) : null,
-        minOrderQty: minOrderQty !== "" ? Number(minOrderQty) : null,
+        minOrderQty: 1,
       };
 
       const res = await fetch(`${API_BASE}/products`, {
@@ -111,7 +110,6 @@ export default function AdminProductsPage() {
       setSlug("");
       setDescription("");
       setDealerPrice("");
-      setMinOrderQty("");
       await fetchData();
     } catch (err: any) {
       setMsg(err.message || "Error saving product");
@@ -127,7 +125,7 @@ export default function AdminProductsPage() {
           Hardware Products & Wholesale Pricing Matrix
         </h1>
         <p className="text-xs text-muted">
-          Configure product specifications, assign brand houses, and define gated dealer prices with minimum order quantities (MOQ)
+          Configure product specifications, assign brand houses, and define gated dealer prices.
         </p>
       </div>
 
@@ -213,8 +211,8 @@ export default function AdminProductsPage() {
             </div>
           </div>
 
-          {/* Gated Dealer Price & MOQ (Requested in prompt) */}
-          <div className="p-4 bg-background border border-accent/40 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Gated Dealer Price */}
+          <div className="p-4 bg-background border border-accent/40 rounded-xl">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 rounded-full bg-accent" />
@@ -236,29 +234,6 @@ export default function AdminProductsPage() {
               />
               <span className="text-[10px] text-muted block mt-1">
                 Gated: Stripped from public payloads, visible only to approved distributors.
-              </span>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-accent" />
-                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-accent">
-                  Minimum Order Quantity (MOQ) *
-                </label>
-              </div>
-              <input
-                type="number"
-                min="1"
-                required
-                value={minOrderQty}
-                onChange={(e) =>
-                  setMinOrderQty(e.target.value === "" ? "" : parseInt(e.target.value, 10))
-                }
-                placeholder="e.g. 24"
-                className="w-full bg-surface border border-divider rounded-xl px-3.5 py-2 text-xs text-primary font-mono font-bold focus:outline-hidden focus:border-accent"
-              />
-              <span className="text-[10px] text-muted block mt-1">
-                Enforced strictly during B2B order cart placement and server validation.
               </span>
             </div>
           </div>
@@ -362,7 +337,6 @@ export default function AdminProductsPage() {
                   <th className="p-4">Brand</th>
                   <th className="p-4">Category</th>
                   <th className="p-4">Dealer Price</th>
-                  <th className="p-4">Min. Batch (MOQ)</th>
                   <th className="p-4">Status</th>
                 </tr>
               </thead>
@@ -383,9 +357,6 @@ export default function AdminProductsPage() {
                     <td className="p-4 text-muted">{p.category?.name}</td>
                     <td className="p-4 font-mono font-bold text-accent">
                       {p.dealerPrice ? `₹${Number(p.dealerPrice).toLocaleString("en-IN")}` : "Unset"}
-                    </td>
-                    <td className="p-4 font-mono text-primary font-semibold">
-                      {p.minOrderQty ? `${p.minOrderQty} units` : "1 unit"}
                     </td>
                     <td className="p-4">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
