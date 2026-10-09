@@ -162,7 +162,7 @@ export default function OrderCartDrawer() {
                       </div>
                     </div>
 
-                    {/* Quantity Selector with minOrderQty compliance */}
+                    {/* Quantity Selector */}
                     <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-divider/60">
                       <div className="flex items-center border border-divider rounded-lg overflow-hidden bg-surface">
                         <button
@@ -170,22 +170,22 @@ export default function OrderCartDrawer() {
                           onClick={() =>
                             updateQuantity(
                               item.productId,
-                              Math.max(item.minOrderQty, item.quantity - 1)
+                              Math.max(1, item.quantity - 1)
                             )
                           }
-                          disabled={item.quantity <= item.minOrderQty}
+                          disabled={item.quantity <= 1}
                           className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-sm font-bold text-muted hover:text-primary hover:bg-black/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                         >
                           -
                         </button>
                         <input
                           type="number"
-                          min={item.minOrderQty}
+                          min={1}
                           value={item.quantity}
                           onChange={(e) => {
                             const val = parseInt(e.target.value, 10);
                             if (!isNaN(val)) {
-                              updateQuantity(item.productId, Math.max(item.minOrderQty, val));
+                              updateQuantity(item.productId, Math.max(1, val));
                             }
                           }}
                           className="w-10 sm:w-12 h-7 sm:h-8 text-center text-xs font-mono font-bold bg-transparent text-primary focus:outline-hidden py-1"
@@ -200,9 +200,6 @@ export default function OrderCartDrawer() {
                       </div>
 
                       <div className="text-right">
-                        <span className="text-[9px] sm:text-[10px] text-muted block">
-                          MOQ: {item.minOrderQty}
-                        </span>
                         <span className="font-mono text-xs font-bold text-primary">
                           ₹{(item.unitPrice * item.quantity).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </span>

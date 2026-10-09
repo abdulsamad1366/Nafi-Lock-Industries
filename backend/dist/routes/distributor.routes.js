@@ -6,6 +6,8 @@ const user_auth_middleware_1 = require("../middleware/user-auth.middleware");
 const router = (0, express_1.Router)();
 // Gated by requireAuth (pending distributors need to check their status)
 router.get("/me", user_auth_middleware_1.requireAuth, distributor_controller_1.getDistributorMe);
+router.put("/me", user_auth_middleware_1.requireAuth, distributor_controller_1.updateDistributorProfile);
+router.put("/profile", user_auth_middleware_1.requireAuth, distributor_controller_1.updateDistributorProfile);
 router.post("/apply", user_auth_middleware_1.requireAuth, distributor_controller_1.applyDistributor);
 exports.default = router;
 //# sourceMappingURL=distributor.routes.js.map

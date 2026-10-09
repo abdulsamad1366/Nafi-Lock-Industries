@@ -38,15 +38,14 @@ export default function DistributorLikedPage() {
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const handleAddToCart = (product: Product) => {
-    const minQty = product.minOrderQty || 1;
     addItem({
       productId: product.id,
       name: product.name,
       modelCode: product.size,
       image: product.images && product.images[0] ? product.images[0] : undefined,
       unitPrice: Number(product.dealerPrice || 0),
-      minOrderQty: minQty,
-      quantity: minQty,
+      minOrderQty: 1,
+      quantity: 1,
     });
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 2000);
@@ -135,9 +134,6 @@ export default function DistributorLikedPage() {
                     <span className="font-mono font-bold text-accent text-[11px] sm:text-xs">
                       ₹{Number(product.dealerPrice || 0).toLocaleString("en-IN")}
                     </span>
-                    <span className="font-mono text-[9px] sm:text-[10px] text-muted">
-                      MOQ: {product.minOrderQty || 1}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -158,7 +154,7 @@ export default function DistributorLikedPage() {
                       : "bg-accent text-background hover:bg-accent-hover"
                   }`}
                 >
-                  {addedId === product.id ? "✓ Added" : `+ Add MOQ (${product.minOrderQty || 1})`}
+                  {addedId === product.id ? "✓ Added" : "+ Add to Cart"}
                 </button>
               </div>
             </div>

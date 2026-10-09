@@ -97,7 +97,7 @@ export default function DistributorOverviewAndProfilePage() {
             </span>
           </div>
           <p className="text-[10px] sm:text-[11px] text-muted hidden sm:block">
-            Batch MOQ enforced at checkout.
+            Direct factory pricing enabled.
           </p>
         </div>
       </div>

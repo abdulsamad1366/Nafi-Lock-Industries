@@ -54,7 +54,7 @@ export default function RakshamBrandPage() {
       <section className="py-16 px-6 border-t border-divider text-center">
         <h2 className="font-headline text-xl mb-4">Interested in stocking Raksham?</h2>
         <p className="text-muted text-sm mb-6 max-w-md mx-auto">
-          Contact our distributor relations team for dealership catalogues, MOQ details,
+          Contact our distributor relations team for dealership catalogues
           and regional wholesale terms.
         </p>
         <a

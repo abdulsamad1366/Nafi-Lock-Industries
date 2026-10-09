@@ -10,4 +10,9 @@ export declare function getDistributorMe(req: AuthenticatedUserRequest, res: Res
  * Legacy endpoint — distributor application is handled during signup
  */
 export declare function applyDistributor(req: AuthenticatedUserRequest, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined>;
+/**
+ * PUT /api/distributor/profile
+ * Allows approved/registered distributor to update their business profile & contact info
+ */
+export declare function updateDistributorProfile(req: AuthenticatedUserRequest, res: Response, next: NextFunction): Promise<void>;
 //# sourceMappingURL=distributor.controller.d.ts.map

@@ -59,8 +59,7 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = (item: Omit<OrderCartItem, "quantity"> & { quantity?: number }) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.productId === item.productId);
-      const initialQty = item.quantity || item.minOrderQty || 1;
+      const initialQty = item.quantity || 1;
       if (existing) {
         return prev.map((i) =>
           i.productId === item.productId
@@ -76,8 +75,8 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
           modelCode: item.modelCode,
           image: item.image,
           unitPrice: item.unitPrice,
-          minOrderQty: item.minOrderQty || 1,
-          quantity: Math.max(initialQty, item.minOrderQty || 1),
+          minOrderQty: 1,
+          quantity: Math.max(initialQty, 1),
         },
       ];
     });

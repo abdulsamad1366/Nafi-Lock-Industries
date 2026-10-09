@@ -92,7 +92,7 @@ export default function ProductsPage() {
             <div className="bg-white/80 backdrop-blur-xs rounded-xl p-3 border border-[#E7E5E0] shadow-2xs">
               <div className="text-[#A98048] font-serif font-bold text-sm mb-0.5">Direct Factory Terms</div>
               <p className="text-[11px] text-[#78716C] leading-snug">
-                Tier-1 wholesale margins, volume batch MOQs, and insured dispatch.
+                Tier-1 wholesale margins and direct insured dispatch.
               </p>
             </div>
           </div>

@@ -4,7 +4,7 @@ import ProductGrid from "@/components/ProductGrid";
 export const metadata: Metadata = {
   title: "Distributor Product Catalog & Wholesale Ordering | Nafi Lock Industries",
   description:
-    "Authorized distributor product catalog. Browse Tier-1 wholesale prices, batch MOQs, and order direct from the factory queue.",
+    "Authorized distributor product catalog. Browse Tier-1 wholesale prices and order direct from the factory queue.",
 };
 
 export default function DistributorCatalogPage() {

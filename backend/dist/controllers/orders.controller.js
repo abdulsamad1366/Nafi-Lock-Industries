@@ -18,7 +18,7 @@ async function createOrder(req, res, next) {
         if (!items || !Array.isArray(items) || items.length === 0) {
             return res.status(400).json({ error: "Order must contain at least one item." });
         }
-        // Validate all products and quantities against minOrderQty and fetch dealer prices
+        // Validate all products and quantities and fetch dealer prices
         const productIds = items.map((i) => i.productId);
         const dbProducts = await db_1.default.product.findMany({
             where: { id: { in: productIds }, isActive: true },
@@ -32,10 +32,9 @@ async function createOrder(req, res, next) {
                     error: `Product with ID ${item.productId} was not found or is inactive.`,
                 });
             }
-            const minQty = product.minOrderQty || 1;
-            if (item.quantity < minQty) {
+            if (item.quantity < 1) {
                 return res.status(400).json({
-                    error: `Item "${product.name}" requires a minimum order quantity of ${minQty} units (received ${item.quantity}).`,
+                    error: `Item "${product.name}" quantity must be at least 1 unit (received ${item.quantity}).`,
                 });
             }
             if (!product.dealerPrice) {

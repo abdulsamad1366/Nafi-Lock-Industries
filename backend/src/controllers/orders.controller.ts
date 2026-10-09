@@ -19,7 +19,7 @@ export async function createOrder(
       return res.status(400).json({ error: "Order must contain at least one item." });
     }
 
-    // Validate all products and quantities against minOrderQty and fetch dealer prices
+    // Validate all products and quantities and fetch dealer prices
     const productIds = items.map((i: { productId: string }) => i.productId);
     const dbProducts = await prisma.product.findMany({
       where: { id: { in: productIds }, isActive: true },
@@ -41,10 +41,9 @@ export async function createOrder(
         });
       }
 
-      const minQty = product.minOrderQty || 1;
-      if (item.quantity < minQty) {
+      if (item.quantity < 1) {
         return res.status(400).json({
-          error: `Item "${product.name}" requires a minimum order quantity of ${minQty} units (received ${item.quantity}).`,
+          error: `Item "${product.name}" quantity must be at least 1 unit (received ${item.quantity}).`,
         });
       }
 
