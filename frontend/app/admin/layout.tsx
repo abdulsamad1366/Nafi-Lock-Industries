@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 Ledger Queue
               </Link>
               <Link href="/admin/products" className="text-muted hover:text-accent font-semibold transition-colors">
-                Products & MOQ
+                Products
               </Link>
               <Link href="/admin/sales-reps" className="text-muted hover:text-accent font-semibold transition-colors">
                 Sales Reps
